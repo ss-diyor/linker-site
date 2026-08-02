@@ -3,115 +3,267 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>projects – diyorbek sultanov</title>
+  <meta name="description" content="diyorbek sultanov – loyihalar" />
+  <meta name="theme-color" content="#0a0b2c" />
+  <title>loyihalar – diyor</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
   <style>
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    :root { color-scheme:dark; }
-    html { height:100%; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      color-scheme: dark;
+      --bg:        #05061a;
+      --text:      #ffffff;
+      --muted:     #52527a;
+      --link:      #7070aa;
+      --link-hover:#ffffff;
+      --border:    #0c0d28;
+      --accent:    #a0a0ff;
+      --accent-hover: #c4c4ff;
+    }
+
+    html, body { height: 100%; }
+
     body {
-      min-height:100%;
-      background:#0a0b2c;
-      color:#fff;
-      font-family:'Geist Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Geist Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-    a { text-decoration:none; color:inherit; }
-    main { display:flex; flex-direction:column; min-height:100vh; padding:4rem 2.5rem; }
-    @media (min-width:640px){ main{padding:5rem 4rem;} }
 
-    .identity { flex:0 0 auto; }
-    .identity h1 { font-size:1.25rem; font-weight:700; letter-spacing:-0.02em; color:#fff; }
-    .identity p { margin-top:0.25rem; font-size:0.8rem; color:#525252; }
-
-    .projects-section { flex:1; margin-top:3.5rem; }
-    .projects-section h2 { font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:1.5rem; }
-
-    @media (min-width:640px) {
-      .projects-section h2 { font-size:1.2rem; }
+    ::selection {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
     }
 
-    .projects-list { list-style:none; display:flex; flex-direction:column; gap:1.25rem; }
-    .project-item { cursor:pointer; }
-    .project-title { font-size:1.1rem; color:#a1a1ff; transition:color 80ms; }
-    .project-title:hover { color:#c7c7ff; }
-    .project-about { margin-top:0.5rem; font-size:0.85rem; color:#737373; display:none; }
-    .project-about.open { display:block; }
+    a { text-decoration: none; color: inherit; }
 
-    @media (min-width:640px) {
-      .project-title { font-size:1.2rem; }
+    /* ─── Container ─── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
     }
 
-    .animate { will-change:opacity,transform; }
-    .fade-in { opacity:0; transform:translateY(20px); transition:opacity .6s ease-out, transform .6s ease-out; }
-    .visible { opacity:1; transform:translateY(0); }
+    /* ─── Hero ─── */
+    .hero { flex: 0 0 auto; }
 
-    footer { margin-top:5rem; }
-    .divider { border:none; border-top:1px solid #1c1c1c; margin-bottom:1.5rem; }
-    .socials { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
-    .socials a { font-size:0.8rem; color:#404040; transition:color 80ms; }
-    .socials a:hover { color:#a3a3a3; }
+    .hero a { display: inline-block; }
 
-    @media (prefers-reduced-motion:reduce) {
-      *, *::before, *::after { transition-duration:0.001ms!important; }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--text);
+      transition: color 80ms;
+    }
+
+    .hero a:hover h1 { color: var(--link-hover); }
+
+    .hero p {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+    }
+
+    /* ─── Projects section ─── */
+    .projects {
+      flex: 1;
+      margin-top: 3rem;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .project-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .project-item {
+      border-top: 1px solid var(--border);
+    }
+
+    .project-item:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 1rem 0;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 0.95rem;
+      text-align: left;
+      transition: color 80ms;
+      gap: 1rem;
+    }
+
+    .project-trigger:hover { color: var(--accent-hover); }
+
+    .project-arrow {
+      font-size: 0.75rem;
+      color: var(--muted);
+      transition: transform 200ms ease, color 80ms;
+      flex-shrink: 0;
+    }
+
+    .project-item.open .project-arrow {
+      transform: rotate(90deg);
+      color: var(--accent);
+    }
+
+    .project-body {
+      display: none;
+      padding-bottom: 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .project-item.open .project-body { display: block; }
+
+    /* ─── Footer ─── */
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .socials {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+    }
+
+    .socials a {
+      font-size: 0.75rem;
+      color: #2e2e52;
+      transition: color 80ms ease;
+    }
+
+    .socials a:hover { color: var(--muted); }
+
+    /* ─── Animations ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .fade-in.delay { transition-delay: 0.1s; }
+    .fade-in.delay2 { transition-delay: 0.2s; }
+    .visible { opacity: 1; transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.001ms !important; }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 2rem; }
+      .page { padding: 4rem 1.5rem 3rem; }
     }
   </style>
 </head>
 <body>
-  <main>
-    <div class="identity animate fade-in">
-      <h1>diyor</h1>
+  <div class="page">
+
+    <div class="hero fade-in">
+      <a href="/index.html">
+        <h1>diyor</h1>
+      </a>
       <p>shunchaki qiziqishdan</p>
     </div>
 
-    <section class="projects-section animate fade-in">
-      <h2>loyihalarim</h2>
-      <ul class="projects-list">
+    <section class="projects fade-in delay" aria-label="Projects">
+      <p class="section-label">loyihalar</p>
+      <ul class="project-list">
         <li class="project-item">
-          <div class="project-title">project alpha</div>
-          <div class="project-about">A brief description of Project Alpha. It does X, Y, Z.</div>
+          <button class="project-trigger" aria-expanded="false">
+            <span>project alpha</span>
+            <span class="project-arrow">›</span>
+          </button>
+          <div class="project-body">A brief description of Project Alpha. It does X, Y, Z.</div>
         </li>
         <li class="project-item">
-          <div class="project-title">project beta</div>
-          <div class="project-about">Details about Project Beta, its purpose and technologies used.</div>
+          <button class="project-trigger" aria-expanded="false">
+            <span>project beta</span>
+            <span class="project-arrow">›</span>
+          </button>
+          <div class="project-body">Details about Project Beta, its purpose and technologies used.</div>
         </li>
         <li class="project-item">
-          <div class="project-title">project gamma</div>
-          <div class="project-about">An overview of Project Gamma with key features.</div>
+          <button class="project-trigger" aria-expanded="false">
+            <span>project gamma</span>
+            <span class="project-arrow">›</span>
+          </button>
+          <div class="project-body">An overview of Project Gamma with key features.</div>
         </li>
       </ul>
     </section>
 
-    <footer class="animate fade-in">
-      <hr class="divider" />
+    <footer class="fade-in delay2">
       <div class="socials">
-        <a href="https://github.com/ss-diyor" target="_blank" rel="noreferrer">github</a>
-        <a href="https://t.me/diyorsultanov" target="_blank" rel="noreferrer">telegram</a>
-        <a href="mailto:diyorbeksultanov.ss@gmail.com">email</a>
-        <a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noreferrer">linkedin</a>
-        <a href="https://boxd.it/ka3IV" target="_blank" rel="noreferrer">letterboxd</a>
+        <a href="https://github.com/ss-diyor" target="_blank" rel="noreferrer">gh</a>
+        <a href="https://t.me/diyorsultanov" target="_blank" rel="noreferrer">tg</a>
+        <a href="mailto:diyorbeksultanov.ss@gmail.com">mail</a>
+        <a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noreferrer">li</a>
+        <a href="https://boxd.it/ka3IV" target="_blank" rel="noreferrer">lboxd</a>
         <a href="https://x.com/ozbekfarzandi" target="_blank" rel="noreferrer">x</a>
-        <a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu?si=NNFFiMSbSjqIdc9eWgygw" target="_blank" rel="noreferrer">spotify</a>
+        <a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu?si=NNFFiMSbSjqIdc9eWgygw" target="_blank" rel="noreferrer">sptfy</a>
       </div>
     </footer>
-  </main>
+
+  </div>
 
   <script>
+    // Fade-in animation
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
       });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    document.querySelectorAll('.project-item').forEach(item => {
-      const title = item.querySelector('.project-title');
-      const about = item.querySelector('.project-about');
-      title.addEventListener('click', () => {
-        about.classList.toggle('open');
+    // Project accordion
+    document.querySelectorAll('.project-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.project-item');
+        const isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.project-item').forEach(i => {
+          i.classList.remove('open');
+          i.querySelector('.project-trigger').setAttribute('aria-expanded', 'false');
+        });
+        // Open clicked (if it was closed)
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
       });
     });
   </script>
