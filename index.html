@@ -74,23 +74,53 @@
       letter-spacing: 0.01em;
     }
 
-    /* ─── Nav (vertical stack, t3.gg minimal) ─── */
-    nav {
+    /* ─── Scroll Nav with loupe ─── */
+    .scroll-nav {
       flex: 1;
       margin-top: 3rem;
+      position: relative;
+      height: 230px;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%, black 26%, black 74%, transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%, black 26%, black 74%, transparent 100%
+      );
+    }
+
+    .scroll-track {
+      position: absolute;
+      top: 0; left: 0; right: 0;
       display: flex;
       flex-direction: column;
-      gap: 0.7rem;
     }
 
-    nav a {
+    .scroll-track a {
+      display: inline-block;
+      padding: 0.5rem 0;
       font-size: 0.95rem;
       color: var(--link);
-      transition: color 80ms ease;
-      width: fit-content;
+      transform-origin: left center;
+      will-change: transform, opacity;
     }
 
-    nav a:hover { color: var(--link-hover); }
+    .scroll-track a:hover {
+      color: var(--link-hover) !important;
+      opacity: 1 !important;
+    }
+
+    /* grab cursor */
+    .scroll-nav { cursor: grab; touch-action: none; user-select: none; }
+    .scroll-nav.dragging { cursor: grabbing; }
+
+    /* Mobile: centre the links */
+    @media (max-width: 640px) {
+      .scroll-track { align-items: center; }
+      .scroll-track a { transform-origin: center center; }
+    }
 
     /* ─── Footer ─── */
     footer {
@@ -142,14 +172,16 @@
       <p>shunchaki qiziqishdan</p>
     </div>
 
-    <nav aria-label="Links" class="fade-in delay">
-      <a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noreferrer">linkedin</a>
-      <a href="https://t.me/diyorsultanov" target="_blank" rel="noreferrer">telegram</a>
-      <a href="https://github.com/ss-diyor" target="_blank" rel="noreferrer">github</a>
-      <a href="https://boxd.it/ka3IV" target="_blank" rel="noreferrer">letterboxd</a>
-      <a href="https://x.com/ozbekfarzandi" target="_blank" rel="noreferrer">x</a>
-      <a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu?si=NNFFiMSbSjqIdc9eWgygw" target="_blank" rel="noreferrer">spotify</a>
-      <a href="/projects.html">loyihalar</a>
+    <nav aria-label="Links" class="scroll-nav fade-in delay">
+      <div class="scroll-track" id="scrollTrack">
+        <a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noreferrer">linkedin</a>
+        <a href="https://t.me/diyorsultanov" target="_blank" rel="noreferrer">telegram</a>
+        <a href="https://github.com/ss-diyor" target="_blank" rel="noreferrer">github</a>
+        <a href="https://boxd.it/ka3IV" target="_blank" rel="noreferrer">letterboxd</a>
+        <a href="https://x.com/ozbekfarzandi" target="_blank" rel="noreferrer">x</a>
+        <a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu?si=NNFFiMSbSjqIdc9eWgygw" target="_blank" rel="noreferrer">spotify</a>
+        <a href="/projects.html">loyihalar</a>
+      </div>
     </nav>
 
     <footer class="fade-in delay2">
@@ -167,12 +199,129 @@
   </div>
 
   <script>
+    // Fade-in observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) e.target.classList.add('visible');
       });
     }, { threshold: 0.05 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Scroll nav: endless loop + loupe + drag/swipe + momentum ──
+    (function () {
+      const nav   = document.querySelector('.scroll-nav');
+      const track = document.getElementById('scrollTrack');
+      if (!nav || !track) return;
+
+      // Clone items for seamless loop
+      [...track.querySelectorAll('a')].forEach(a => track.appendChild(a.cloneNode(true)));
+
+      const AUTO_SPD  = 0.5;   // px/frame auto-scroll
+      const FRICTION  = 0.92;  // momentum decay (0–1)
+
+      let y          = 0;
+      let velocity   = 0;      // px/frame user momentum
+      let isDragging = false;
+      let dragStartY = 0;
+      let lastDragY  = 0;
+      let lastDragT  = 0;
+
+      /* ── helpers ── */
+      function smoothstep(t) {
+        t = Math.max(0, Math.min(1, t));
+        return t * t * (3 - 2 * t);
+      }
+
+      function wrapY(v) {
+        const setH = track.scrollHeight / 2;
+        if (setH <= 0) return v;
+        v = v % setH;
+        if (v < 0) v += setH;
+        return v;
+      }
+
+      /* ── drag start (mouse + touch) ── */
+      function onDragStart(clientY) {
+        isDragging = true;
+        velocity   = 0;
+        dragStartY = clientY;
+        lastDragY  = clientY;
+        lastDragT  = performance.now();
+        nav.classList.add('dragging');
+      }
+
+      /* ── drag move ── */
+      function onDragMove(clientY) {
+        if (!isDragging) return;
+        const now   = performance.now();
+        const dt    = Math.max(1, now - lastDragT);
+        const delta = lastDragY - clientY;          // positive = scroll up
+        velocity    = (delta / dt) * (1000 / 60);   // px per frame @60fps
+        y           = wrapY(y + delta);
+        lastDragY   = clientY;
+        lastDragT   = now;
+      }
+
+      /* ── drag end ── */
+      function onDragEnd() {
+        isDragging = false;
+        nav.classList.remove('dragging');
+      }
+
+      // Mouse
+      nav.addEventListener('mousedown', e => { e.preventDefault(); onDragStart(e.clientY); });
+      window.addEventListener('mousemove', e => { if (isDragging) onDragMove(e.clientY); });
+      window.addEventListener('mouseup',   () => onDragEnd());
+
+      // Touch
+      nav.addEventListener('touchstart', e => onDragStart(e.touches[0].clientY), { passive: true });
+      nav.addEventListener('touchmove',  e => { onDragMove(e.touches[0].clientY); }, { passive: true });
+      nav.addEventListener('touchend',   () => onDragEnd());
+
+      // Clicking a link: only fire if drag distance is small
+      nav.addEventListener('click', e => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const dist = Math.abs((dragStartY || 0) - lastDragY);
+        if (dist > 6) e.preventDefault();
+      });
+
+      /* ── animation loop ── */
+      function tick() {
+        const setH = track.scrollHeight / 2;
+
+        if (isDragging) {
+          // position already updated in onDragMove
+        } else if (Math.abs(velocity) > 0.08) {
+          // momentum
+          y        = wrapY(y + velocity);
+          velocity *= FRICTION;
+        } else {
+          // auto-scroll resumes
+          velocity = 0;
+          y        = wrapY(y + AUTO_SPD);
+        }
+
+        track.style.transform = `translateY(-${y}px)`;
+
+        // Loupe magnification
+        const navRect = nav.getBoundingClientRect();
+        const centerY = navRect.top + navRect.height / 2;
+        const halfH   = navRect.height * 0.52;
+
+        track.querySelectorAll('a').forEach(a => {
+          const r    = a.getBoundingClientRect();
+          const dist = Math.abs(r.top + r.height / 2 - centerY);
+          const t    = smoothstep(Math.max(0, 1 - dist / halfH));
+          a.style.transform = `scale(${(0.72 + t * 1.08).toFixed(3)})`;
+          a.style.opacity   = (0.18 + t * 0.82).toFixed(3);
+        });
+
+        requestAnimationFrame(tick);
+      }
+
+      tick();
+    })();
   </script>
 </body>
 </html>
