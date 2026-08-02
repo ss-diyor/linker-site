@@ -77,10 +77,12 @@
       letter-spacing: 0.01em;
     }
 
-    /* ─── Projects section ─── */
-    .projects {
+    /* ─── Scroll Nav with loupe (Projects) ─── */
+    .projects-container {
       flex: 1;
       margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
     }
 
     .section-label {
@@ -91,19 +93,39 @@
       margin-bottom: 1.5rem;
     }
 
-    .project-list {
-      list-style: none;
+    .scroll-nav {
+      flex: 1;
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%, black 20%, black 80%, transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%, black 20%, black 80%, transparent 100%
+      );
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .scroll-nav.dragging { cursor: grabbing; }
+
+    .scroll-track {
+      position: absolute;
+      top: 0; left: 0; right: 0;
       display: flex;
       flex-direction: column;
-      gap: 0;
     }
 
     .project-item {
-      border-top: 1px solid var(--border);
-    }
-
-    .project-item:last-child {
-      border-bottom: 1px solid var(--border);
+      display: block;
+      width: 100%;
+      padding: 0.2rem 0;
+      transform-origin: left center;
+      will-change: transform, opacity;
     }
 
     .project-trigger {
@@ -114,16 +136,17 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 1rem 0;
+      padding: 0.8rem 0;
       color: var(--accent);
       font-family: inherit;
       font-size: 0.95rem;
       text-align: left;
       transition: color 80ms;
       gap: 1rem;
+      transform-origin: left center;
     }
 
-    .project-trigger:hover { color: var(--accent-hover); }
+    .project-trigger:hover { color: var(--accent-hover) !important; }
 
     .project-arrow {
       font-size: 0.75rem;
@@ -146,6 +169,13 @@
     }
 
     .project-item.open .project-body { display: block; }
+
+    /* Mobile: centre the links */
+    @media (max-width: 640px) {
+      .scroll-track { align-items: center; }
+      .project-item { transform-origin: center center; }
+      .project-trigger { transform-origin: center center; justify-content: center; text-align: center; }
+    }
 
     /* ─── Footer ─── */
     footer {
@@ -199,31 +229,54 @@
       <p>shunchaki qiziqishdan</p>
     </div>
 
-    <section class="projects fade-in delay" aria-label="Projects">
+    <section class="projects-container fade-in delay" aria-label="Projects">
       <p class="section-label">loyihalar</p>
-      <ul class="project-list">
-        <li class="project-item">
-          <button class="project-trigger" aria-expanded="false">
-            <span>project alpha</span>
-            <span class="project-arrow">›</span>
-          </button>
-          <div class="project-body">A brief description of Project Alpha. It does X, Y, Z.</div>
-        </li>
-        <li class="project-item">
-          <button class="project-trigger" aria-expanded="false">
-            <span>project beta</span>
-            <span class="project-arrow">›</span>
-          </button>
-          <div class="project-body">Details about Project Beta, its purpose and technologies used.</div>
-        </li>
-        <li class="project-item">
-          <button class="project-trigger" aria-expanded="false">
-            <span>project gamma</span>
-            <span class="project-arrow">›</span>
-          </button>
-          <div class="project-body">An overview of Project Gamma with key features.</div>
-        </li>
-      </ul>
+      <nav class="scroll-nav" id="projectsNav">
+        <div class="scroll-track" id="scrollTrack">
+          <div class="project-item">
+            <button class="project-trigger" aria-expanded="false">
+              <span>ielts-mock-ss</span>
+              <span class="project-arrow">›</span>
+            </button>
+            <div class="project-body">Oq yorliq (white labeling) va bir nechta foydalanuvchi rollari kabi imkoniyatlarga ega onlayn IELTS sinov platformasi.</div>
+          </div>
+          <div class="project-item">
+            <button class="project-trigger" aria-expanded="false">
+              <span>bustanlik-ss-ts</span>
+              <span class="project-arrow">›</span>
+            </button>
+            <div class="project-body">Sinov natijalarini onlayn taqdim etish uchun Telegram bot va veb-sayt integratsiyasiga ega tizim.</div>
+          </div>
+          <div class="project-item">
+            <button class="project-trigger" aria-expanded="false">
+              <span>abituriyent-rating-search</span>
+              <span class="project-arrow">›</span>
+            </button>
+            <div class="project-body">Abituriyentlarning reytingini qidirish uchun Telegram bot.</div>
+          </div>
+          <div class="project-item">
+            <button class="project-trigger" aria-expanded="false">
+              <span>blog-ss</span>
+              <span class="project-arrow">›</span>
+            </button>
+            <div class="project-body">Shaxsiy portfolio va blog veb-sayti.</div>
+          </div>
+          <div class="project-item">
+            <button class="project-trigger" aria-expanded="false">
+              <span>sd-anon</span>
+              <span class="project-arrow">›</span>
+            </button>
+            <div class="project-body">Anonim xabarlarni qabul qilish uchun Telegram bot.</div>
+          </div>
+          <div class="project-item">
+            <button class="project-trigger" aria-expanded="false">
+              <span>ss-anonymous</span>
+              <span class="project-arrow">›</span>
+            </button>
+            <div class="project-body">Maktab uchun anonim fikr-mulohaza va xabarlar qabul qilish Telegram boti.</div>
+          </div>
+        </div>
+      </nav>
     </section>
 
     <footer class="fade-in delay2">
@@ -241,7 +294,7 @@
   </div>
 
   <script>
-    // Fade-in animation
+    // Fade-in observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) e.target.classList.add('visible');
@@ -249,23 +302,133 @@
     }, { threshold: 0.05 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    // Project accordion
-    document.querySelectorAll('.project-trigger').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const item = btn.closest('.project-item');
-        const isOpen = item.classList.contains('open');
-        // Close all
-        document.querySelectorAll('.project-item').forEach(i => {
-          i.classList.remove('open');
-          i.querySelector('.project-trigger').setAttribute('aria-expanded', 'false');
-        });
-        // Open clicked (if it was closed)
-        if (!isOpen) {
-          item.classList.add('open');
-          btn.setAttribute('aria-expanded', 'true');
+    // ── Scroll nav: endless loop + loupe + drag/swipe + momentum ──
+    (function () {
+      const nav   = document.getElementById('projectsNav');
+      const track = document.getElementById('scrollTrack');
+      if (!nav || !track) return;
+
+      const AUTO_SPD = 0.4;   // px/frame auto-scroll
+      const FRICTION = 0.92;  // momentum decay (0–1)
+
+      let oneSetH  = 0;
+      let y        = 0;
+      let velocity = 0;
+      let isDragging = false;
+      let dragStartY = 0;
+      let lastDragY  = 0;
+      let lastDragT  = 0;
+      let rafId      = null;
+
+      function smoothstep(t) {
+        t = Math.max(0, Math.min(1, t));
+        return t * t * (3 - 2 * t);
+      }
+
+      function wrapY(v) {
+        if (oneSetH <= 0) return v;
+        return ((v - oneSetH) % oneSetH + oneSetH) % oneSetH + oneSetH;
+      }
+
+      function init() {
+        const origItems = [...track.querySelectorAll('.project-item')];
+        oneSetH = origItems.reduce((sum, item) => sum + item.offsetHeight, 0);
+        if (oneSetH <= 0) return;
+
+        const navH    = nav.offsetHeight;
+        const copies  = Math.max(4, Math.ceil((navH * 4) / oneSetH));
+        for (let i = 0; i < copies; i++) {
+          origItems.forEach(item => track.appendChild(item.cloneNode(true)));
         }
-      });
-    });
+
+        y = oneSetH;
+
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(tick);
+        
+        bindAccordion();
+      }
+
+      function bindAccordion() {
+        track.querySelectorAll('.project-trigger').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const dist = Math.abs((dragStartY || 0) - lastDragY);
+            if (dist > 6) return;
+
+            const item = btn.closest('.project-item');
+            const isOpen = item.classList.contains('open');
+            
+            item.classList.toggle('open');
+            btn.setAttribute('aria-expanded', !isOpen);
+          });
+        });
+      }
+
+      function onDragStart(clientY) {
+        isDragging = true;
+        velocity   = 0;
+        dragStartY = clientY;
+        lastDragY  = clientY;
+        lastDragT  = performance.now();
+        nav.classList.add('dragging');
+      }
+
+      function onDragMove(clientY) {
+        if (!isDragging) return;
+        const now   = performance.now();
+        const dt    = Math.max(1, now - lastDragT);
+        const delta = lastDragY - clientY;
+        velocity    = (delta / dt) * (1000 / 60);
+        y           = wrapY(y + delta);
+        lastDragY   = clientY;
+        lastDragT   = now;
+      }
+
+      function onDragEnd() {
+        isDragging = false;
+        nav.classList.remove('dragging');
+      }
+
+      nav.addEventListener('mousedown', e => { e.preventDefault(); onDragStart(e.clientY); });
+      window.addEventListener('mousemove', e => { if (isDragging) onDragMove(e.clientY); });
+      window.addEventListener('mouseup',   () => onDragEnd());
+
+      nav.addEventListener('touchstart', e => onDragStart(e.touches[0].clientY), { passive: true });
+      nav.addEventListener('touchmove',  e => { onDragMove(e.touches[0].clientY); }, { passive: true });
+      nav.addEventListener('touchend',   () => onDragEnd());
+
+      function tick() {
+        if (isDragging) {
+        } else if (Math.abs(velocity) > 0.08) {
+          y        = wrapY(y + velocity);
+          velocity *= FRICTION;
+        } else {
+          velocity = 0;
+          y        = wrapY(y + AUTO_SPD);
+        }
+
+        track.style.transform = `translateY(-${y}px)`;
+
+        const navRect = nav.getBoundingClientRect();
+        const centerY = navRect.top + navRect.height / 2;
+        const halfH   = navRect.height * 0.52;
+
+        track.querySelectorAll('.project-item').forEach(item => {
+          const r    = item.getBoundingClientRect();
+          const itemCenter = r.top + r.height / 2;
+          const dist = Math.abs(itemCenter - centerY);
+          const t    = smoothstep(Math.max(0, 1 - dist / halfH));
+          
+          const trigger = item.querySelector('.project-trigger');
+          trigger.style.transform = `scale(${(0.75 + t * 0.65).toFixed(3)})`;
+          item.style.opacity   = (0.2 + t * 0.8).toFixed(3);
+        });
+
+        rafId = requestAnimationFrame(tick);
+      }
+
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(init);
+    })();
   </script>
 </body>
 </html>
