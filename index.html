@@ -213,29 +213,17 @@
       const track = document.getElementById('scrollTrack');
       if (!nav || !track) return;
 
-      // Measure the height of one original set of items
-      const origItems = [...track.querySelectorAll('a')];
-      const oneSetH   = origItems.reduce((sum, a) => sum + a.offsetHeight, 0);
+      const AUTO_SPD = 0.5;   // px/frame auto-scroll
+      const FRICTION = 0.92;  // momentum decay (0–1)
 
-      // Clone items enough times so the track is at least 4× the nav viewport.
-      // This guarantees there's always enough off-screen content in both
-      // directions so wrapping is completely invisible.
-      const navH       = nav.offsetHeight;
-      const minFill    = Math.max(4, Math.ceil((navH * 4) / oneSetH));
-      for (let i = 0; i < minFill; i++) {
-        origItems.forEach(a => track.appendChild(a.cloneNode(true)));
-      }
-
-      const AUTO_SPD  = 0.5;   // px/frame auto-scroll
-      const FRICTION  = 0.92;  // momentum decay (0–1)
-
-      // Start at 1× set offset so there's room to scroll in both directions
-      let y          = oneSetH;
-      let velocity   = 0;      // px/frame user momentum
+      let oneSetH  = 0;
+      let y        = 0;
+      let velocity = 0;
       let isDragging = false;
       let dragStartY = 0;
       let lastDragY  = 0;
       let lastDragT  = 0;
+      let rafId      = null;
 
       /* ── helpers ── */
       function smoothstep(t) {
@@ -243,21 +231,40 @@
         return t * t * (3 - 2 * t);
       }
 
-      // Wrap using the ORIGINAL set height (not scrollHeight/2).
-      // Because we cloned many copies, the wrap point is always hidden
-      // far off-screen, so the user never sees the jump.
+      // O(1) modulo wrap — keeps y in [oneSetH, oneSetH*2)
+      // The wrap point is always deep inside the cloned content,
+      // never visible on screen, so there is no jump on any device.
       function wrapY(v) {
         if (oneSetH <= 0) return v;
-        // Keep y within [0 .. oneSetH * (minFill+1)) but reset to
-        // equivalent position within the first few sets when it drifts.
-        // We wrap around just one set-height to keep values stable.
-        const totalSets = minFill + 1; // original + clones
-        const totalH    = oneSetH * totalSets;
-        // Normalise so we stay within [oneSetH .. oneSetH*2)
-        // This keeps us in the "middle" of the cloned content.
-        while (v >= oneSetH * 2) v -= oneSetH;
-        while (v < oneSetH)      v += oneSetH;
-        return v;
+        // equivalent to: ((v - oneSetH) mod oneSetH) + oneSetH
+        return ((v - oneSetH) % oneSetH + oneSetH) % oneSetH + oneSetH;
+      }
+
+      /* ── initialise after fonts are ready ──
+         Web fonts change line-heights, so we MUST measure after they load.
+         Without this, the wrap offset is wrong on desktop (fallback font
+         height ≠ Geist Mono height) causing a visible jump.           */
+      function init() {
+        const origItems = [...track.querySelectorAll('a')];
+
+        // Measure one set's true rendered height
+        oneSetH = origItems.reduce((sum, a) => sum + a.offsetHeight, 0);
+        if (oneSetH <= 0) return;
+
+        // Clone enough times to fill at least 4× the nav viewport in both
+        // directions — guarantees the wrap point is always off-screen.
+        const navH    = nav.offsetHeight;
+        const copies  = Math.max(4, Math.ceil((navH * 4) / oneSetH));
+        for (let i = 0; i < copies; i++) {
+          origItems.forEach(a => track.appendChild(a.cloneNode(true)));
+        }
+
+        // Start in the middle of the cloned content so scrolling
+        // backwards has plenty of room too.
+        y = oneSetH;
+
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(tick);
       }
 
       /* ── drag start (mouse + touch) ── */
@@ -275,8 +282,8 @@
         if (!isDragging) return;
         const now   = performance.now();
         const dt    = Math.max(1, now - lastDragT);
-        const delta = lastDragY - clientY;          // positive = scroll up
-        velocity    = (delta / dt) * (1000 / 60);   // px per frame @60fps
+        const delta = lastDragY - clientY;         // positive = scroll up
+        velocity    = (delta / dt) * (1000 / 60); // px per frame @60fps
         y           = wrapY(y + delta);
         lastDragY   = clientY;
         lastDragT   = now;
@@ -315,7 +322,7 @@
           y        = wrapY(y + velocity);
           velocity *= FRICTION;
         } else {
-          // auto-scroll resumes
+          // auto-scroll
           velocity = 0;
           y        = wrapY(y + AUTO_SPD);
         }
@@ -335,10 +342,11 @@
           a.style.opacity   = (0.18 + t * 0.82).toFixed(3);
         });
 
-        requestAnimationFrame(tick);
+        rafId = requestAnimationFrame(tick);
       }
 
-      tick();
+      // Wait for web fonts before measuring — critical for desktop correctness
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(init);
     })();
   </script>
 </body>
