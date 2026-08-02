@@ -213,13 +213,24 @@
       const track = document.getElementById('scrollTrack');
       if (!nav || !track) return;
 
-      // Clone items for seamless loop
-      [...track.querySelectorAll('a')].forEach(a => track.appendChild(a.cloneNode(true)));
+      // Measure the height of one original set of items
+      const origItems = [...track.querySelectorAll('a')];
+      const oneSetH   = origItems.reduce((sum, a) => sum + a.offsetHeight, 0);
+
+      // Clone items enough times so the track is at least 4× the nav viewport.
+      // This guarantees there's always enough off-screen content in both
+      // directions so wrapping is completely invisible.
+      const navH       = nav.offsetHeight;
+      const minFill    = Math.max(4, Math.ceil((navH * 4) / oneSetH));
+      for (let i = 0; i < minFill; i++) {
+        origItems.forEach(a => track.appendChild(a.cloneNode(true)));
+      }
 
       const AUTO_SPD  = 0.5;   // px/frame auto-scroll
       const FRICTION  = 0.92;  // momentum decay (0–1)
 
-      let y          = 0;
+      // Start at 1× set offset so there's room to scroll in both directions
+      let y          = oneSetH;
       let velocity   = 0;      // px/frame user momentum
       let isDragging = false;
       let dragStartY = 0;
@@ -232,11 +243,20 @@
         return t * t * (3 - 2 * t);
       }
 
+      // Wrap using the ORIGINAL set height (not scrollHeight/2).
+      // Because we cloned many copies, the wrap point is always hidden
+      // far off-screen, so the user never sees the jump.
       function wrapY(v) {
-        const setH = track.scrollHeight / 2;
-        if (setH <= 0) return v;
-        v = v % setH;
-        if (v < 0) v += setH;
+        if (oneSetH <= 0) return v;
+        // Keep y within [0 .. oneSetH * (minFill+1)) but reset to
+        // equivalent position within the first few sets when it drifts.
+        // We wrap around just one set-height to keep values stable.
+        const totalSets = minFill + 1; // original + clones
+        const totalH    = oneSetH * totalSets;
+        // Normalise so we stay within [oneSetH .. oneSetH*2)
+        // This keeps us in the "middle" of the cloned content.
+        while (v >= oneSetH * 2) v -= oneSetH;
+        while (v < oneSetH)      v += oneSetH;
         return v;
       }
 
@@ -288,8 +308,6 @@
 
       /* ── animation loop ── */
       function tick() {
-        const setH = track.scrollHeight / 2;
-
         if (isDragging) {
           // position already updated in onDragMove
         } else if (Math.abs(velocity) > 0.08) {
