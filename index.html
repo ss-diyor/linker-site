@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="builds things from Uzbekistan." />
+  <meta name="theme-color" content="#000000" />
+  <meta property="og:title" content="Diyorbek Sultanov" />
+  <meta property="og:description" content="builds things from Uzbekistan." />
+  <meta property="og:url" content="https://sultanov.space" />
+  <meta property="og:type" content="website" />
+  <title>Diyorbek Sultanov</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root { color-scheme: dark; }
+
+    html { height: 100%; }
+
+    body {
+      min-height: 100%;
+      background: #0a0b2c;
+      color: #fff;
+      font-family: 'Geist Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 4rem 2.5rem;
+    }
+
+    @media (min-width: 640px) {
+      main { padding: 5rem 4rem; }
+    }
+
+    /* ─── Identity ─── */
+    .identity { flex: 0 0 auto; }
+
+    .identity h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .identity p {
+      margin-top: 0.25rem;
+      font-size: 0.875rem;
+      color: #525252;
+    }
+
+    /* ─── Nav links ─── */
+    nav {
+      flex: 1;
+      margin-top: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    nav a {
+      display: inline-block;
+      font-size: 1.25rem;
+      color: #737373;
+      transition: color 80ms;
+    }
+
+    nav a:hover { color: #fff; }
+
+    @media (min-width: 640px) {
+      nav a { font-size: 1.35rem; }
+    }
+
+    /* ─── Footer ─── */
+    footer { margin-top: 5rem; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #1c1c1c;
+      margin-bottom: 1.5rem;
+    }
+
+    .socials {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .socials a {
+      font-size: 0.875rem;
+      color: #404040;
+      transition: color 80ms;
+    }
+
+    .socials a:hover { color: #a3a3a3; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.001ms !important;
+      }
+    }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+    .visible { opacity: 1; transform: translateY(0); }
+    .animate { will-change: opacity, transform; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="identity animate fade-in">
+      <h1>diyorbek sultanov</h1>
+      <p>builds things from uzbekistan</p>
+    </div>
+
+      <nav aria-label="Social Media" class="animate fade-in">
+        <a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://t.me/diyorsultanov" target="_blank" rel="noreferrer">Telegram</a>
+        <a href="https://github.com/ss-diyor" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://boxd.it/ka3IV" target="_blank" rel="noreferrer">Letterboxd</a>
+        <a href="https://x.com/ozbekfarzandi" target="_blank" rel="noreferrer">X</a>
+        <a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu?si=NNFFiMSbSjqIdc9eWgygw" target="_blank" rel="noreferrer">Spotify</a>
+        <a href="/projects.html" class="projects-link">Projects</a>
+      </nav>
+
+    <footer class="animate fade-in">
+      <hr class="divider" />
+      <div class="socials">
+        <a href="https://github.com/ss-diyor" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://t.me/diyorsultanov" target="_blank" rel="noreferrer">Telegram</a>
+        <a href="mailto:hello@sultanov.space">Email</a>
+        <a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://boxd.it/ka3IV" target="_blank" rel="noreferrer">Letterboxd</a>
+        <a href="https://x.com/ozbekfarzandi" target="_blank" rel="noreferrer">X</a>
+        <a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu?si=NNFFiMSbSjqIdc9eWgygw" target="_blank" rel="noreferrer">Spotify</a>
+      </div>
+    </footer>
+    <script>
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+    </script>
+    </main>
+</body>
+</html>
