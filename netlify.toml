@@ -1,7 +1,12 @@
 [[redirects]]
-  from   = "/*"
-  to     = "/index.html"
+  from   = "/projects"
+  to     = "/projects.html"
   status = 200
+
+[[redirects]]
+  from   = "/*"
+  to     = "/404.html"
+  status = 404
 
 [[headers]]
   for = "/*"
@@ -14,3 +19,18 @@
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/og.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/og-projects.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

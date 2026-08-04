@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#05061a" />
+  <title>404 – diyor</title>
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      color-scheme: dark;
+      --bg:     #05061a;
+      --text:   #ffffff;
+      --muted:  #52527a;
+      --border: #0c0d28;
+      --link:   #7070aa;
+      --link-hover: #ffffff;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Geist Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+    }
+
+    .code {
+      font-size: 5rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--border);
+    }
+
+    .message {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .sub {
+      margin-top: 0.4rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .links {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .links a {
+      font-size: 0.88rem;
+      color: var(--link);
+      text-decoration: none;
+      transition: color 80ms;
+    }
+
+    .links a:hover { color: var(--link-hover); }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .fade-in.delay  { transition-delay: 0.08s; }
+    .fade-in.delay2 { transition-delay: 0.16s; }
+    .visible { opacity: 1; transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.001ms !important; }
+    }
+
+    @media (max-width: 480px) {
+      .code { font-size: 3.5rem; }
+      .page { padding: 4rem 1.5rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <p class="code fade-in">404</p>
+    <p class="message fade-in delay">bu sahifa topilmadi.</p>
+    <p class="sub fade-in delay">yo'qolgan narsa doim qiziqroq bo'ladi.</p>
+    <div class="links fade-in delay2">
+      <a href="/index.html">← bosh sahifaga qaytish</a>
+      <a href="/projects.html">loyihalarni ko'rish</a>
+    </div>
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="shunchaki qiziqishdan." />
-  <meta name="theme-color" content="#0a0b2c" />
+  <meta name="theme-color" content="#05061a" />
   <meta property="og:title" content="D.Sultanov" />
   <meta property="og:description" content="shunchaki qiziqishdan." />
   <meta property="og:url" content="https://sultanov.space" />
@@ -16,6 +16,10 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://sultanov.space/og.png" />
   <title>diyor</title>
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -78,6 +82,17 @@
       font-size: 0.85rem;
       color: var(--muted);
       letter-spacing: 0.01em;
+    }
+
+    /* ─── Now line ─── */
+    .now {
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .now-label {
+      color: #3a3a5c;
     }
 
     /* ─── Scroll Nav with loupe ─── */
@@ -176,6 +191,7 @@
     <div class="hero fade-in">
       <h1>diyor</h1>
       <p>shunchaki qiziqishdan</p>
+      <p class="now"><span class="now-label">hozir:</span> nimadirlarni o'rganayapman</p>
     </div>
 
     <nav aria-label="Links" class="scroll-nav fade-in delay">
@@ -219,8 +235,8 @@
       const track = document.getElementById('scrollTrack');
       if (!nav || !track) return;
 
-      const AUTO_SPD = 0.5;   // px/frame auto-scroll
-      const FRICTION = 0.92;  // momentum decay (0–1)
+      const AUTO_SPD = 0.5;
+      const FRICTION = 0.92;
 
       let oneSetH  = 0;
       let y        = 0;
@@ -231,49 +247,32 @@
       let lastDragT  = 0;
       let rafId      = null;
 
-      /* ── helpers ── */
       function smoothstep(t) {
         t = Math.max(0, Math.min(1, t));
         return t * t * (3 - 2 * t);
       }
 
-      // O(1) modulo wrap — keeps y in [oneSetH, oneSetH*2)
-      // The wrap point is always deep inside the cloned content,
-      // never visible on screen, so there is no jump on any device.
       function wrapY(v) {
         if (oneSetH <= 0) return v;
-        // equivalent to: ((v - oneSetH) mod oneSetH) + oneSetH
         return ((v - oneSetH) % oneSetH + oneSetH) % oneSetH + oneSetH;
       }
 
-      /* ── initialise after fonts are ready ──
-         Web fonts change line-heights, so we MUST measure after they load.
-         Without this, the wrap offset is wrong on desktop (fallback font
-         height ≠ Geist Mono height) causing a visible jump.           */
       function init() {
         const origItems = [...track.querySelectorAll('a')];
-
-        // Measure one set's true rendered height
         oneSetH = origItems.reduce((sum, a) => sum + a.offsetHeight, 0);
         if (oneSetH <= 0) return;
 
-        // Clone enough times to fill at least 4× the nav viewport in both
-        // directions — guarantees the wrap point is always off-screen.
-        const navH    = nav.offsetHeight;
-        const copies  = Math.max(4, Math.ceil((navH * 4) / oneSetH));
+        const navH   = nav.offsetHeight;
+        const copies = Math.max(4, Math.ceil((navH * 4) / oneSetH));
         for (let i = 0; i < copies; i++) {
           origItems.forEach(a => track.appendChild(a.cloneNode(true)));
         }
 
-        // Start in the middle of the cloned content so scrolling
-        // backwards has plenty of room too.
         y = oneSetH;
-
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(tick);
       }
 
-      /* ── drag start (mouse + touch) ── */
       function onDragStart(clientY) {
         isDragging = true;
         velocity   = 0;
@@ -283,35 +282,30 @@
         nav.classList.add('dragging');
       }
 
-      /* ── drag move ── */
       function onDragMove(clientY) {
         if (!isDragging) return;
         const now   = performance.now();
         const dt    = Math.max(1, now - lastDragT);
-        const delta = lastDragY - clientY;         // positive = scroll up
-        velocity    = (delta / dt) * (1000 / 60); // px per frame @60fps
+        const delta = lastDragY - clientY;
+        velocity    = (delta / dt) * (1000 / 60);
         y           = wrapY(y + delta);
         lastDragY   = clientY;
         lastDragT   = now;
       }
 
-      /* ── drag end ── */
       function onDragEnd() {
         isDragging = false;
         nav.classList.remove('dragging');
       }
 
-      // Mouse
       nav.addEventListener('mousedown', e => { e.preventDefault(); onDragStart(e.clientY); });
       window.addEventListener('mousemove', e => { if (isDragging) onDragMove(e.clientY); });
       window.addEventListener('mouseup',   () => onDragEnd());
 
-      // Touch
       nav.addEventListener('touchstart', e => onDragStart(e.touches[0].clientY), { passive: true });
       nav.addEventListener('touchmove',  e => { onDragMove(e.touches[0].clientY); }, { passive: true });
       nav.addEventListener('touchend',   () => onDragEnd());
 
-      // Clicking a link: only fire if drag distance is small
       nav.addEventListener('click', e => {
         const a = e.target.closest('a');
         if (!a) return;
@@ -319,23 +313,18 @@
         if (dist > 6) e.preventDefault();
       });
 
-      /* ── animation loop ── */
       function tick() {
         if (isDragging) {
-          // position already updated in onDragMove
         } else if (Math.abs(velocity) > 0.08) {
-          // momentum
           y        = wrapY(y + velocity);
           velocity *= FRICTION;
         } else {
-          // auto-scroll
           velocity = 0;
           y        = wrapY(y + AUTO_SPD);
         }
 
         track.style.transform = `translateY(-${y}px)`;
 
-        // Loupe magnification
         const navRect = nav.getBoundingClientRect();
         const centerY = navRect.top + navRect.height / 2;
         const halfH   = navRect.height * 0.52;
@@ -351,7 +340,6 @@
         rafId = requestAnimationFrame(tick);
       }
 
-      // Wait for web fonts before measuring — critical for desktop correctness
       (document.fonts ? document.fonts.ready : Promise.resolve()).then(init);
     })();
   </script>
