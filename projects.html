@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="diyorbek sultanov – loyihalar" />
   <meta name="theme-color" content="#0a0b2c" />
+  <meta property="og:title" content="D.Sultanov — loyihalar" />
+  <meta property="og:description" content="diyorbek sultanov – loyihalar" />
+  <meta property="og:url" content="https://sultanov.space/projects.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://sultanov.space/og-projects.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="D.Sultanov — loyihalar" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://sultanov.space/og-projects.png" />
   <title>loyihalar – diyor</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -170,11 +180,12 @@
 
     .project-item.open .project-body { display: block; }
 
-    /* Mobile: centre the links */
+    /* Mobile: centre the triggers only, not the body text */
     @media (max-width: 640px) {
       .scroll-track { align-items: center; }
-      .project-item { transform-origin: center center; }
+      .project-item { transform-origin: center center; width: 100%; }
       .project-trigger { transform-origin: center center; justify-content: center; text-align: center; }
+      .project-body { text-align: left; }
     }
 
     /* ─── Footer ─── */
@@ -326,12 +337,12 @@
       }
 
       function wrapY(v) {
-        if (oneSetH <= 0) return v;
-        return ((v - oneSetH) % oneSetH + oneSetH) % oneSetH + oneSetH;
+        return wrapYWith(v, oneSetH);
       }
 
       function init() {
         const origItems = [...track.querySelectorAll('.project-item')];
+        origItemCount = origItems.length;
         oneSetH = origItems.reduce((sum, item) => sum + item.offsetHeight, 0);
         if (oneSetH <= 0) return;
 
@@ -349,18 +360,53 @@
         bindAccordion();
       }
 
-      function bindAccordion() {
-        track.querySelectorAll('.project-trigger').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const dist = Math.abs((dragStartY || 0) - lastDragY);
-            if (dist > 6) return;
+      function recalcOneSetH() {
+        // Re-measure the first set of original items after accordion toggle
+        const allItems = [...track.querySelectorAll('.project-item')];
+        const setCount = Math.round(allItems.length / origItemCount);
+        if (setCount < 1) return;
+        const firstSet = allItems.slice(0, origItemCount);
+        const newH = firstSet.reduce((sum, item) => sum + item.offsetHeight, 0);
+        if (newH > 0) {
+          // Shift y proportionally so the visual position doesn't jump
+          const ratio = newH / oneSetH;
+          y = wrapYWith(y * ratio, newH);
+          oneSetH = newH;
+        }
+      }
 
-            const item = btn.closest('.project-item');
-            const isOpen = item.classList.contains('open');
-            
-            item.classList.toggle('open');
-            btn.setAttribute('aria-expanded', !isOpen);
+      function wrapYWith(v, h) {
+        if (h <= 0) return v;
+        return ((v - h) % h + h) % h + h;
+      }
+
+      let origItemCount = 0;
+
+      function bindAccordion() {
+        // Use event delegation on the track so clones are covered too
+        track.addEventListener('click', (e) => {
+          const btn = e.target.closest('.project-trigger');
+          if (!btn) return;
+
+          const dist = Math.abs((dragStartY || 0) - lastDragY);
+          if (dist > 6) return;
+
+          const item = btn.closest('.project-item');
+          const isOpen = item.classList.contains('open');
+
+          // Close all open items first (only in same clone-set doesn't matter — visual is fine)
+          track.querySelectorAll('.project-item.open').forEach(el => {
+            el.classList.remove('open');
+            el.querySelector('.project-trigger').setAttribute('aria-expanded', 'false');
           });
+
+          if (!isOpen) {
+            item.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+
+          // Recalculate height after DOM change
+          requestAnimationFrame(recalcOneSetH);
         });
       }
 
