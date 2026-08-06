@@ -142,7 +142,7 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 0.8rem 0;
+      padding: 0.5rem 0;
       color: var(--accent);
       font-family: inherit;
       font-size: 0.95rem;
@@ -347,7 +347,7 @@
       const track = document.getElementById('scrollTrack');
       if (!nav || !track) return;
 
-      const AUTO_SPD = 0.4;
+      const AUTO_SPD = 0.5;
       const FRICTION = 0.92;
 
       let oneSetH  = 0;
@@ -486,8 +486,8 @@
           const dist       = Math.abs(itemCenter - centerY);
           const t          = smoothstep(Math.max(0, 1 - dist / halfH));
           const trigger    = item.querySelector('.project-trigger');
-          trigger.style.transform = `scale(${(0.75 + t * 0.65).toFixed(3)})`;
-          item.style.opacity      = (0.2 + t * 0.8).toFixed(3);
+          trigger.style.transform = `scale(${(0.72 + t * 1.08).toFixed(3)})`;
+          item.style.opacity      = (0.18 + t * 0.82).toFixed(3);
         });
 
         rafId = requestAnimationFrame(tick);
