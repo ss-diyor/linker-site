@@ -40,7 +40,7 @@
       --accent-hover: #c4c4ff;
     }
 
-    html, body { height: 100%; }
+    html, body { height: 100%; overflow-x: hidden; }
 
     body {
       min-height: 100%;
@@ -234,6 +234,7 @@
     @media (max-width: 480px) {
       .hero h1 { font-size: 2rem; }
       .page { padding: 4rem 1.5rem 3rem; }
+      .project-trigger { font-size: 0.72rem; }
     }
   </style>
 </head>
@@ -480,13 +481,17 @@
         const centerY = navRect.top + navRect.height / 2;
         const halfH   = navRect.height * 0.52;
 
+        const isMobile   = window.innerWidth < 640;
+        const scaleMin   = isMobile ? 0.6  : 0.72;
+        const scaleRange = isMobile ? 0.65 : 1.08;
+
         track.querySelectorAll('.project-item').forEach(item => {
           const r          = item.getBoundingClientRect();
           const itemCenter = r.top + r.height / 2;
           const dist       = Math.abs(itemCenter - centerY);
           const t          = smoothstep(Math.max(0, 1 - dist / halfH));
           const trigger    = item.querySelector('.project-trigger');
-          trigger.style.transform = `scale(${(0.72 + t * 1.08).toFixed(3)})`;
+          trigger.style.transform = `scale(${(scaleMin + t * scaleRange).toFixed(3)})`;
           item.style.opacity      = (0.18 + t * 0.82).toFixed(3);
         });
 
