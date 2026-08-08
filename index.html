@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -100,23 +101,16 @@
       flex: 1;
       margin-top: 3rem;
       position: relative;
-      height: 230px;
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%, black 26%, black 74%, transparent 100%
-      );
-      mask-image: linear-gradient(
-        to bottom,
-        transparent 0%, black 26%, black 74%, transparent 100%
-      );
+      height: auto;
+      overflow: visible;
+      mask-image: none;
     }
 
     .scroll-track {
-      position: absolute;
-      top: 0; left: 0; right: 0;
+      position: static;
       display: flex;
       flex-direction: column;
+      gap: .15rem;
     }
 
     .scroll-track a {
@@ -126,12 +120,25 @@
       color: var(--link);
       transform-origin: left center;
       will-change: transform, opacity;
+      transition: color .18s ease, padding-left .25s cubic-bezier(.23,1,.32,1), opacity .18s ease;
+    }
+
+    .scroll-track a::before { content: '> '; color: var(--muted); opacity: .45; }
+    .scroll-track a:hover { padding-left: .7rem; }
+    .scroll-track:hover a:not(:hover) { opacity: .35 !important; }
+    .scroll-track { transform: none !important; }
+    .scroll-track a {
+      transform: none !important;
+      opacity: .72 !important;
+      font-size: .95rem !important;
     }
 
     .scroll-track a:hover {
       color: var(--link-hover) !important;
       opacity: 1 !important;
     }
+
+    .ciphering { color: var(--link-hover) !important; }
 
     /* grab cursor */
     .scroll-nav { cursor: grab; touch-action: none; user-select: none; }
@@ -182,6 +189,13 @@
     @media (max-width: 480px) {
       .hero h1 { font-size: 2rem; }
       .page { padding: 4rem 1.5rem 3rem; }
+    }
+
+    @media (min-width: 900px) {
+      .page {
+        margin-left: clamp(4rem, 24vw, 22rem);
+        margin-right: 0;
+      }
     }
   </style>
 </head>
@@ -237,6 +251,23 @@
 
       const AUTO_SPD = 0.5;
       const FRICTION = 0.92;
+      const CIPHER_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789$#@!_-';
+      function cipher(el) {
+        if (el.dataset.ciphering === '1') return;
+        const original = el.dataset.original || el.textContent;
+        el.dataset.original = original;
+        el.dataset.ciphering = '1';
+        el.classList.add('ciphering');
+        let progress = 0;
+        const timer = setInterval(() => {
+          el.textContent = [...original].map((ch, i) => i < Math.floor(progress) ? original[i] : CIPHER_CHARS[Math.floor(Math.random() * CIPHER_CHARS.length)]).join('');
+          progress += 0.62;
+          if (progress > original.length) {
+            clearInterval(timer); el.textContent = original;
+            el.classList.remove('ciphering'); el.dataset.ciphering = '0';
+          }
+        }, 30);
+      }
 
       let oneSetH  = 0;
       let y        = 0;
@@ -263,12 +294,16 @@
         if (oneSetH <= 0) return;
 
         const navH   = nav.offsetHeight;
-        const copies = Math.max(4, Math.ceil((navH * 4) / oneSetH));
+        const copies = 0;
         for (let i = 0; i < copies; i++) {
           origItems.forEach(a => track.appendChild(a.cloneNode(true)));
         }
 
         y = oneSetH;
+        // Reveal each navigation link once, sequentially, on page entry.
+        origItems.forEach((a, i) => {
+          setTimeout(() => cipher(a), 320 + i * 145);
+        });
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(tick);
       }
