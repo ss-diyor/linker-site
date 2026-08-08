@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,7 +53,8 @@
       font-weight: 700;
       letter-spacing: -0.04em;
       line-height: 1;
-      color: var(--border);
+      color: var(--text);
+      text-shadow: 0 0 28px rgba(255,255,255,0.08);
     }
 
     .message {
@@ -83,6 +85,10 @@
 
     .links a:hover { color: var(--link-hover); }
 
+    .links a::before { content: none; }
+    .links a { transition: color 160ms ease, padding-left 220ms cubic-bezier(.23,1,.32,1); }
+    .links a:hover { padding-left: .6rem; }
+
     .fade-in {
       opacity: 0;
       transform: translateY(14px);
@@ -106,9 +112,9 @@
   <div class="page">
     <p class="code fade-in">404</p>
     <p class="message fade-in delay">bu sahifa topilmadi.</p>
-    <p class="sub fade-in delay">yo'qolgan narsa doim qiziqroq bo'ladi.</p>
+    
     <div class="links fade-in delay2">
-      <a href="/index.html">← bosh sahifaga qaytish</a>
+      <a href="/index.html">bosh sahifaga qaytish</a>
       <a href="/projects.html">loyihalarni ko'rish</a>
     </div>
   </div>
@@ -118,6 +124,37 @@
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.05 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    const code = document.querySelector('.code');
+    const message = document.querySelector('.message');
+    const original = code.textContent;
+    const messageOriginal = message.textContent;
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789$#@!_-';
+    let progress = 0;
+    const cipher = setInterval(() => {
+      code.textContent = [...original].map((ch, i) =>
+        i < Math.floor(progress) ? original[i] : chars[Math.floor(Math.random() * chars.length)]
+      ).join('');
+      progress += 0.65;
+      if (progress > original.length) {
+        clearInterval(cipher);
+        code.textContent = original;
+      }
+    }, 42);
+
+    let messageProgress = 0;
+    setTimeout(() => {
+      const messageCipher = setInterval(() => {
+        message.textContent = [...messageOriginal].map((ch, i) =>
+          i < Math.floor(messageProgress) ? messageOriginal[i] : chars[Math.floor(Math.random() * chars.length)]
+        ).join('');
+        messageProgress += 0.55;
+        if (messageProgress > messageOriginal.length) {
+          clearInterval(messageCipher);
+          message.textContent = messageOriginal;
+        }
+      }, 35);
+    }, 500);
   </script>
 </body>
 </html>
