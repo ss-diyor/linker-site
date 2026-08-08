@@ -1,6 +1,7 @@
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -103,16 +104,9 @@
     .scroll-nav {
       flex: 1;
       position: relative;
-      height: 350px;
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%, black 20%, black 80%, transparent 100%
-      );
-      mask-image: linear-gradient(
-        to bottom,
-        transparent 0%, black 20%, black 80%, transparent 100%
-      );
+      height: auto;
+      overflow: visible;
+      mask-image: none;
       cursor: grab;
       touch-action: none;
       user-select: none;
@@ -121,10 +115,10 @@
     .scroll-nav.dragging { cursor: grabbing; }
 
     .scroll-track {
-      position: absolute;
-      top: 0; left: 0; right: 0;
+      position: static;
       display: flex;
       flex-direction: column;
+      gap: .15rem;
     }
 
     .project-item {
@@ -133,6 +127,19 @@
       padding: 0.2rem 0;
       transform-origin: left center;
       will-change: transform, opacity;
+      transition: opacity .18s ease, padding-left .25s cubic-bezier(.23,1,.32,1);
+    }
+
+    .project-item::before { content: '$'; position: absolute; margin-top: .66rem; color: var(--muted); opacity: .45; }
+    .project-item { position: relative; padding-left: 1.1rem; border-bottom: 1px solid var(--border); }
+    .project-item:hover { padding-left: 1.45rem; }
+    .scroll-track:hover .project-item:not(:hover) { opacity: .35 !important; }
+    .scroll-track { transform: none !important; }
+    .project-item { transform: none !important; opacity: .72 !important; }
+    .project-trigger {
+      transform: none !important;
+      font-size: .95rem !important;
+      width: 100%;
     }
 
     .project-trigger {
@@ -154,6 +161,9 @@
     }
 
     .project-trigger:hover { color: var(--accent-hover) !important; }
+
+    .project-trigger.ciphering,
+    .project-trigger .ciphering { color: var(--link-hover) !important; }
 
     .project-arrow {
       font-size: 0.75rem;
@@ -235,6 +245,13 @@
     @media (max-width: 480px) {
       .hero h1 { font-size: 2rem; }
       .page { padding: 4rem 1.5rem 3rem; }
+    }
+
+    @media (min-width: 900px) {
+      .page {
+        margin-left: clamp(4rem, 24vw, 22rem);
+        margin-right: 0;
+      }
     }
   </style>
 </head>
@@ -350,6 +367,23 @@
 
       const AUTO_SPD = 0.5;
       const FRICTION = 0.92;
+      const CIPHER_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789$#@!_-';
+      function cipher(el, done) {
+        if (el.dataset.ciphering === '1') return;
+        const original = el.dataset.original || el.textContent;
+        el.dataset.original = original;
+        el.dataset.ciphering = '1'; el.classList.add('ciphering');
+        let progress = 0;
+        const timer = setInterval(() => {
+          el.textContent = [...original].map((ch, i) => i < Math.floor(progress) ? original[i] : CIPHER_CHARS[Math.floor(Math.random() * CIPHER_CHARS.length)]).join('');
+          progress += 0.62;
+          if (progress > original.length) {
+            clearInterval(timer); el.textContent = original;
+            el.classList.remove('ciphering'); el.dataset.ciphering = '0';
+            if (done) done();
+          }
+        }, 30);
+      }
 
       let oneSetH  = 0;
       let y        = 0;
@@ -392,7 +426,7 @@
         if (oneSetH <= 0) return;
 
         const navH   = nav.offsetHeight;
-        const copies = Math.max(4, Math.ceil((navH * 4) / oneSetH));
+        const copies = 0;
         for (let i = 0; i < copies; i++) {
           origItems.forEach(item => track.appendChild(item.cloneNode(true)));
         }
@@ -401,6 +435,10 @@
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(tick);
         bindAccordion();
+        // Reveal projects sequentially once when the page opens.
+        origItems.forEach((item, i) => {
+          setTimeout(() => cipher(item.querySelector('.project-trigger span')), 320 + i * 145);
+        });
       }
 
       function bindAccordion() {
@@ -423,8 +461,10 @@
           });
 
           if (!isOpen) {
+          cipher(btn.querySelector('span'), () => {
             item.classList.add('open');
             btn.setAttribute('aria-expanded', 'true');
+          });
           }
 
           requestAnimationFrame(recalcOneSetH);
