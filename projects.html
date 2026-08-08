@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -234,7 +235,6 @@
     @media (max-width: 480px) {
       .hero h1 { font-size: 2rem; }
       .page { padding: 4rem 1.5rem 3rem; }
-      .project-trigger { font-size: 0.72rem; }
     }
   </style>
 </head>
@@ -481,9 +481,17 @@
         const centerY = navRect.top + navRect.height / 2;
         const halfH   = navRect.height * 0.52;
 
-        const isMobile   = window.innerWidth < 640;
-        const scaleMin   = isMobile ? 0.6  : 0.72;
-        const scaleRange = isMobile ? 0.65 : 1.08;
+        const isMobile = window.innerWidth < 640;
+        let scaleMax = 1.8;
+        let scaleMin = 0.72;
+
+        if (isMobile) {
+          // On mobile, reduce max scale dynamically to fit long project names without wrapping
+          const containerWidth = window.innerWidth - (window.innerWidth <= 480 ? 48 : 64);
+          scaleMax = Math.min(1.8, containerWidth / 220);
+          scaleMin = scaleMax * 0.4;
+        }
+        const scaleRange = scaleMax - scaleMin;
 
         track.querySelectorAll('.project-item').forEach(item => {
           const r          = item.getBoundingClientRect();
