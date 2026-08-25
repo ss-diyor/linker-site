@@ -120,3 +120,9 @@ body.minimal-home { background-color: #05061a; background-image: none; }
 .minimal-footer { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.08); color: #464b6b; font: .68rem var(--mono); }
 .minimal-footer a:hover { color: #858bad; }
 @media (max-width: 520px) { .minimal-page { width: min(calc(100% - 2rem), 640px); padding: 3rem 0 1.5rem; } .minimal-main { justify-content: flex-start; padding-top: 12vh; } .minimal-links { margin-top: 2.5rem; } .minimal-footer { display: block; } .minimal-footer span { display: block; margin-top: .6rem; } }
+
+/* Minimal home refinements */
+.minimal-hero h1 { font-size: clamp(1.65rem, 5vw, 2.15rem); letter-spacing: -.065em; }
+.minimal-projects-button { min-height: 48px; margin-top: 3.25rem; padding: .65rem .8rem; border: 1px solid transparent; color: #858bad; font: .94rem var(--mono); transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease; }
+.minimal-projects-button:hover { color: #fff; border-color: rgba(168,165,255,.3); background: rgba(168,165,255,.08); transform: translateX(.35rem); }
+@media (max-width: 520px) { .minimal-hero h1 { font-size: clamp(1.55rem, 7vw, 1.9rem); } .minimal-projects-button { margin-top: 2.5rem; } }
