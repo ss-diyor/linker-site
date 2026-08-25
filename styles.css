@@ -101,3 +101,22 @@ button { font: inherit; }
 @media (max-width: 800px) { .hero { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 6rem; } .hero-side { padding: 0; border-left: 0; } .project-grid, .about-grid { grid-template-columns: 1fr; gap: 1rem; } .about-grid { gap: 2rem; } .section-heading { display: block; } .section-intro { margin-top: 1rem; } }
 @media (max-width: 520px) { .site-shell { width: min(calc(100% - 2rem), var(--max)); } .site-header { padding: 1rem 0; } .header-meta { display: none; } .hero { padding: 5rem 0 4rem; } .hero h1 { font-size: clamp(3.4rem, 19vw, 5rem); } .section { padding: 3.5rem 0; } .site-footer { display: block; } .site-footer .socials { margin-top: 1rem; } .info-row { display: block; } .info-row dd { margin-top: .35rem; text-align: left; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; } .reveal { opacity: 1; transform: none; } }
+
+/* Minimal home */
+body.minimal-home { background-color: #05061a; background-image: none; }
+.minimal-page { width: min(calc(100% - 3rem), 640px); min-height: 100svh; margin: 0 auto; padding: 5rem 0 2.5rem; display: flex; flex-direction: column; }
+.minimal-main { width: 100%; display: flex; flex: 1; flex-direction: column; justify-content: center; }
+.minimal-hero h1 { margin: 0; color: #fff; font: 700 clamp(2.2rem, 6vw, 2.8rem)/1 var(--mono); letter-spacing: -.07em; }
+.minimal-hero p { margin: .6rem 0 0; color: #737898; font: .84rem/1.4 var(--mono); }
+.minimal-hero .minimal-now { margin-top: .75rem; color: #737898; font-size: .78rem; }
+.minimal-now span { color: #464b6b; }
+.minimal-links { display: grid; gap: .1rem; margin-top: 3.25rem; }
+.minimal-links a { display: flex; justify-content: space-between; align-items: center; min-height: 48px; padding: .65rem .8rem; border: 1px solid transparent; color: #858bad; font: .94rem var(--mono); transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease; }
+.minimal-links a:hover { color: #fff; border-color: rgba(168,165,255,.3); background: rgba(168,165,255,.08); transform: translateX(.35rem); }
+.minimal-links a span:last-child { color: #464b6b; transition: color .2s ease; }
+.minimal-links a:hover span:last-child { color: var(--accent-strong); }
+.minimal-projects-button { display: inline-flex; align-items: center; justify-content: space-between; width: 100%; min-height: 52px; margin-top: 1.25rem; padding: .8rem; border: 1px solid rgba(168,165,255,.55); color: var(--accent-strong); font: .82rem var(--mono); transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+.minimal-projects-button:hover { border-color: var(--accent-strong); background: rgba(168,165,255,.13); transform: translateY(-2px); }
+.minimal-footer { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.08); color: #464b6b; font: .68rem var(--mono); }
+.minimal-footer a:hover { color: #858bad; }
+@media (max-width: 520px) { .minimal-page { width: min(calc(100% - 2rem), 640px); padding: 3rem 0 1.5rem; } .minimal-main { justify-content: flex-start; padding-top: 12vh; } .minimal-links { margin-top: 2.5rem; } .minimal-footer { display: block; } .minimal-footer span { display: block; margin-top: .6rem; } }
