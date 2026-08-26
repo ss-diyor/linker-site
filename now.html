@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Diyorbek Sultanov hozir nimalar bilan shug‘ullanayotgani, o‘qiyotgani va ko‘rayotgani haqida."><meta name="theme-color" content="#05061a"><meta name="author" content="Diyorbek Sultanov">
+  <link rel="canonical" href="https://sultanov.space/now">
+  <meta property="og:title" content="Hozir — Diyorbek Sultanov"><meta property="og:description" content="Diyorbek Sultanovning hozirgi qiziqishlari, kitoblari va media diary’si."><meta property="og:url" content="https://sultanov.space/now"><meta property="og:type" content="website"><meta property="og:image" content="https://sultanov.space/og.png"><meta name="twitter:card" content="summary_large_image">
+  <title>Hozir — Diyorbek Sultanov</title>
+  <link rel="icon" href="/favicon.ico"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css">
+</head>
+<body class="minimal-home minimal-now-page">
+  <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
+  <div class="minimal-page">
+    <main id="main" class="minimal-main">
+      <header class="minimal-hero reveal visible"><a class="minimal-back" href="/" aria-label="Bosh sahifaga qaytish">bosh sahifa</a><h1>Hozir</h1><p>what I’m into lately</p></header>
+
+      <section class="now-focus reveal visible" aria-labelledby="focus-title">
+        <p class="section-label" id="focus-title">currently focused on</p>
+        <p class="now-focus-text">Xorijiy til va adabiyoti: ingliz tili<br><span>web development · AI · design</span></p>
+      </section>
+
+      <section class="now-section reveal visible" aria-labelledby="reading-title">
+        <div class="now-section-heading"><h2 id="reading-title">Hozir o‘qiyapman</h2><span aria-hidden="true">books</span></div>
+        <div class="now-list" id="books-list"></div>
+      </section>
+
+      <section class="now-section reveal visible" aria-labelledby="media-title">
+        <div class="now-section-heading"><h2 id="media-title">Media diary</h2><span aria-hidden="true">films · series · more</span></div>
+        <div class="now-tabs" role="tablist" aria-label="Media holati">
+          <button class="now-tab is-active" id="tab-watched" role="tab" aria-selected="true" aria-controls="panel-watched" data-status="watched">ko‘rganlarim</button>
+          <button class="now-tab" id="tab-watching" role="tab" aria-selected="false" aria-controls="panel-watching" data-status="watching" tabindex="-1">hozir ko‘ryapman</button>
+          <button class="now-tab" id="tab-watchlist" role="tab" aria-selected="false" aria-controls="panel-watchlist" data-status="watchlist" tabindex="-1">watchlist</button>
+        </div>
+        <div class="now-panel is-active" id="panel-watched" role="tabpanel" aria-labelledby="tab-watched" tabindex="0"></div>
+        <div class="now-panel" id="panel-watching" role="tabpanel" aria-labelledby="tab-watching" tabindex="0" hidden></div>
+        <div class="now-panel" id="panel-watchlist" role="tabpanel" aria-labelledby="tab-watchlist" tabindex="0" hidden></div>
+      </section>
+
+      <p class="now-updated">last updated <time id="now-updated" datetime="2026-08-26">26 Aug 2026</time></p>
+      <nav class="now-subnav" aria-label="Qo‘shimcha sahifalar"><a href="/about">about</a><a href="/projects">projects</a><a href="/">bosh sahifa</a></nav>
+    </main>
+    <footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer>
+  </div>
+  <script src="/data/now.js"></script><script src="/script.js"></script>
+</body>
+</html>
