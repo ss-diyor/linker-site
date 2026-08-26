@@ -148,3 +148,17 @@ body.minimal-home { background-color: #05061a; background-image: none; }
 .minimal-project-body a { display: inline-block; margin-top: .45rem; color: #858bad; font: .72rem var(--mono); }
 .minimal-project-body a:hover { color: #fff; }
 @media (max-width: 520px) { .minimal-main, .minimal-projects-page .minimal-main { padding-top: 4vh; } .minimal-projects-page .minimal-project-list { margin-top: 2.5rem; } .minimal-projects-page .minimal-hero h1 { font-size: clamp(1.9rem, 9vw, 2.5rem); } }
+
+/* Minimal timeline */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.minimal-timeline { margin-top: 3.25rem; padding: 0 0 1rem 1.4rem; }
+.timeline-list { position: relative; display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.timeline-list::before { content: ''; position: absolute; top: .45rem; bottom: .6rem; left: .18rem; width: 1px; background: linear-gradient(to bottom, rgba(255,255,255,.24), rgba(255,255,255,.08)); }
+.timeline-item { position: relative; display: grid; grid-template-columns: 1fr; padding: 0 0 2rem 1.2rem; }
+.timeline-item:last-child { padding-bottom: .2rem; }
+.timeline-point { position: absolute; z-index: 1; top: .2rem; left: -.02rem; width: .75rem; height: .75rem; border: 1px solid rgba(255,255,255,.72); border-radius: 50%; background: #05061a; box-shadow: 0 0 0 4px #05061a, 0 0 16px rgba(255,255,255,.08); }
+.timeline-current .timeline-point { background: #fff; border-color: #fff; box-shadow: 0 0 0 4px #05061a, 0 0 18px rgba(255,255,255,.25); }
+.timeline-content time { color: rgba(255,255,255,.72); font: .72rem var(--mono); }
+.timeline-content h3 { margin: .38rem 0 .35rem; color: #e9e9f1; font: 500 .9rem var(--mono); }
+.timeline-content p { max-width: 560px; margin: 0; color: #737898; font: .76rem/1.6 var(--mono); }
+@media (max-width: 520px) { .minimal-timeline { margin-top: 2.5rem; padding-left: 1.2rem; } .timeline-item { padding-left: 1rem; padding-bottom: 1.7rem; } .timeline-content h3 { font-size: .84rem; } .timeline-content p { font-size: .72rem; } }
