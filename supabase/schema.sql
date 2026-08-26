@@ -51,6 +51,21 @@ insert into public.now_settings (id)
 values ('default')
 on conflict (id) do nothing;
 
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.admin_users
+    where user_id = (select auth.uid())
+  );
+$$;
+
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to authenticated;
+
 alter table public.admin_users enable row level security;
 alter table public.now_settings enable row level security;
 alter table public.books enable row level security;
@@ -82,29 +97,29 @@ drop policy if exists "Admin can manage admin users" on public.admin_users;
 create policy "Admin can manage admin users"
 on public.admin_users for all
 to authenticated
-using (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())))
-with check (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())));
+using (public.is_admin())
+with check (public.is_admin());
 
 drop policy if exists "Admin can manage now settings" on public.now_settings;
 create policy "Admin can manage now settings"
 on public.now_settings for all
 to authenticated
-using (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())))
-with check (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())));
+using (public.is_admin())
+with check (public.is_admin());
 
 drop policy if exists "Admin can manage books" on public.books;
 create policy "Admin can manage books"
 on public.books for all
 to authenticated
-using (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())))
-with check (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())));
+using (public.is_admin())
+with check (public.is_admin());
 
 drop policy if exists "Admin can manage media" on public.media_items;
 create policy "Admin can manage media"
 on public.media_items for all
 to authenticated
-using (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())))
-with check (exists (select 1 from public.admin_users a where a.user_id = (select auth.uid())));
+using (public.is_admin())
+with check (public.is_admin());
 
 create or replace function public.touch_now_updated_at()
 returns trigger language plpgsql as $$
