@@ -4,6 +4,11 @@
   status = 200
 
 [[redirects]]
+  from   = "/admin"
+  to     = "/admin.html"
+  status = 200
+
+[[redirects]]
   from   = "/now"
   to     = "/now.html"
   status = 200
