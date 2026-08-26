@@ -16,15 +16,15 @@
     revealItems.forEach((item) => observer.observe(item));
   }
 
-  document.querySelectorAll('.project-trigger').forEach((button) => {
+  document.querySelectorAll('.project-trigger, .minimal-project-trigger').forEach((button) => {
     button.addEventListener('click', () => {
-      const item = button.closest('.project-item');
+      const item = button.closest('.project-item, .minimal-project-item');
       const body = document.getElementById(button.getAttribute('aria-controls'));
       const opening = button.getAttribute('aria-expanded') !== 'true';
-      document.querySelectorAll('.project-item.open').forEach((openItem) => {
+      document.querySelectorAll('.project-item.open, .minimal-project-item.open').forEach((openItem) => {
         if (openItem !== item) {
           openItem.classList.remove('open');
-          const openButton = openItem.querySelector('.project-trigger');
+          const openButton = openItem.querySelector('.project-trigger, .minimal-project-trigger');
           const openBody = document.getElementById(openButton.getAttribute('aria-controls'));
           openButton.setAttribute('aria-expanded', 'false');
           openBody.hidden = true;

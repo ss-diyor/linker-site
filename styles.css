@@ -126,3 +126,25 @@ body.minimal-home { background-color: #05061a; background-image: none; }
 .minimal-projects-button { min-height: 48px; margin-top: 3.25rem; padding: .65rem .8rem; border: 1px solid transparent; color: #858bad; font: .94rem var(--mono); transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease; }
 .minimal-projects-button:hover { color: #fff; border-color: rgba(168,165,255,.3); background: rgba(168,165,255,.08); transform: translateX(.35rem); }
 @media (max-width: 520px) { .minimal-hero h1 { font-size: clamp(1.55rem, 7vw, 1.9rem); } .minimal-projects-button { margin-top: 2.5rem; } }
+
+/* Final minimalist spacing and projects page */
+.minimal-main { justify-content: flex-start; padding-top: clamp(3rem, 8vh, 6rem); }
+.minimal-projects-button { margin-top: .1rem; }
+.minimal-footer { color: #737898; font-size: .72rem; }
+.minimal-projects-page .minimal-main { padding-top: clamp(3rem, 8vh, 6rem); }
+.minimal-back { display: inline-block; margin-bottom: 2.5rem; color: #737898; font: .78rem var(--mono); transition: color .2s ease, transform .2s ease; }
+.minimal-back:hover { color: #fff; transform: translateX(-.25rem); }
+.minimal-projects-page .minimal-hero h1 { font-size: clamp(2rem, 7vw, 3rem); }
+.minimal-projects-page .minimal-project-list { margin-top: 3rem; }
+.minimal-project-list h2 { margin: 0 0 .9rem; color: #464b6b; font: .72rem var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.minimal-project-list .project-links { margin-top: 0; }
+.minimal-project-item { border-bottom: 1px solid rgba(255,255,255,.08); }
+.minimal-project-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 48px; padding: .65rem .8rem; border: 1px solid transparent; background: transparent; color: #858bad; cursor: pointer; text-align: left; font: .94rem var(--mono); transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease; }
+.minimal-project-trigger:hover { color: #fff; border-color: rgba(168,165,255,.3); background: rgba(168,165,255,.08); transform: translateX(.35rem); }
+.minimal-project-trigger span:last-child { color: #464b6b; font-size: 1rem; }
+.minimal-project-item.open .minimal-project-trigger { color: #fff; }
+.minimal-project-body { padding: .15rem .8rem .9rem; color: #737898; font: .78rem/1.65 var(--mono); }
+.minimal-project-body p { margin: 0; max-width: 620px; }
+.minimal-project-body a { display: inline-block; margin-top: .45rem; color: #858bad; font: .72rem var(--mono); }
+.minimal-project-body a:hover { color: #fff; }
+@media (max-width: 520px) { .minimal-main, .minimal-projects-page .minimal-main { padding-top: 4vh; } .minimal-projects-page .minimal-project-list { margin-top: 2.5rem; } .minimal-projects-page .minimal-hero h1 { font-size: clamp(1.9rem, 9vw, 2.5rem); } }
