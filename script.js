@@ -1,4 +1,21 @@
 (() => {
+  const themeToggle = document.querySelector('.theme-toggle');
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const setTheme = (theme) => {
+    const isLight = theme === 'light';
+    document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    if (themeMeta) themeMeta.content = isLight ? '#f7f7f3' : '#05061a';
+    if (themeToggle) {
+      themeToggle.setAttribute('aria-pressed', String(isLight));
+      themeToggle.setAttribute('aria-label', isLight ? 'Dark themega o‘tish' : 'Light themega o‘tish');
+      themeToggle.querySelector('.theme-toggle-icon').textContent = isLight ? '☾' : '☼';
+      themeToggle.querySelector('.theme-toggle-label').textContent = isLight ? 'dark' : 'light';
+    }
+  };
+  setTheme(document.documentElement.dataset.theme || 'dark');
+  themeToggle?.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
+
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const revealItems = document.querySelectorAll('.reveal');
 
