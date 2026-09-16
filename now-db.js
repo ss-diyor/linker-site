@@ -19,6 +19,9 @@
       const time = document.getElementById('now-updated');
       if (time && settings.data.last_updated) { time.dateTime = settings.data.last_updated; time.textContent = new Date(`${settings.data.last_updated}T00:00:00`).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
     }
+    window.nowData.books = books.data || [];
+    window.nowData.media = { watched: [], watching: [], watchlist: [] };
+    (media.data || []).forEach((item) => { if (window.nowData.media[item.status]) window.nowData.media[item.status].push({ ...item, externalUrl: item.external_url }); });
     document.getElementById('books-list').innerHTML = books.data?.length ? books.data.map(renderBook).join('') : empty('Hozircha bu yerga kitoblar qo‘shilmagan.');
     ['watched','watching','watchlist'].forEach((status) => { const panel = document.getElementById(`panel-${status}`); const items = (media.data || []).filter((item) => item.status === status); if (panel) panel.innerHTML = items.length ? items.map(renderMedia).join('') : empty(`${status === 'watched' ? 'Ko‘rilganlar' : status === 'watching' ? 'Hozir ko‘rilayotganlar' : 'Watchlist'} ro‘yxatida hozircha hech narsa yo‘q.`); });
   };
