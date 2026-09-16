@@ -9,7 +9,6 @@
     if (themeToggle) {
       themeToggle.setAttribute('aria-pressed', String(isLight));
       themeToggle.setAttribute('aria-label', isLight ? 'Dark themega o‘tish' : 'Light themega o‘tish');
-      themeToggle.querySelector('.theme-toggle-icon').textContent = isLight ? '☾' : '☼';
       themeToggle.querySelector('.theme-toggle-label').textContent = isLight ? 'dark' : 'light';
     }
   };
