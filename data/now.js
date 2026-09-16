@@ -1,6 +1,10 @@
 window.nowData = {
   lastUpdated: '2026-08-26',
-  books: [],
+  books: {
+    finished: [],
+    reading: [],
+    paused: []
+  },
   media: {
     watched: [],
     watching: [],

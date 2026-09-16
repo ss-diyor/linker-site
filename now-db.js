@@ -19,10 +19,11 @@
       const time = document.getElementById('now-updated');
       if (time && settings.data.last_updated) { time.dateTime = settings.data.last_updated; time.textContent = new Date(`${settings.data.last_updated}T00:00:00`).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
     }
-    window.nowData.books = books.data || [];
+    window.nowData.books = { finished: [], reading: [], paused: [] };
+    (books.data || []).forEach((book) => { if (window.nowData.books[book.status]) window.nowData.books[book.status].push({ ...book, externalUrl: book.external_url }); });
     window.nowData.media = { watched: [], watching: [], watchlist: [] };
     (media.data || []).forEach((item) => { if (window.nowData.media[item.status]) window.nowData.media[item.status].push({ ...item, externalUrl: item.external_url }); });
-    document.getElementById('books-list').innerHTML = books.data?.length ? books.data.map(renderBook).join('') : empty('Hozircha bu yerga kitoblar qo‘shilmagan.');
+    ['finished','reading','paused'].forEach((status) => { const panel = document.getElementById(`book-panel-${status}`); const items = (books.data || []).filter((book) => book.status === status); if (panel) panel.innerHTML = items.length ? items.map(renderBook).join('') : empty(`${status === 'finished' ? 'O‘qilganlar' : status === 'reading' ? 'Hozir o‘qilayotganlar' : 'O‘qilmoqchi bo‘lganlar'} ro‘yxatida hozircha hech narsa yo‘q.`); });
     ['watched','watching','watchlist'].forEach((status) => { const panel = document.getElementById(`panel-${status}`); const items = (media.data || []).filter((item) => item.status === status); if (panel) panel.innerHTML = items.length ? items.map(renderMedia).join('') : empty(`${status === 'watched' ? 'Ko‘rilganlar' : status === 'watching' ? 'Hozir ko‘rilayotganlar' : 'Watchlist'} ro‘yxatida hozircha hech narsa yo‘q.`); });
   };
   load();

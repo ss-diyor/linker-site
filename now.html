@@ -27,24 +27,28 @@
       </section>
 
       <section class="now-section reveal visible" aria-labelledby="reading-title">
-        <div class="now-section-heading"><h2 id="reading-title">Hozir o‘qiyapman</h2><span aria-hidden="true">books</span></div>
-        <div class="now-list" id="books-list"></div>
+        <div class="now-section-heading"><h2 id="reading-title">Kitoblar</h2><span aria-hidden="true">books</span></div>
+        <div class="now-tabs" role="tablist" aria-label="Kitoblar holati">
+          <button class="now-tab is-active" id="book-tab-finished" role="tab" aria-selected="true" aria-controls="book-panel-finished" data-tab-group="books" data-status="finished">O‘qidim</button>
+          <button class="now-tab" id="book-tab-reading" role="tab" aria-selected="false" aria-controls="book-panel-reading" data-tab-group="books" data-status="reading" tabindex="-1">O‘qiyapman</button>
+          <button class="now-tab" id="book-tab-paused" role="tab" aria-selected="false" aria-controls="book-panel-paused" data-tab-group="books" data-status="paused" tabindex="-1">O‘qimoqchiman</button>
+        </div>
+        <div class="now-panel is-active" id="book-panel-finished" data-tab-group="books" role="tabpanel" aria-labelledby="book-tab-finished" tabindex="0"></div>
+        <div class="now-panel" id="book-panel-reading" data-tab-group="books" role="tabpanel" aria-labelledby="book-tab-reading" tabindex="0" hidden></div>
+        <div class="now-panel" id="book-panel-paused" data-tab-group="books" role="tabpanel" aria-labelledby="book-tab-paused" tabindex="0" hidden></div>
       </section>
 
       <section class="now-section reveal visible" aria-labelledby="media-title">
-        <div class="now-section-heading"><h2 id="media-title">Media diary</h2><span aria-hidden="true">films · series · more</span></div>
-        <div class="now-tabs" role="tablist" aria-label="Media holati">
-          <button class="now-tab is-active" id="tab-watched" role="tab" aria-selected="true" aria-controls="panel-watched" data-status="watched">ko‘rganlarim</button>
-          <button class="now-tab" id="tab-watching" role="tab" aria-selected="false" aria-controls="panel-watching" data-status="watching" tabindex="-1">hozir ko‘ryapman</button>
-          <button class="now-tab" id="tab-watchlist" role="tab" aria-selected="false" aria-controls="panel-watchlist" data-status="watchlist" tabindex="-1">watchlist</button>
+        <div class="now-section-heading"><h2 id="media-title">Kino kundalik</h2><span aria-hidden="true">films · series · more</span></div>
+        <div class="now-tabs" role="tablist" aria-label="Kino kundalik holati">
+          <button class="now-tab is-active" id="tab-watched" role="tab" aria-selected="true" aria-controls="panel-watched" data-tab-group="media" data-status="watched">Ko‘rganlarim</button>
+          <button class="now-tab" id="tab-watching" role="tab" aria-selected="false" aria-controls="panel-watching" data-tab-group="media" data-status="watching" tabindex="-1">Hozir ko‘ryapman</button>
+          <button class="now-tab" id="tab-watchlist" role="tab" aria-selected="false" aria-controls="panel-watchlist" data-tab-group="media" data-status="watchlist" tabindex="-1">Ko‘rmoqchiman</button>
         </div>
-        <div class="now-panel is-active" id="panel-watched" role="tabpanel" aria-labelledby="tab-watched" tabindex="0"></div>
-        <div class="now-panel" id="panel-watching" role="tabpanel" aria-labelledby="tab-watching" tabindex="0" hidden></div>
-        <div class="now-panel" id="panel-watchlist" role="tabpanel" aria-labelledby="tab-watchlist" tabindex="0" hidden></div>
+        <div class="now-panel is-active" id="panel-watched" data-tab-group="media" role="tabpanel" aria-labelledby="tab-watched" tabindex="0"></div>
+        <div class="now-panel" id="panel-watching" data-tab-group="media" role="tabpanel" aria-labelledby="tab-watching" tabindex="0" hidden></div>
+        <div class="now-panel" id="panel-watchlist" data-tab-group="media" role="tabpanel" aria-labelledby="tab-watchlist" tabindex="0" hidden></div>
       </section>
-
-      <p class="now-updated">last updated <time id="now-updated" datetime="2026-08-26">26 Aug 2026</time></p>
-      <nav class="now-subnav" aria-label="Qo‘shimcha sahifalar"><a href="/about">about</a><a href="/projects">projects</a><a href="/">bosh sahifa</a></nav>
     </main>
     <footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer>
   </div>
