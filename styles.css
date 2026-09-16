@@ -337,3 +337,20 @@ button { font: inherit; }
 .theme-toggle-icon { color: var(--accent); font-size: .9rem; line-height: 1; }
 .theme-toggle-label { text-transform: lowercase; }
 @media (max-width: 520px) { .theme-toggle { top: .8rem; right: 1rem; } }
+
+
+/* Nimadir updates */
+.updates-section { margin-top: 3.25rem; }
+.updates-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.updates-heading h2 { margin: 0; color: var(--text-soft); font-size: 1rem; font-weight: 500; }
+.updates-heading span { color: var(--faint); font-size: .64rem; }
+.updates-list { display: grid; border-top: 1px solid var(--line); }
+.update-entry { display: grid; grid-template-columns: 1fr auto; gap: 1rem; padding: 1rem .8rem; border-bottom: 1px solid var(--line); }
+.update-entry h3 { margin: 0 0 .35rem; color: var(--text-soft); font-size: .86rem; font-weight: 500; }
+.update-entry p { margin: 0; color: var(--subtle); font-size: .74rem; line-height: 1.65; white-space: pre-line; }
+.update-entry a { display: inline-block; margin-top: .45rem; color: var(--muted); font-size: .7rem; }
+.update-entry a:hover { color: var(--text); }
+.update-meta { display: grid; align-content: start; justify-items: end; gap: .3rem; color: var(--faint); font-size: .64rem; text-align: right; white-space: nowrap; }
+.update-meta span { color: var(--muted); }
+.updates-empty { margin: 0; padding: 1rem .8rem; border-bottom: 1px solid var(--line); color: var(--subtle); font-size: .74rem; }
+@media (max-width: 520px) { .updates-section { margin-top: 2.5rem; } .update-entry { grid-template-columns: 1fr; gap: .35rem; } .update-meta { display: flex; justify-content: flex-start; text-align: left; } }

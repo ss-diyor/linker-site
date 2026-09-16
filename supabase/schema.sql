@@ -47,6 +47,20 @@ create table if not exists public.media_items (
   updated_at timestamptz not null default now()
 );
 
+
+create table if not exists public.updates (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  content text not null default '',
+  external_url text,
+  source text,
+  published_on date not null default current_date,
+  position integer not null default 0,
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 insert into public.now_settings (id)
 values ('default')
 on conflict (id) do nothing;
@@ -70,10 +84,11 @@ alter table public.admin_users enable row level security;
 alter table public.now_settings enable row level security;
 alter table public.books enable row level security;
 alter table public.media_items enable row level security;
+alter table public.updates enable row level security;
 
 revoke all on table public.admin_users, public.now_settings, public.books, public.media_items from anon, authenticated;
-grant select on table public.now_settings, public.books, public.media_items to anon, authenticated;
-grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items to authenticated;
+grant select on table public.now_settings, public.books, public.media_items, public.updates to anon, authenticated;
+grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items, public.updates to authenticated;
 
 drop policy if exists "Public can read now settings" on public.now_settings;
 create policy "Public can read now settings"
@@ -92,6 +107,20 @@ create policy "Public can read published media"
 on public.media_items for select
 to anon, authenticated
 using (is_published = true);
+
+
+drop policy if exists "Public can read published updates" on public.updates;
+create policy "Public can read published updates"
+on public.updates for select
+to anon, authenticated
+using (is_published = true);
+
+drop policy if exists "Admin can manage updates" on public.updates;
+create policy "Admin can manage updates"
+on public.updates for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
 
 drop policy if exists "Admin can manage admin users" on public.admin_users;
 create policy "Admin can manage admin users"
@@ -125,7 +154,7 @@ create or replace function public.touch_now_updated_at()
 returns trigger language plpgsql as $$
 begin
   new.updated_at = now();
-  if tg_table_name = 'books' or tg_table_name = 'media_items' then
+  if tg_table_name = 'books' or tg_table_name = 'media_items' or tg_table_name = 'updates' then
     update public.now_settings set last_updated = current_date, updated_at = now() where id = 'default';
   end if;
   return new;
@@ -138,3 +167,5 @@ drop trigger if exists books_touch on public.books;
 create trigger books_touch before update on public.books for each row execute function public.touch_now_updated_at();
 drop trigger if exists media_touch on public.media_items;
 create trigger media_touch before update on public.media_items for each row execute function public.touch_now_updated_at();
+drop trigger if exists updates_touch on public.updates;
+create trigger updates_touch before update on public.updates for each row execute function public.touch_now_updated_at();
