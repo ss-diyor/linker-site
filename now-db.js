@@ -15,7 +15,7 @@
     if (settings.error || books.error || media.error) return;
     if (settings.data) {
       const focus = document.querySelector('.now-focus-text');
-      if (focus) focus.innerHTML = `${esc(settings.data.focus_title)}<br><span>${esc(settings.data.focus_subtitle)}</span>`;
+      if (focus) { focus.innerHTML = `${esc(settings.data.focus_title)}<br><span>${esc(settings.data.focus_subtitle)}</span>`; focus.hidden = false; }
       const time = document.getElementById('now-updated');
       if (time && settings.data.last_updated) { time.dateTime = settings.data.last_updated; time.textContent = new Date(`${settings.data.last_updated}T00:00:00`).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
     }
