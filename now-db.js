@@ -4,7 +4,8 @@
   const esc = (value = '') => String(value).replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const link = (url) => url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">ochish ↗</a>` : '';
   const renderBook = (book) => `<article class="now-entry"><div><h3>${esc(book.title)}</h3><p>${esc(book.author)}${book.year ? ` · ${esc(book.year)}` : ''}</p><p>${esc(book.note || '')}</p>${link(book.external_url)}</div><span class="now-entry-meta">${esc(book.status)}</span></article>`;
-  const renderMedia = (item) => `<article class="now-entry"><div><h3>${esc(item.title)}</h3><p>${esc(item.type)}${item.rating == null ? '' : ` · ${esc(item.rating)}/10`}${item.year ? ` · ${esc(item.year)}` : ''}</p><p>${esc(item.note || '')}</p>${link(item.external_url)}</div></article>`;
+  const poster = (item) => item.poster_url ? `<div class="now-poster"><img src="${esc(item.poster_url)}" alt="${esc(item.title)} posteri" loading="lazy" onerror="this.parentElement.classList.add('is-error')"></div>` : '<div class="now-poster is-empty" aria-hidden="true"></div>';
+  const renderMedia = (item) => `<article class="now-entry now-media-entry">${poster(item)}<div><h3>${esc(item.title)}</h3><p>${esc(item.type)}${item.rating == null ? '' : ` · ${esc(item.rating)}/10`}${item.year ? ` · ${esc(item.year)}` : ''}</p><p>${esc(item.note || '')}</p>${link(item.external_url)}</div></article>`;
   const empty = (text) => `<p class="now-empty">${text}</p>`;
   const load = async () => {
     const [settings, books, media] = await Promise.all([

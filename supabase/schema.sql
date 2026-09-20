@@ -38,6 +38,7 @@ create table if not exists public.media_items (
   status text not null default 'watched' check (status in ('watched', 'watching', 'watchlist')),
   year integer,
   external_url text,
+  poster_url text,
   rating numeric(3,1) check (rating is null or (rating >= 0 and rating <= 10)),
   note text not null default '',
   watched_on date,
