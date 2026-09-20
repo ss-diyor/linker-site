@@ -379,3 +379,21 @@ button { font: inherit; }
 .about-interests { display: flex; flex-wrap: wrap; gap: .45rem; }
 .about-interests span { padding: .4rem .55rem; border: 1px solid var(--line); color: var(--muted); font-size: .7rem; }
 .about-quote { margin: 2.5rem 0 0; padding: 1rem .8rem; border-left: 2px solid var(--accent); color: var(--text-soft); font-size: .86rem; line-height: 1.7; }
+
+body.modal-open { overflow: hidden; }
+.now-detail-modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1rem; }
+.now-detail-modal[hidden] { display: none; }
+.now-detail-backdrop { position: absolute; inset: 0; background: rgba(5,6,26,.78); backdrop-filter: blur(3px); }
+.now-detail-dialog { position: relative; z-index: 1; width: min(100%, 38rem); max-height: min(90vh, 34rem); overflow: auto; border: 1px solid var(--line-strong); background: var(--surface); padding: 1.25rem; box-shadow: 0 1.5rem 4rem rgba(0,0,0,.35); }
+.now-detail-close { position: absolute; top: .55rem; right: .65rem; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.now-detail-close:hover { color: var(--text); }
+.now-detail-layout { display: grid; grid-template-columns: 8rem 1fr; gap: 1.25rem; align-items: start; }
+.now-detail-image { width: 8rem; aspect-ratio: 2 / 3; display: block; object-fit: cover; border: 1px solid var(--line-strong); background: linear-gradient(135deg, var(--surface), var(--line)); }
+.now-detail-image.is-error { display: grid; place-items: center; color: var(--faint); font-size: .65rem; }
+.now-detail-image.is-empty { display: grid; place-items: center; color: var(--faint); font-size: .65rem; }
+.now-detail-copy { padding-top: .35rem; }
+.now-detail-copy h2 { margin: .35rem 0 .6rem; color: var(--text-soft); font-size: 1.15rem; font-weight: 500; }
+.now-detail-meta { margin: 0; color: var(--subtle); font-size: .72rem; line-height: 1.6; }
+.now-detail-note { margin: 1.25rem 0 0; color: var(--muted); font-size: .78rem; line-height: 1.75; white-space: pre-wrap; }
+.now-detail-link { display: inline-block; margin-top: 1rem; color: var(--text-soft); font-size: .72rem; }
+@media (max-width: 520px) { .now-detail-dialog { padding: 1rem; } .now-detail-layout { grid-template-columns: 5.5rem 1fr; gap: .85rem; } .now-detail-image { width: 5.5rem; } }

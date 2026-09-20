@@ -64,7 +64,7 @@
     const link = entry.externalUrl ? `<a href="${escapeHtml(entry.externalUrl)}" target="_blank" rel="noopener noreferrer">ochish ↗</a>` : '';
     const author = kind === 'book' && entry.author ? `<p>${escapeHtml(entry.author)}${entry.year ? ` · ${entry.year}` : ''}</p>` : '';
     const image = kind === 'media' ? (entry.poster_url ? `<div class="now-poster"><img src="${escapeHtml(entry.poster_url)}" alt="${escapeHtml(entry.title)} posteri" loading="lazy" onerror="this.parentElement.classList.add('is-error')"></div>` : '<div class="now-poster is-empty" aria-hidden="true"></div>') : (entry.cover_url ? `<div class="now-cover"><img src="${escapeHtml(entry.cover_url)}" alt="${escapeHtml(entry.title)} muqovasi" loading="lazy" onerror="this.parentElement.classList.add('is-error')"></div>` : '<div class="now-cover is-empty" aria-hidden="true"></div>');
-    return `<article class="now-entry${kind === 'media' ? ' now-media-entry' : ' now-book-entry'}">${image}<div><h3>${escapeHtml(entry.title)}</h3>${author}${kind === 'media' ? `<p>${escapeHtml(entry.type || '')}${entry.rating == null ? '' : ` · ${escapeHtml(entry.rating)}/10`}${entry.year ? ` · ${escapeHtml(entry.year)}` : ''}</p>` : ''}<p>${escapeHtml(entry.note || '')}</p>${link}</div>${kind === 'book' ? `<span class="now-entry-meta">${escapeHtml(meta)}</span>` : ''}</article>`;
+    return `<article class="now-entry${kind === 'media' ? ' now-media-entry' : ' now-book-entry'}" data-now-detail-kind="${kind}" data-now-detail-id="${escapeHtml(entry.id || '')}" tabindex="0" role="button" aria-label="${escapeHtml(entry.title)} haqida batafsil">${image}<div><h3>${escapeHtml(entry.title)}</h3>${author}${kind === 'media' ? `<p>${escapeHtml(entry.type || '')}${entry.rating == null ? '' : ` · ${escapeHtml(entry.rating)}/10`}${entry.year ? ` · ${escapeHtml(entry.year)}` : ''}</p>` : ''}<p>${escapeHtml(entry.note || '')}</p>${link}</div>${kind === 'book' ? `<span class="now-entry-meta">${escapeHtml(meta)}</span>` : ''}</article>`;
   };
 
   const renderBooks = (status) => {
@@ -92,6 +92,24 @@
     document.querySelectorAll(`.now-panel[data-tab-group="${group}"]`).forEach((panel) => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
     if (group === 'books') renderBooks(status); else renderMedia(status);
   };
+
+  const detailModal = document.getElementById('now-detail-modal');
+  const detailContent = document.getElementById('now-detail-content');
+  const closeDetail = () => { if (detailModal) { detailModal.hidden = true; document.body.classList.remove('modal-open'); } };
+  const openDetail = (kind, id) => {
+    const list = kind === 'book' ? Object.values(window.nowData.books || {}).flat() : Object.values(window.nowData.media || {}).flat();
+    const item = list.find((entry) => String(entry.id) === String(id));
+    if (!item || !detailModal || !detailContent) return;
+    const isBook = kind === 'book';
+    const imageUrl = isBook ? item.cover_url : item.poster_url;
+    const image = imageUrl ? `<img class="now-detail-image" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(item.title)} ${isBook ? 'muqovasi' : 'posteri'}" onerror="this.classList.add('is-error')">` : `<div class="now-detail-image is-empty" aria-hidden="true">${isBook ? 'muqova' : 'poster'}</div>`;
+    const meta = isBook ? [item.author, item.year].filter(Boolean).join(' · ') : [item.type, item.rating == null ? '' : `${item.rating}/10`, item.year].filter(Boolean).join(' · ');
+    const link = item.externalUrl ? `<a class="now-detail-link" href="${escapeHtml(item.externalUrl)}" target="_blank" rel="noopener noreferrer">Havolani ochish ↗</a>` : '';
+    detailContent.innerHTML = `<div class="now-detail-layout">${image}<div class="now-detail-copy"><p class="section-label">${isBook ? 'kitob tafsilotlari' : 'media tafsilotlari'}</p><h2 id="now-detail-title">${escapeHtml(item.title)}</h2><p class="now-detail-meta">${escapeHtml(meta)}${item.status ? ` · ${escapeHtml(item.status)}` : ''}</p><p class="now-detail-note">${escapeHtml(item.note || 'Hozircha izoh qo‘shilmagan.')}</p>${link}</div></div>`;
+    detailModal.hidden = false; document.body.classList.add('modal-open'); detailModal.querySelector('.now-detail-close').focus();
+  };
+  document.addEventListener('click', (event) => { const close = event.target.closest('[data-modal-close]'); if (close) return closeDetail(); const card = event.target.closest('[data-now-detail-kind]'); if (card && !event.target.closest('a')) openDetail(card.dataset.nowDetailKind, card.dataset.nowDetailId); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDetail(); const card = event.target.closest('[data-now-detail-kind]'); if (card && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openDetail(card.dataset.nowDetailKind, card.dataset.nowDetailId); } });
 
   renderBooks('finished');
   renderMedia('watched');
