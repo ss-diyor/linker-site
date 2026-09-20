@@ -61,6 +61,30 @@ create table if not exists public.updates (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.projects (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text not null default '',
+  external_url text,
+  link_label text not null default 'ochish ↗',
+  position integer not null default 0,
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create unique index if not exists projects_title_unique on public.projects (title);
+
+insert into public.projects (title, description, external_url, link_label, position)
+values
+('ielts-mock-ss', 'Oq yorliq va bir nechta foydalanuvchi rollariga ega onlayn IELTS sinov platformasi.', 'https://ielts.sultanov.space', 'ielts.sultanov.space', 0),
+('bustanlik-ss-ts', 'Sinov natijalarini onlayn taqdim etish uchun Telegram bot va web-sayt integratsiyasiga ega tizim.', 'https://mock.sultanov.space', 'mock.sultanov.space', 1),
+('applicant-rating-search', 'Abituriyentlarning reytingini tez topish uchun yaratilgan Telegram bot.', 'https://t.me/mandat_applicant_ratingbot', 'botni ochish', 2),
+('blog-ss', 'Shaxsiy portfolio va blog veb-sayti.', 'https://blog.sultanov.space', 'blog.sultanov.space', 3),
+('sd-anon', 'Anonim xabarlarni qabul qilish uchun Telegram bot.', 'https://t.me/sdanonymous_bot', 'botni ochish', 4),
+('ss-anonymous', 'Maktab uchun anonim fikr-mulohaza va xabarlar qabul qilish Telegram boti.', 'https://t.me/ssanonymous_bot', 'botni ochish', 5)
+on conflict (title) do nothing;
+
 create table if not exists public.about_content (
   id text primary key default 'default',
   bio_intro text not null default '',
@@ -105,10 +129,11 @@ alter table public.books enable row level security;
 alter table public.media_items enable row level security;
 alter table public.updates enable row level security;
 alter table public.about_content enable row level security;
+alter table public.projects enable row level security;
 
 revoke all on table public.admin_users, public.now_settings, public.books, public.media_items from anon, authenticated;
-grant select on table public.now_settings, public.books, public.media_items, public.updates, public.about_content to anon, authenticated;
-grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items, public.updates, public.about_content to authenticated;
+grant select on table public.now_settings, public.books, public.media_items, public.updates, public.about_content, public.projects to anon, authenticated;
+grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items, public.updates, public.about_content, public.projects to authenticated;
 
 drop policy if exists "Public can read now settings" on public.now_settings;
 create policy "Public can read now settings"
@@ -134,6 +159,11 @@ create policy "Public can read published updates"
 on public.updates for select
 to anon, authenticated
 using (is_published = true);
+
+drop policy if exists "Public can read published projects" on public.projects;
+create policy "Public can read published projects" on public.projects for select to anon, authenticated using (is_published = true);
+drop policy if exists "Admin can manage projects" on public.projects;
+create policy "Admin can manage projects" on public.projects for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Public can read about content" on public.about_content;
 create policy "Public can read about content" on public.about_content for select to anon, authenticated using (true);
@@ -179,7 +209,7 @@ create or replace function public.touch_now_updated_at()
 returns trigger language plpgsql as $$
 begin
   new.updated_at = now();
-  if tg_table_name = 'books' or tg_table_name = 'media_items' or tg_table_name = 'updates' then
+  if tg_table_name = 'books' or tg_table_name = 'media_items' or tg_table_name = 'updates' or tg_table_name = 'projects' then
     update public.now_settings set last_updated = current_date, updated_at = now() where id = 'default';
   end if;
   return new;
@@ -196,3 +226,5 @@ drop trigger if exists updates_touch on public.updates;
 create trigger updates_touch before update on public.updates for each row execute function public.touch_now_updated_at();
 drop trigger if exists about_content_touch on public.about_content;
 create trigger about_content_touch before update on public.about_content for each row execute function public.touch_now_updated_at();
+drop trigger if exists projects_touch on public.projects;
+create trigger projects_touch before update on public.projects for each row execute function public.touch_now_updated_at();
