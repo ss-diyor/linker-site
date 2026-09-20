@@ -241,6 +241,7 @@ button { font: inherit; }
 .about-facts { display: grid; gap: .75rem; margin: 2rem 0 2.15rem; padding: 1.1rem .8rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .about-fact { display: grid; grid-template-columns: minmax(7.5rem, .42fr) 1fr; gap: 1rem; align-items: baseline; }
 .about-fact span { color: var(--faint); font-size: .68rem; text-transform: lowercase; }
+.about-facts#about-languages .about-fact span { text-transform: capitalize; }
 .about-fact strong { color: var(--text-soft); font-size: .76rem; font-weight: 500; line-height: 1.5; }
 
 /* 404 */
