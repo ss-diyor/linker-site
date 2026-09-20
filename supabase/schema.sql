@@ -23,6 +23,7 @@ create table if not exists public.books (
   year integer,
   status text not null default 'reading' check (status in ('reading', 'paused', 'finished')),
   external_url text,
+  cover_url text,
   note text not null default '',
   started_on date,
   position integer not null default 0,
