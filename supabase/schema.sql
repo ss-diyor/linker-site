@@ -61,6 +61,25 @@ create table if not exists public.updates (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.about_content (
+  id text primary key default 'default',
+  bio_intro text not null default '',
+  education_facts jsonb not null default '[]'::jsonb,
+  bio_goal text not null default '',
+  hard_skills jsonb not null default '[]'::jsonb,
+  soft_skills jsonb not null default '[]'::jsonb,
+  languages jsonb not null default '[]'::jsonb,
+  interests jsonb not null default '[]'::jsonb,
+  bio_tech text not null default '',
+  quote text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+insert into public.about_content (id, bio_intro, education_facts, bio_goal, hard_skills, soft_skills, languages, interests, bio_tech, quote)
+values ('default', 'Mening ismim Diyorbek, ko‘pchilik esa meni shunchaki Diyor deb chaqiradi.', '[{"label":"universitet","value":"Chirchiq davlat pedagogika universiteti"},{"label":"ta’lim yo‘nalishi","value":"Xorijiy til va adabiyoti: ingliz tili"},{"label":"bosqich","value":"Bakalavriat 1-kurs"},{"label":"class","value":"Class of ’30"}]'::jsonb, 'Asosiy maqsadim — xorijiy til o‘qituvchisi bo‘lish yo‘lida o‘z bilim va tajribamni rivojlantirish.', '["HTML/CSS","JavaScript","Graphic design","AI tools"]'::jsonb, '["Communication","Teamwork","Volunteering","Event organization"]'::jsonb, '[{"name":"O‘zbek tili","level":"native"},{"name":"Ingliz tili","level":"B2"}]'::jsonb, '["Kitoblar","Kino","Sport","Volontyorlik"]'::jsonb, 'So‘nggi ikki yil davomida grafik dizayn, dasturlash, sun’iy intellekt va LLM yo‘nalishlarida ko‘nikmalarni egalladim.', 'Har kuni kechagidan yaxshiroq bo‘lishga harakat qilaman.')
+on conflict (id) do nothing;
+
 insert into public.now_settings (id)
 values ('default')
 on conflict (id) do nothing;
@@ -85,10 +104,11 @@ alter table public.now_settings enable row level security;
 alter table public.books enable row level security;
 alter table public.media_items enable row level security;
 alter table public.updates enable row level security;
+alter table public.about_content enable row level security;
 
 revoke all on table public.admin_users, public.now_settings, public.books, public.media_items from anon, authenticated;
-grant select on table public.now_settings, public.books, public.media_items, public.updates to anon, authenticated;
-grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items, public.updates to authenticated;
+grant select on table public.now_settings, public.books, public.media_items, public.updates, public.about_content to anon, authenticated;
+grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items, public.updates, public.about_content to authenticated;
 
 drop policy if exists "Public can read now settings" on public.now_settings;
 create policy "Public can read now settings"
@@ -114,6 +134,11 @@ create policy "Public can read published updates"
 on public.updates for select
 to anon, authenticated
 using (is_published = true);
+
+drop policy if exists "Public can read about content" on public.about_content;
+create policy "Public can read about content" on public.about_content for select to anon, authenticated using (true);
+drop policy if exists "Admin can manage about content" on public.about_content;
+create policy "Admin can manage about content" on public.about_content for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Admin can manage updates" on public.updates;
 create policy "Admin can manage updates"
@@ -169,3 +194,5 @@ drop trigger if exists media_touch on public.media_items;
 create trigger media_touch before update on public.media_items for each row execute function public.touch_now_updated_at();
 drop trigger if exists updates_touch on public.updates;
 create trigger updates_touch before update on public.updates for each row execute function public.touch_now_updated_at();
+drop trigger if exists about_content_touch on public.about_content;
+create trigger about_content_touch before update on public.about_content for each row execute function public.touch_now_updated_at();

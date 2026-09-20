@@ -354,3 +354,13 @@ button { font: inherit; }
 .update-meta span { color: var(--muted); }
 .updates-empty { margin: 0; padding: 1rem .8rem; border-bottom: 1px solid var(--line); color: var(--subtle); font-size: .74rem; }
 @media (max-width: 520px) { .updates-section { margin-top: 2.5rem; } .update-entry { grid-template-columns: 1fr; gap: .35rem; } .update-meta { display: flex; justify-content: flex-start; text-align: left; } }
+
+
+.about-subsection { margin: 2.25rem 0; }
+.about-subsection h2 { margin: 0 0 .8rem; color: var(--text-soft); font-size: .95rem; font-weight: 500; }
+.about-skills { display: grid; gap: .8rem; padding: .9rem .8rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.about-skills span { color: var(--faint); font-size: .66rem; text-transform: lowercase; }
+.about-skills p { margin: .35rem 0 0; color: var(--muted); font-size: .76rem; line-height: 1.6; }
+.about-interests { display: flex; flex-wrap: wrap; gap: .45rem; }
+.about-interests span { padding: .4rem .55rem; border: 1px solid var(--line); color: var(--muted); font-size: .7rem; }
+.about-quote { margin: 2.5rem 0 0; padding: 1rem .8rem; border-left: 2px solid var(--accent); color: var(--text-soft); font-size: .86rem; line-height: 1.7; }
