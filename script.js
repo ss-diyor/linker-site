@@ -62,8 +62,9 @@
   const entryMarkup = (entry, kind) => {
     const meta = [entry.type, entry.rating ? `${entry.rating}/10` : '', entry.year].filter(Boolean).join(' · ');
     const link = entry.externalUrl ? `<a href="${escapeHtml(entry.externalUrl)}" target="_blank" rel="noopener noreferrer">ochish ↗</a>` : '';
-    const author = kind === 'book' && entry.author ? `<p>${escapeHtml(entry.author)}${entry.year ? ` · ${escapeHtml(entry.year)}` : ''}</p>` : '';
-    return `<article class="now-entry"><div><h3>${escapeHtml(entry.title)}</h3>${author}<p>${escapeHtml(entry.note || '')}</p>${link}</div><span class="now-entry-meta">${escapeHtml(meta)}</span></article>`;
+    const author = kind === 'book' && entry.author ? `<p>${escapeHtml(entry.author)}${entry.year ? ` · ${entry.year}` : ''}</p>` : '';
+    const poster = kind === 'media' ? (entry.poster_url ? `<div class="now-poster"><img src="${escapeHtml(entry.poster_url)}" alt="${escapeHtml(entry.title)} posteri" loading="lazy" onerror="this.parentElement.classList.add('is-error')"></div>` : '<div class="now-poster is-empty" aria-hidden="true"></div>') : '';
+    return `<article class="now-entry${kind === 'media' ? ' now-media-entry' : ''}">${poster}<div><h3>${escapeHtml(entry.title)}</h3>${author}${kind === 'media' ? `<p>${escapeHtml(entry.type || '')}${entry.rating == null ? '' : ` · ${escapeHtml(entry.rating)}/10`}${entry.year ? ` · ${escapeHtml(entry.year)}` : ''}</p>` : ''}<p>${escapeHtml(entry.note || '')}</p>${link}</div>${kind === 'book' ? `<span class="now-entry-meta">${escapeHtml(meta)}</span>` : ''}</article>`;
   };
 
   const renderBooks = (status) => {
