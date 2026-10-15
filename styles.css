@@ -138,7 +138,19 @@ button { font: inherit; }
   margin-right: .65rem;
   fill: currentColor;
 }
-.minimal-links a { justify-content: flex-start; }
+.page-icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex: 0 0 1.05em;
+  margin-right: .65rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+.minimal-links a,
+.minimal-page-button { justify-content: flex-start; }
 
 .minimal-links a:hover,
 .minimal-page-button:hover {
