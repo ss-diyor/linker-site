@@ -178,10 +178,6 @@ button { font: inherit; }
   border: 0;
 }
 .minimal-timeline { margin-top: 3.25rem; padding: 0 0 1rem 1.4rem; }
-.minimal-timeline { position:relative; padding-bottom:clamp(7rem, 24vh, 13rem); }
-.minimal-timeline::after { position:absolute; right:0; bottom:2.6rem; left:1.4rem; height:1px; background:var(--line); box-shadow:0 -1.8rem 0 var(--line); content:''; opacity:.7; }
-@media (max-width:520px) { .minimal-timeline { padding-bottom:clamp(8rem, 30vh, 15rem); } .minimal-timeline::after { bottom:3.2rem; left:1.4rem; box-shadow:0 -1.8rem 0 var(--line); } }
-
 .timeline-list { position: relative; display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .timeline-list::before {
   position: absolute;
