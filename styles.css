@@ -108,7 +108,8 @@ button { font: inherit; }
 
 .minimal-links {
   display: grid;
-  gap: .1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
   margin-top: 3.25rem;
 }
 .minimal-links a,
@@ -136,6 +137,9 @@ button { font: inherit; }
 .minimal-links a:hover span:last-child,
 .minimal-page-button:hover span:last-child { color: var(--accent-strong); }
 .minimal-page-button { margin-top: .1rem; }
+.home-page-links { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:.65rem; margin-top:.65rem; }
+.home-page-links .minimal-page-button { min-height:58px; margin-top:0; }
+.home-page-links .minimal-page-button:hover { transform:translateY(-.2rem); }
 
 .minimal-footer {
   display: flex;
@@ -244,7 +248,8 @@ button { font: inherit; }
 @media (max-width: 520px) {
   .minimal-page { width: min(calc(100% - 2rem), var(--content-width)); padding-top: 4vh; padding-bottom: 1.5rem; }
   .minimal-hero h1 { font-size: clamp(1.55rem, 7vw, 1.9rem); }
-  .minimal-links { margin-top: 2.5rem; }
+  .minimal-links { margin-top: 2.5rem; gap:.45rem; }
+  .home-page-links { gap:.45rem; }
   .minimal-footer { display: block; }
   .minimal-footer span { display: block; }
   .minimal-page-button { margin-top: .1rem; }
