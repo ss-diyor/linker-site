@@ -131,6 +131,15 @@ button { font: inherit; }
 :root:not([data-theme='light']) .minimal-links a:hover,
 :root:not([data-theme='light']) .minimal-page-button:hover { color:#fff; }
 
+.social-icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex: 0 0 1.05em;
+  margin-right: .65rem;
+  fill: currentColor;
+}
+.minimal-links a { justify-content: flex-start; }
+
 .minimal-links a:hover,
 .minimal-page-button:hover {
   border-color: var(--line-hover);
@@ -139,9 +148,9 @@ button { font: inherit; }
   transform: translateX(.35rem);
 }
 .minimal-links a span:last-child,
-.minimal-page-button span:last-child { color: var(--faint); transition: color .2s ease; }
+.minimal-page-button span:last-child { color: inherit; transition: color .2s ease; }
 .minimal-links a:hover span:last-child,
-.minimal-page-button:hover span:last-child { color: var(--accent-strong); }
+.minimal-page-button:hover span:last-child { color: inherit; }
 .minimal-page-button { margin-top: .1rem; }
 .home-page-links { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:.65rem; margin-top:.65rem; }
 .home-page-links .minimal-page-button { min-height:58px; margin-top:0; }
