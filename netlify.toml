@@ -1,9 +1,4 @@
 [[redirects]]
-  from   = "/projects"
-  to     = "/projects.html"
-  status = 200
-
-[[redirects]]
   from   = "/admin"
   to     = "/admin.html"
   status = 200
@@ -44,10 +39,5 @@
 
 [[headers]]
   for = "/og.png"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-
-[[headers]]
-  for = "/og-projects.png"
   [headers.values]
     Cache-Control = "public, max-age=86400"

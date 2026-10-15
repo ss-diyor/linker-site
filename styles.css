@@ -112,7 +112,7 @@ button { font: inherit; }
   margin-top: 3.25rem;
 }
 .minimal-links a,
-.minimal-projects-button {
+.minimal-page-button {
   display: flex;
   min-height: 48px;
   align-items: center;
@@ -125,18 +125,17 @@ button { font: inherit; }
   transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
 }
 .minimal-links a:hover,
-.minimal-projects-button:hover,
-.minimal-project-trigger:hover {
+.minimal-page-button:hover {
   border-color: var(--line-hover);
   background: var(--accent-soft);
   color: var(--text);
   transform: translateX(.35rem);
 }
 .minimal-links a span:last-child,
-.minimal-projects-button span:last-child { color: var(--faint); transition: color .2s ease; }
+.minimal-page-button span:last-child { color: var(--faint); transition: color .2s ease; }
 .minimal-links a:hover span:last-child,
-.minimal-projects-button:hover span:last-child { color: var(--accent-strong); }
-.minimal-projects-button { margin-top: .1rem; }
+.minimal-page-button:hover span:last-child { color: var(--accent-strong); }
+.minimal-page-button { margin-top: .1rem; }
 
 .minimal-footer {
   display: flex;
@@ -223,35 +222,6 @@ button { font: inherit; }
 .timeline-content h3 { margin: .38rem 0 .35rem; color: var(--text-soft); font-size: .9rem; font-weight: 500; }
 .timeline-content p { max-width: 560px; margin: 0; color: var(--subtle); font-size: .76rem; line-height: 1.6; }
 
-/* Projects */
-.minimal-projects-page .minimal-hero h1 { font-size: clamp(2rem, 7vw, 3rem); }
-.minimal-projects-page .minimal-project-list { margin-top: 3rem; }
-.minimal-project-list h2 { margin: 0 0 .9rem; color: var(--faint); font-size: .72rem; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; }
-.minimal-project-list .project-links { margin-top: 0; }
-.minimal-project-item { border-bottom: 1px solid var(--line); }
-.minimal-project-trigger {
-  display: flex;
-  width: 100%;
-  min-height: 48px;
-  align-items: center;
-  justify-content: space-between;
-  padding: .65rem .8rem;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  text-align: left;
-  font-size: .94rem;
-  line-height: 1.3;
-  transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
-}
-.minimal-project-trigger span:last-child { color: var(--faint); font-size: 1rem; }
-.minimal-project-item.open .minimal-project-trigger { color: var(--text); }
-.minimal-project-body { padding: .15rem .8rem .9rem; color: var(--subtle); font-size: .78rem; line-height: 1.65; }
-.minimal-project-body p { max-width: 620px; margin: 0; }
-.minimal-project-body a { display: inline-block; margin-top: .45rem; color: var(--muted); font-size: .72rem; }
-.minimal-project-body a:hover { color: var(--text); }
-
 /* About */
 .minimal-about-page .minimal-hero h1 { font-size: clamp(1.9rem, 7vw, 2.8rem); }
 .about-copy { max-width: 620px; margin-top: 2.75rem; }
@@ -277,9 +247,7 @@ button { font: inherit; }
   .minimal-links { margin-top: 2.5rem; }
   .minimal-footer { display: block; }
   .minimal-footer span { display: block; }
-  .minimal-projects-button { margin-top: .1rem; }
-  .minimal-projects-page .minimal-project-list { margin-top: 2.5rem; }
-  .minimal-projects-page .minimal-hero h1 { font-size: clamp(1.9rem, 9vw, 2.5rem); }
+  .minimal-page-button { margin-top: .1rem; }
   .minimal-timeline { margin-top: 2.5rem; padding-left: 1.2rem; }
   .timeline-item { padding-left: 1rem; padding-bottom: 1.7rem; }
   .timeline-content h3 { font-size: .84rem; }
