@@ -149,6 +149,13 @@ button { font: inherit; }
   line-height: 1.5;
 }
 .minimal-footer a:hover { color: var(--muted); }
+
+.breadcrumb { display:flex; align-items:center; gap:.55rem; margin-bottom:2.5rem; color:var(--subtle); font-size:.78rem; }
+.breadcrumb a { transition:color .2s ease; }
+.breadcrumb a:hover { color:var(--text); }
+.breadcrumb span[aria-hidden="true"] { color:var(--faint); }
+.breadcrumb span[aria-current="page"] { color:var(--text-soft); }
+
 .minimal-back {
   display: inline-block;
   margin-bottom: 2.5rem;
