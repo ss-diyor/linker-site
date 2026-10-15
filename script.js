@@ -32,33 +32,6 @@
     revealItems.forEach((item) => observer.observe(item));
   }
 
-  const timeline = document.querySelector('.minimal-timeline');
-  if (timeline) {
-    const timelineItems = [...timeline.querySelectorAll('.timeline-item')];
-    const reduceTimelineMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const updateTimeline = () => {
-      if (reduceTimelineMotion.matches) return;
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      let overall = 0;
-      timelineItems.forEach((item, index) => {
-        const rect = item.getBoundingClientRect();
-        const progress = Math.max(0, Math.min(1, (viewportHeight * .78 - rect.top) / Math.max(180, viewportHeight * .42)));
-        item.style.setProperty('--item-progress', progress.toFixed(3));
-        item.style.opacity = String(.35 + (progress * .65));
-        item.style.transform = `translateY(${(1 - progress) * 22}px)`;
-        item.querySelector('.timeline-point')?.style.setProperty('transform', `scale(${.72 + (progress * .28)})`);
-        overall = Math.max(overall, Math.max(0, Math.min(1, (viewportHeight * .72 - rect.top) / Math.max(180, timeline.scrollHeight))));
-      });
-      timeline.querySelector('.timeline-list')?.style.setProperty('--timeline-progress', overall.toFixed(3));
-    };
-    let timelineFrame = 0;
-    const requestTimelineUpdate = () => { if (!timelineFrame) timelineFrame = requestAnimationFrame(() => { timelineFrame = 0; updateTimeline(); }); };
-    window.addEventListener('scroll', requestTimelineUpdate, { passive: true });
-    window.addEventListener('resize', requestTimelineUpdate);
-    reduceTimelineMotion.addEventListener?.('change', requestTimelineUpdate);
-    updateTimeline();
-  }
-
   document.querySelectorAll('.project-trigger, .minimal-project-trigger').forEach((button) => {
     button.addEventListener('click', () => {
       const item = button.closest('.project-item, .minimal-project-item');

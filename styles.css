@@ -203,10 +203,16 @@ button { font: inherit; }
   box-shadow: 0 0 0 4px var(--bg), 0 0 16px var(--point-glow);
 }
 
-.minimal-timeline .timeline-list::after { position:absolute; top:.45rem; bottom:.6rem; left:.18rem; width:2px; background:var(--text); content:''; transform-origin:top; transform:scaleY(var(--timeline-progress, 0)); opacity:.72; pointer-events:none; }
-.minimal-timeline .timeline-item.reveal { --item-progress:0; opacity:.35; transform:translateY(22px); transition:opacity .12s linear, transform .12s linear; }
-.minimal-timeline .timeline-item.reveal .timeline-point { transition:background .16s linear, border-color .16s linear, box-shadow .16s linear, transform .16s linear; transform:scale(.72); }
-@media (prefers-reduced-motion: reduce) { .minimal-timeline .timeline-list::after { display:none; } .minimal-timeline .timeline-item.reveal, .minimal-timeline .timeline-item.reveal .timeline-point { opacity:1; transform:none; transition:none; } }
+.minimal-timeline .timeline-item.reveal { transition: opacity .75s ease, transform .75s cubic-bezier(.22,1,.36,1); }
+.minimal-timeline .timeline-item.reveal:nth-child(2) { transition-delay: .08s; }
+.minimal-timeline .timeline-item.reveal:nth-child(3) { transition-delay: .16s; }
+.minimal-timeline .timeline-item.reveal:nth-child(4) { transition-delay: .24s; }
+.minimal-timeline .timeline-item.reveal:nth-child(5) { transition-delay: .32s; }
+.minimal-timeline .timeline-item.reveal:nth-child(6) { transition-delay: .40s; }
+.minimal-timeline .timeline-item.reveal:nth-child(7) { transition-delay: .48s; }
+.minimal-timeline .timeline-item.reveal .timeline-point { transition: background .45s ease, border-color .45s ease, box-shadow .45s ease, transform .45s ease; transform:scale(.72); }
+.minimal-timeline .timeline-item.reveal.visible .timeline-point { transform:scale(1); }
+@media (prefers-reduced-motion: reduce) { .minimal-timeline .timeline-item.reveal, .minimal-timeline .timeline-item.reveal .timeline-point { transition:none; } }
 
 .timeline-current .timeline-point {
   border-color: var(--text);
