@@ -1,103 +1,19 @@
 <!doctype html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Diyorbek Sultanov — shunchaki qiziqishdan.">
-  <meta name="theme-color" content="#f4eee9">
-  <meta name="author" content="Diyorbek Sultanov">
+  <meta name="theme-color" content="#05061a"><meta name="author" content="Diyorbek Sultanov">
   <link rel="canonical" href="https://sultanov.space/">
-  <meta property="og:title" content="Diyorbek Sultanov">
-  <meta property="og:description" content="shunchaki qiziqishdan.">
-  <meta property="og:url" content="https://sultanov.space/">
-  <meta property="og:type" content="website">
-  <title>Diyorbek Sultanov — shunchaki qiziqishdan</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    :root { --paper:#f4eee9; --pink:#f44fc9; --pink-soft:#efcbd8; --ink:#161616; --muted:#77716f; --grid:rgba(22,22,22,.1); --lime:#d7f542; --blue:#8bb8ff; --violet:#cf9aff; --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif; --display:'Space Grotesk',sans-serif; color-scheme:light; }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; background:#fff; color:var(--ink); font-family:var(--sans); }
-    a { color:inherit; text-decoration:none; }
-    .page { width:min(1120px,100%); margin:auto; overflow:hidden; background:var(--paper); }
-    .grid-bg { background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px); background-size:48px 48px; }
-    .nav { position:absolute; z-index:5; top:25px; left:50%; display:flex; gap:10px; transform:translateX(-50%); }
-    .nav a { padding:7px 17px; border:1px solid rgba(255,255,255,.78); border-radius:99px; color:#fff; font-size:12px; text-decoration:underline; text-underline-offset:2px; backdrop-filter:blur(7px); }
-    .nav a:first-child { color:#a97d8e; background:#fff1eb; text-decoration:none; }
-    .theme { position:fixed; z-index:10; right:20px; bottom:20px; border:1px solid var(--ink); border-radius:99px; padding:8px 13px; background:var(--ink); color:#fff; cursor:pointer; font:12px var(--mono); }
-    .hero { position:relative; min-height:680px; padding:110px 8% 60px; background:radial-gradient(circle at 50% 68%,rgba(244,79,201,.4),transparent 31%),linear-gradient(160deg,#bca5aa 0%,#d8c4c4 56%,#eecac8 100%); overflow:hidden; }
-    .hero::before { position:absolute; inset:0; background:linear-gradient(90deg,transparent 49.8%,rgba(255,255,255,.22) 50%,transparent 50.2%); content:""; opacity:.5; }
-    .hero-title { position:relative; z-index:2; max-width:470px; margin:0 auto; padding-top:120px; text-align:center; }
-    .hero-title p { margin:0 0 15px; font:11px var(--mono); letter-spacing:.09em; text-transform:uppercase; }
-    .hero-title h1 { margin:0; font:700 clamp(4rem,10vw,8.7rem)/.82 var(--display); letter-spacing:-.1em; }
-    .hero-title h1 em { display:block; color:transparent; -webkit-text-stroke:1px var(--ink); font-style:normal; }
-    .hero-subtitle { max-width:300px; margin:25px auto 0; color:#4e4645; font-size:14px; line-height:1.5; }
-    .object { position:absolute; z-index:3; display:grid; place-items:center; border:1px solid rgba(255,255,255,.8); box-shadow:0 14px 30px rgba(68,35,43,.13); transform:rotate(var(--r)); }
-    .object small { position:absolute; top:calc(100% + 7px); width:max-content; color:#fff; font:11px var(--mono); text-shadow:0 1px 5px rgba(0,0,0,.18); }
-    .object-cat { top:210px; left:12%; width:52px; height:52px; border-radius:8px; background:linear-gradient(135deg,#7eb7ff,#3141a5); font-size:28px; --r:-8deg; }
-    .object-finder { top:305px; right:19%; width:48px; height:48px; background:#eaf4f0; font-size:25px; --r:5deg; }
-    .object-folder { right:9%; bottom:105px; width:66px; height:47px; border-radius:8px; background:#2bb4ee; font-size:25px; --r:2deg; }
-    .object-photo { bottom:80px; left:16%; width:68px; height:84px; padding:5px; background:#e9d6c3; font-size:30px; --r:-10deg; }
-    .hero-orbit { position:absolute; width:160px; height:160px; border:1px solid rgba(255,255,255,.4); border-radius:50%; top:160px; right:10%; }
-    .hero-orbit::after { position:absolute; top:4px; left:23px; width:10px; height:10px; border-radius:50%; background:var(--lime); content:""; }
-    .intro { padding:90px 9%; background:var(--paper); }
-    .intro-grid { display:grid; grid-template-columns:1fr 1.2fr; gap:80px; align-items:start; }
-    .scribble { margin:0; font:700 clamp(3rem,8vw,6rem)/.75 var(--display); letter-spacing:-.11em; }
-    .scribble span { display:block; color:transparent; -webkit-text-stroke:1px var(--ink); }
-    .intro-copy { max-width:420px; padding-top:10px; }
-    .label { margin:0 0 12px; color:var(--muted); font:11px var(--mono); text-transform:uppercase; letter-spacing:.08em; }
-    .intro-copy p:not(.label) { font-size:18px; line-height:1.5; }
-    .tiny { color:var(--muted); font:12px/1.6 var(--mono); }
-    .dump { padding:75px 9% 100px; background:#20242c; color:#fff; }
-    .dump-head { display:flex; align-items:end; justify-content:space-between; margin-bottom:35px; }
-    .dump h2 { margin:0; font:700 clamp(3rem,8vw,6.5rem)/.78 var(--display); letter-spacing:-.1em; }
-    .dump h2 span { color:var(--lime); }
-    .dump-note { max-width:180px; color:#aeb3bd; font:12px/1.5 var(--mono); }
-    .notes { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; }
-    .note { min-height:180px; padding:20px; color:#161616; background:var(--lime); transform:rotate(-2deg); }
-    .note:nth-child(2) { background:var(--violet); transform:rotate(2deg); }
-    .note:nth-child(3) { background:var(--blue); transform:rotate(-1deg); }
-    .note h3 { margin:0 0 42px; font:700 22px var(--display); letter-spacing:-.06em; }
-    .note p { margin:0; font:12px/1.55 var(--mono); }
-    .pink-section { position:relative; padding:70px 9% 110px; background:linear-gradient(180deg,#f44fc9 0%,#ed5bc6 77%,#171b21 100%); overflow:hidden; }
-    .pink-section::before { position:absolute; top:0; left:0; right:0; height:160px; background:linear-gradient(180deg,rgba(255,255,255,.33),transparent); content:""; }
-    .pink-head { position:relative; display:flex; justify-content:space-between; align-items:end; margin-bottom:70px; }
-    .pink-head h2 { margin:0; font:700 clamp(3rem,7vw,6rem)/.8 var(--display); letter-spacing:-.1em; }
-    .pink-head h2 span { display:block; font-style:italic; }
-    .pink-head p { max-width:200px; margin:0; font:12px/1.5 var(--mono); }
-    .hustles { position:relative; display:grid; grid-template-columns:1fr 1fr 1fr; gap:50px; align-items:end; }
-    .hustle { min-height:125px; padding-top:25px; border-top:1px solid rgba(22,22,22,.7); }
-    .hustle:nth-child(2) { padding-left:10%; }
-    .hustle h3 { margin:0 0 17px; font:700 26px var(--display); letter-spacing:-.08em; }
-    .hustle p { max-width:180px; margin:0; font:11px/1.5 var(--mono); }
-    .disc { position:absolute; right:43%; bottom:30px; width:84px; height:84px; border-radius:50%; background:repeating-radial-gradient(circle,#ddd 0 2px,#888 3px 4px,#eee 5px 6px); box-shadow:0 5px 10px rgba(0,0,0,.14); }
-    .footer { padding:22px 9%; background:#171b21; color:#aeb3bd; font:11px var(--mono); display:flex; justify-content:space-between; gap:20px; }
-    .quick-links { display:grid; grid-template-columns:repeat(7,1fr); gap:10px; margin-top:32px; }
-    .quick-links a { padding:13px 10px; border:1px solid var(--line); border-radius:99px; text-align:center; font:11px var(--mono); transition:background .2s,transform .2s; }
-    .quick-links a:hover { background:var(--lime); transform:translateY(-3px); }
-    .updates { padding:80px 9%; background:var(--paper); }
-    .updates-list { border-top:1px solid var(--line); }
-    .update { display:grid; grid-template-columns:1fr auto; gap:24px; padding:22px 0; border-bottom:1px solid var(--line); }
-    .update h3 { margin:0 0 8px; font:600 21px var(--display); letter-spacing:-.05em; }
-    .update p { max-width:650px; margin:0; color:var(--muted); font-size:14px; line-height:1.55; }
-    .update a { display:inline-block; margin-top:12px; color:var(--ink); font:12px var(--mono); text-decoration:underline; }
-    .update-meta { display:flex; gap:10px; align-items:start; color:var(--muted); font:11px var(--mono); white-space:nowrap; }
-    .timeline { padding:90px 9%; background:#20242c; color:#fff; }
-    .timeline h2 { margin:0 0 40px; font:700 clamp(3rem,8vw,6.5rem)/.78 var(--display); letter-spacing:-.1em; }
-    .timeline h2 span { color:var(--lime); }
-    .timeline-list { max-width:790px; margin:0; padding:0; list-style:none; }
-    .timeline-item { display:grid; grid-template-columns:80px 16px 1fr; gap:18px; padding:0 0 30px; }
-    .timeline-year { color:var(--lime); font:12px var(--mono); padding-top:3px; }
-    .timeline-dot { position:relative; width:13px; height:13px; margin-top:3px; border:2px solid var(--lime); border-radius:50%; }
-    .timeline-dot::after { position:absolute; top:11px; left:4px; width:1px; height:55px; background:rgba(215,245,66,.45); content:""; }
-    .timeline-item:last-child .timeline-dot::after { display:none; }
-    .timeline-content h3 { margin:0 0 7px; font:600 20px var(--display); letter-spacing:-.04em; }
-    .timeline-content p { margin:0; color:#aeb3bd; font-size:13px; line-height:1.5; }
-    @media(max-width:700px) { .quick-links { grid-template-columns:repeat(2,1fr); } .update { grid-template-columns:1fr; gap:9px; } .update-meta { order:-1; } .timeline-item { grid-template-columns:65px 16px 1fr; gap:10px; } .nav { top:17px; gap:4px; } .nav a { padding:6px 9px; font-size:10px; } .hero { min-height:650px; padding-inline:6%; } .hero-title { padding-top:125px; } .object-cat { left:5%; } .object-finder { right:8%; } .object-folder { right:5%; } .object-photo { left:7%; } .intro-grid { grid-template-columns:1fr; gap:38px; } .notes,.hustles { grid-template-columns:1fr; gap:18px; } .note { min-height:155px; } .pink-head { display:block; } .pink-head p { margin-top:25px; } .hustles { gap:32px; } .hustle:nth-child(2) { padding-left:0; } .disc { display:none; } .footer { display:block; } .footer span { display:block; margin-top:8px; } }
-    @media(prefers-reduced-motion:reduce) { * { scroll-behavior:auto!important; } }
-  </style>
+  <meta property="og:title" content="Diyorbek Sultanov"><meta property="og:description" content="shunchaki qiziqishdan."><meta property="og:url" content="https://sultanov.space/"><meta property="og:type" content="website"><meta property="og:image" content="https://sultanov.space/og.png"><meta name="twitter:card" content="summary_large_image">
+  <title>Diyorbek Sultanov</title>
+  <link rel="icon" href="/favicon.ico"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css">
+  <script>
+    (() => {
+      const savedTheme = localStorage.getItem('theme');
+      document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+    })();
+  </script>
 
   <!-- Privacy-friendly analytics by Plausible -->
   <script async src="https://plausible.io/js/pa-1tvT8A7vmmUUFXAZjVNJw.js"></script>
@@ -106,21 +22,45 @@
     plausible.init()
   </script>
 </head>
-<body>
-  <button class="theme" id="theme" type="button">light / dark</button>
-  <div class="page" id="top">
-    <section class="hero grid-bg">
-      <nav class="nav" aria-label="Asosiy navigatsiya"><a href="#top">home</a><a href="#about">about</a><a href="#contact">contact</a><a href="#subscribe">subscribe</a></nav>
-      <div class="hero-orbit" aria-hidden="true"></div><div class="object object-cat" aria-hidden="true">✦<small>Explore</small></div><div class="object object-finder" aria-hidden="true">⌕<small>Finder</small></div><div class="object object-folder" aria-hidden="true">▰<small>Culture</small></div><div class="object object-photo" aria-hidden="true">✿<small>Culture.jpg</small></div>
-      <div class="hero-title"><p>creative mind · digital learner</p><h1>Diyorbek<br><em>Sultanov</em></h1><p class="hero-subtitle">O‘zim haqimda, qiziqishlarim va men yaratmoqchi bo‘lgan kichik dunyo.</p></div>
-    </section>
-    <section class="intro grid-bg" id="about"><div class="intro-grid"><h2 class="scribble">my<br><span>brain dump</span></h2><div class="intro-copy"><p class="label">01 / about me</p><p>Men Diyorbek — yangi g‘oyalarni sinab ko‘rishni, yaxshi savollar berishni va oddiy narsalarni o‘zgacha ko‘rishni yaxshi ko‘raman.</p><p class="tiny">web development · AI · design · english · cinema · books</p><p class="label" style="margin-top:35px">hozir</p><p>O‘z ustimda ishlayapman — web development, AI va design.</p></div></div><div class="quick-links"><a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://t.me/diyorsultanov" target="_blank" rel="noopener">Telegram ↗</a><a href="https://github.com/ss-diyor" target="_blank" rel="noopener">Github ↗</a><a href="https://boxd.it/ka3IV" target="_blank" rel="noopener">Letterboxd ↗</a><a href="https://x.com/ozbekfarzandi" target="_blank" rel="noopener">X ↗</a><a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu" target="_blank" rel="noopener">Spotify ↗</a><a href="https://discord.com/users/zephyri.us" target="_blank" rel="noopener">Discord ↗</a></div></section>
-    <section class="dump" id="subscribe"><div class="dump-head"><h2>my brain<br><span>dump.</span></h2><p class="dump-note">Bu yerda hozir o‘ylayotganlarim, o‘rganayotganlarim va keyingi loyihalarim bor.</p></div><div class="notes"><article class="note"><h3>Digital things</h3><p>Foydali web loyihalar yaratish. Kamroq shovqin, ko‘proq ma’no.</p></article><article class="note"><h3>New languages</h3><p>Til o‘rganish — boshqa odamning dunyosini ko‘rishning yana bir usuli.</p></article><article class="note"><h3>Small rituals</h3><p>Kitob, kino, yozuv va har kuni ozgina yaxshiroq bo‘lish.</p></article></div></section>
-    <section class="updates" id="updates"><div class="section-head"><h2 class="section-title">Nimadir</h2><span class="section-meta">qaydlar · linklar · fikrlar</span></div><div class="updates-list" id="updates-list"><article class="update"><div><h3>Yuklanmoqda…</h3><p>Yangi qaydlar yuklanmoqda.</p></div><div class="update-meta"><span>live</span></div></article></div></section>
-    <section class="timeline" id="timeline"><h2>my <span>timeline.</span></h2><ol class="timeline-list"><li class="timeline-item"><span class="timeline-year">2015</span><span class="timeline-dot"></span><div class="timeline-content"><h3>Maktabga qabul</h3><p>Umumiy o‘rta ta’lim maktabida 7 yil davomida tahsil oldim.</p></div></li><li class="timeline-item"><span class="timeline-year">2022</span><span class="timeline-dot"></span><div class="timeline-content"><h3>Ixtisoslashtirilgan maktabga qabul</h3><p>Bo‘stonliq tumani ixtisoslashtirilgan maktabida yangi bosqichni boshladim.</p></div></li><li class="timeline-item"><span class="timeline-year">2023</span><span class="timeline-dot"></span><div class="timeline-content"><h3>IELTS imtihoni</h3><p>Ustozlarimdan o‘rganganlarim asosida IELTS imtihonini muvaffaqiyatli topshirdim.</p></div></li><li class="timeline-item"><span class="timeline-year">2024</span><span class="timeline-dot"></span><div class="timeline-content"><h3>Akademik o‘sish</h3><p>Akademik taraflama sezilarli o‘sib, bilim va ko‘nikmalarimni chuqurlashtirdim.</p></div></li><li class="timeline-item"><span class="timeline-year">2025</span><span class="timeline-dot"></span><div class="timeline-content"><h3>Sertifikatlar va dizayn</h3><p>Milliy sertifikat imtihonlarini topshirdim va grafik dizayn bilan qiziqa boshladim.</p></div></li><li class="timeline-item"><span class="timeline-year">2026</span><span class="timeline-dot"></span><div class="timeline-content"><h3>Bitiruvchi va yangi bilimlar</h3><p>Maktabni tamomladim. Dasturlash, grafik dizayn va AI sohasida yangi narsalarni o‘rgandim.</p></div></li><li class="timeline-item"><span class="timeline-year">2026/27</span><span class="timeline-dot"></span><div class="timeline-content"><h3>CSPU, Class of ’30</h3><p>Chirchiq davlat pedagogika universitetining 1-kurs talabasiman.</p></div></li></ol></section>
-    <section class="pink-section" id="contact"><div class="pink-head"><h2>the side<br><span>hustles</span></h2><p>Qiziqishlar ko‘payganda ular bir-biriga ulanib, o‘ziga xos yo‘lga aylanadi.</p></div><div class="hustles"><article class="hustle"><h3>web / AI</h3><p>Yangi g‘oya uchun prototip, kod va tajriba.</p></article><article class="hustle"><h3>film diary</h3><p>Kino ko‘rish, yozish va ko‘rganlarimni saqlash.</p></article><article class="hustle"><h3>community</h3><p>Odamlarga foydali bo‘ladigan kichik tashabbuslar.</p></article></div><div class="disc" aria-hidden="true"></div></section>
-    <footer class="footer"><span>© 2026/2027 Diyorbek Sultanov</span><span><a href="/projects">projects</a> · <a href="/now">now</a> · <a href="mailto:diyorbeksultanov.ss@gmail.com">email</a></span></footer>
+<body class="minimal-home">
+  <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
+  <div class="minimal-page">
+    <button class="theme-toggle" type="button" aria-label="Light themega o'tish" aria-pressed="false"><span class="theme-toggle-label">light</span></button>
+    <main id="main" class="minimal-main">
+      <header class="minimal-hero reveal visible"><h1>Diyorbek Sultanov</h1><p>shunchaki qiziqishdan</p><p class="minimal-now"><span>hozir:</span>o‘z ustimda ishlayapman</p></header>
+      <nav class="minimal-links reveal visible" aria-label="Social media profillari">
+        <a href="https://www.linkedin.com/in/diyorbek-sultanov" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span></a>
+        <a href="https://t.me/diyorsultanov" target="_blank" rel="noopener noreferrer"><span>Telegram</span></a>
+        <a href="https://github.com/ss-diyor" target="_blank" rel="noopener noreferrer"><span>Github</span></a>
+        <a href="https://boxd.it/ka3IV" target="_blank" rel="noopener noreferrer"><span>Letterboxd</span></a>
+        <a href="https://x.com/ozbekfarzandi" target="_blank" rel="noopener noreferrer"><span>X</span></a>
+        <a href="https://open.spotify.com/user/313bom6hthxk5sgbo5mr3lxzrkzu" target="_blank" rel="noopener noreferrer"><span>Spotify</span></a>
+        <a href="https://discord.com/users/zephyri.us" target="_blank" rel="noopener noreferrer" title="Discord username: zephyri.us"><span>Discord</span></a>
+      </nav>
+      <a class="minimal-projects-button reveal visible" href="/projects"><span>Loyihalar</span></a>
+      <a class="minimal-projects-button minimal-about-link reveal visible" href="/about" aria-label="O'zim haqimda sahifasiga o‘tish"><span>O‘zim haqimda</span></a>
+      <a class="minimal-projects-button minimal-now-link reveal visible" href="/now" aria-label="Hozir sahifasiga o‘tish"><span>Hozirda</span></a>
+      <section class="updates-section reveal visible" aria-labelledby="updates-title">
+        <div class="updates-heading"><h2 id="updates-title">Nimadir</h2><span>qaydlar · linklar · fikrlar</span></div>
+        <div class="updates-list" id="updates-list"><p class="updates-empty">Yuklanmoqda…</p></div>
+      </section>
+      <section class="minimal-timeline reveal visible" aria-labelledby="timeline-title">
+        <h2 class="sr-only" id="timeline-title">Diyorbek Sultanov timeline</h2>
+        <ol class="timeline-list">
+          <li class="timeline-item"><div class="timeline-point" aria-hidden="true"></div><div class="timeline-content"><time datetime="2015">2015</time><h3>Maktabga qabul</h3><p>Umumiy o‘rta ta’lim maktabida 7 yil davomida tahsil oldim.</p></div></li>
+          <li class="timeline-item"><div class="timeline-point" aria-hidden="true"></div><div class="timeline-content"><time datetime="2022">2022</time><h3>Ixtisoslashtirilgan maktabga qabul</h3><p>Bo‘stonliq tumani ixtisoslashtirilgan maktabida yangi bosqichni boshladim.</p></div></li>
+          <li class="timeline-item"><div class="timeline-point" aria-hidden="true"></div><div class="timeline-content"><time datetime="2023">2023</time><h3>IELTS imtihoni</h3><p>Ustozlarimdan o‘rganganlarim asosida IELTS imtihonini muvaffaqiyatli topshirdim.</p></div></li>
+          <li class="timeline-item"><div class="timeline-point" aria-hidden="true"></div><div class="timeline-content"><time datetime="2024">2024</time><h3>Akademik o‘sish</h3><p>Akademik taraflama sezilarli o‘sib, bilim va ko‘nikmalarimni chuqurlashtirdim.</p></div></li>
+          <li class="timeline-item"><div class="timeline-point" aria-hidden="true"></div><div class="timeline-content"><time datetime="2025">2025</time><h3>Sertifikatlar va dizayn</h3><p>Milliy sertifikat imtihonlarini topshirdim va grafik dizayn bilan qiziqa boshladim.</p></div></li>
+          <li class="timeline-item"><div class="timeline-point" aria-hidden="true"></div><div class="timeline-content"><time datetime="2026">2026</time><h3>Bitiruvchi va yangi bilimlar</h3><p>Maktabni tamomladim. Dasturlash, grafik dizayn va AI sohasida yangi narsalarni oʻrgandim.</p></div></li>
+          <li class="timeline-item timeline-current"><div class="timeline-point" aria-hidden="true"></div><div class="timeline-content"><time datetime="2026/2027">2026/2027</time><h3>CSPU, Class of ’30</h3><p>Chirchiq davlat pedagogika universitetining 1-kurs talabasiman.</p></div></li>
+        </ol>
+      </section>
+    </main>
+    <footer class="minimal-footer">
+      <span>© 2026/2027 Diyorbek Sultanov | <a href="mailto:diyorbeksultanov.ss@gmail.com">diyorbeksultanov.ss@gmail.com</a></span>
+    </footer>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script>const root=document.documentElement;const button=document.getElementById('theme');const saved=localStorage.getItem('theme');if(saved)root.dataset.theme=saved;button.addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('theme',root.dataset.theme);});const esc=(v='')=>String(v).replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const loadUpdates=async()=>{const list=document.getElementById('updates-list');if(!list||!window.supabaseConfig||!window.supabase)return;const db=window.supabase.createClient(window.supabaseConfig.url,window.supabaseConfig.publishableKey);const {data,error}=await db.from('updates').select('*').eq('is_published',true).order('published_on',{ascending:false}).order('position').order('created_at',{ascending:false});if(error)return;list.innerHTML=data?.length?data.map(item=>{const date=item.published_on?new Date(item.published_on+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'';return `<article class="update"><div><h3>${esc(item.title)}</h3><p>${esc(item.content||'')}</p>${item.external_url?`<a href="${esc(item.external_url)}" target="_blank" rel="noopener">ochish ↗</a>`:''}</div><div class="update-meta"><span>${esc(item.source||'')}</span><time>${esc(date)}</time></div></article>`}).join(''):'<p class="tiny">Hozircha bu yerda hech narsa yo‘q.</p>';};loadUpdates();</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/script.js"></script><script src="/updates.js"></script>
 </body>
 </html>
