@@ -204,8 +204,9 @@ button { font: inherit; }
 }
 
 .minimal-timeline .timeline-list::after { position:absolute; top:.45rem; bottom:.6rem; left:.18rem; width:2px; background:var(--text); content:''; transform-origin:top; transform:scaleY(var(--timeline-progress, 0)); opacity:.72; pointer-events:none; }
-.minimal-timeline .timeline-item.reveal { --item-progress:0; opacity:.35; transform:translateY(22px); transition:opacity .12s linear, transform .12s linear; }
-.minimal-timeline .timeline-item.reveal .timeline-point { transition:background .16s linear, border-color .16s linear, box-shadow .16s linear, transform .16s linear; transform:scale(.72); }
+.minimal-timeline .timeline-item.reveal { --item-progress:0; opacity:1; transform:none; }
+.minimal-timeline .timeline-item.reveal .timeline-point { transition:background .16s linear, border-color .16s linear, box-shadow .16s linear, transform .16s linear; transform:scale(1); }
+.minimal-timeline .timeline-item.timeline-scroll-active .timeline-point { border-color:var(--text); background:var(--text); box-shadow:0 0 0 4px var(--bg), 0 0 16px var(--point-glow); }
 @media (prefers-reduced-motion: reduce) { .minimal-timeline .timeline-list::after { display:none; } .minimal-timeline .timeline-item.reveal, .minimal-timeline .timeline-item.reveal .timeline-point { opacity:1; transform:none; transition:none; } }
 
 .timeline-current .timeline-point {
