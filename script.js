@@ -44,7 +44,9 @@
         const rect = item.getBoundingClientRect();
         const progress = Math.max(0, Math.min(1, (viewportHeight * .78 - rect.top) / Math.max(180, viewportHeight * .42)));
         item.style.setProperty('--item-progress', progress.toFixed(3));
-        item.classList.toggle('timeline-scroll-active', progress >= .5);
+        item.style.opacity = String(.35 + (progress * .65));
+        item.style.transform = `translateY(${(1 - progress) * 22}px)`;
+        item.querySelector('.timeline-point')?.style.setProperty('transform', `scale(${.72 + (progress * .28)})`);
         overall = Math.max(overall, Math.max(0, Math.min(1, (viewportHeight * .72 - rect.top) / Math.max(180, timeline.scrollHeight))));
       });
       timeline.querySelector('.timeline-list')?.style.setProperty('--timeline-progress', overall.toFixed(3));
