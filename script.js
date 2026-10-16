@@ -92,8 +92,10 @@
   document.addEventListener('click', (event) => { const close = event.target.closest('[data-modal-close]'); if (close) return closeDetail(); const card = event.target.closest('[data-now-detail-kind]'); if (card && !event.target.closest('a')) openDetail(card.dataset.nowDetailKind, card.dataset.nowDetailId); });
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDetail(); const card = event.target.closest('[data-now-detail-kind]'); if (card && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openDetail(card.dataset.nowDetailKind, card.dataset.nowDetailId); } });
 
-  renderBooks('finished');
-  renderMedia('watched');
+  if (!window.supabaseConfig || !window.supabase) {
+    renderBooks('finished');
+    renderMedia('watched');
+  }
   document.querySelectorAll('.now-tab').forEach((tab, index, tabs) => {
     const groupTabs = Array.from(document.querySelectorAll(`.now-tab[data-tab-group="${tab.dataset.tabGroup}"]`));
     tab.addEventListener('click', () => activateTab(tab));

@@ -12,7 +12,8 @@
   const load = async () => {
     const { data, error } = await db.from('updates').select('*').eq('is_published', true).order('published_on', { ascending: false }).order('position').order('created_at', { ascending: false });
     const list = document.getElementById('updates-list');
-    if (!list || error) return;
+    if (!list) return;
+    if (error) { list.innerHTML = '<p class="updates-empty">Ma’lumotlarni yuklab bo‘lmadi.</p>'; return; }
     list.innerHTML = data?.length ? data.map(render).join('') : '<p class="updates-empty">Hozircha bu yerda hech narsa yo‘q.</p>';
   };
   load();

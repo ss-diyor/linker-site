@@ -14,7 +14,10 @@
       db.from('books').select('*').eq('is_published', true).order('position').order('created_at'),
       db.from('media_items').select('*').eq('is_published', true).order('position').order('created_at')
     ]);
-    if (settings.error || books.error || media.error) return;
+    if (settings.error || books.error || media.error) {
+      document.querySelectorAll('.now-panel').forEach((panel) => { panel.innerHTML = '<p class="now-empty">Ma’lumotlarni yuklab bo‘lmadi.</p>'; });
+      return;
+    }
     if (settings.data) {
       const focus = document.querySelector('.now-focus-text');
       if (focus) { focus.innerHTML = `${esc(settings.data.focus_title)}<br><span>${esc(settings.data.focus_subtitle)}</span>`; focus.hidden = false; }
