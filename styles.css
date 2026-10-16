@@ -373,6 +373,24 @@ button { font: inherit; }
 @media (max-width: 520px) { .theme-toggle { top: .8rem; right: 1rem; } }
 
 
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .35s ease, visibility .35s ease;
+}
+.page-loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.page-loader .loading-spinner { width: 1.25rem; height: 1.25rem; flex-basis: 1.25rem; }
+
 .loading-state {
   display: flex;
   min-height: 3rem;

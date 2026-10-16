@@ -15,6 +15,13 @@
   setTheme(document.documentElement.dataset.theme || 'dark');
   themeToggle?.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 
+  const pageLoader = document.querySelector('.page-loader');
+  const hidePageLoader = () => pageLoader?.classList.add('is-hidden');
+  if (pageLoader) {
+    window.addEventListener('load', hidePageLoader, { once: true });
+    window.setTimeout(hidePageLoader, 4000);
+  }
+
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const revealItems = document.querySelectorAll('.reveal');
 
