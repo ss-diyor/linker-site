@@ -142,6 +142,7 @@ button { font: inherit; }
   border-radius: .22em;
   object-fit: cover;
 }
+:root[data-theme='light'] .social-image { filter: invert(1); }
 .page-icon {
   width: 1.05em;
   height: 1.05em;
