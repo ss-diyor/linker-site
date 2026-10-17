@@ -138,6 +138,10 @@ button { font: inherit; }
   margin-right: .65rem;
   fill: currentColor;
 }
+.social-image {
+  border-radius: .22em;
+  object-fit: cover;
+}
 .page-icon {
   width: 1.05em;
   height: 1.05em;
