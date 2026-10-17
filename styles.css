@@ -139,10 +139,11 @@ button { font: inherit; }
   fill: currentColor;
 }
 .social-image {
-  border-radius: .22em;
-  object-fit: cover;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url('/assets/mutolaa.png') center / contain no-repeat;
+  mask: url('/assets/mutolaa.png') center / contain no-repeat;
 }
-:root[data-theme='light'] .social-image { filter: invert(1); }
 .page-icon {
   width: 1.05em;
   height: 1.05em;
