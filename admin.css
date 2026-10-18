@@ -54,6 +54,7 @@
   }
 }
 
-.about-interest-row { display:grid; grid-template-columns:minmax(0, 1fr) 10rem auto; gap:.55rem; margin-top:.55rem; align-items:center; }
+.about-interest-row { display:grid; grid-template-columns:minmax(0, 1fr) 3rem 10rem auto auto; gap:.55rem; margin-top:.55rem; align-items:center; }
 .about-interest-row input { width:100%; }
-@media (max-width:620px) { .about-interest-row { grid-template-columns:1fr; } .about-interest-row .admin-quiet-button { justify-self:start; } }
+.about-interest-picker { height:2.35rem; padding:.2rem; cursor:pointer; }
+@media (max-width:620px) { .about-interest-row { grid-template-columns:1fr 1fr; } .about-interest-row .admin-quiet-button { justify-self:start; } }
