@@ -50,12 +50,12 @@ for each row execute function public.touch_timeline_updated_at();
 -- if this migration is run more than once after the table already contains data.
 insert into public.timeline_events (year, month, title, description, position, is_current)
 select * from (values
-  (2015, null, 'Maktabga qabul', 'Umumiy o‘rta ta’lim maktabida 7 yil davomida tahsil oldim.', 0, false),
-  (2022, null, 'Ixtisoslashtirilgan maktabga qabul', 'Bo‘stonliq tumani ixtisoslashtirilgan maktabida yangi bosqichni boshladim.', 1, false),
-  (2023, null, 'IELTS imtihoni', 'Ustozlarimdan o‘rganganlarim asosida IELTS imtihonini muvaffaqiyatli topshirdim.', 2, false),
-  (2024, null, 'Akademik o‘sish', 'Akademik taraflama sezilarli o‘sib, bilim va ko‘nikmalarimni chuqurlashtirdim.', 3, false),
-  (2025, null, 'Sertifikatlar va dizayn', 'Milliy sertifikat imtihonlarini topshirdim va grafik dizayn bilan qiziqa boshladim.', 4, false),
-  (2026, null, 'Bitiruvchi va yangi bilimlar', 'Maktabni tamomladim. Dasturlash, grafik dizayn va AI sohasida yangi narsalarni o‘rgandim.', 5, false),
-  (2026, null, 'CSPU, Class of ’30', 'Chirchiq davlat pedagogika universitetining 1-kurs talabasiman.', 6, true)
+  (2015, null::integer, 'Maktabga qabul', 'Umumiy o‘rta ta’lim maktabida 7 yil davomida tahsil oldim.', 0, false),
+  (2022, null::integer, 'Ixtisoslashtirilgan maktabga qabul', 'Bo‘stonliq tumani ixtisoslashtirilgan maktabida yangi bosqichni boshladim.', 1, false),
+  (2023, null::integer, 'IELTS imtihoni', 'Ustozlarimdan o‘rganganlarim asosida IELTS imtihonini muvaffaqiyatli topshirdim.', 2, false),
+  (2024, null::integer, 'Akademik o‘sish', 'Akademik taraflama sezilarli o‘sib, bilim va ko‘nikmalarimni chuqurlashtirdim.', 3, false),
+  (2025, null::integer, 'Sertifikatlar va dizayn', 'Milliy sertifikat imtihonlarini topshirdim va grafik dizayn bilan qiziqa boshladim.', 4, false),
+  (2026, null::integer, 'Bitiruvchi va yangi bilimlar', 'Maktabni tamomladim. Dasturlash, grafik dizayn va AI sohasida yangi narsalarni oʻrgandim.', 5, false),
+  (2026, null::integer, 'CSPU, Class of ’30', 'Chirchiq davlat pedagogika universitetining 1-kurs talabasiman.', 6, true)
 ) as seed(year, month, title, description, position, is_current)
 where not exists (select 1 from public.timeline_events);
