@@ -34,6 +34,11 @@
   status = 200
 
 [[redirects]]
+  from   = "/tools/markdown-editor"
+  to     = "/markdown-editor.html"
+  status = 200
+
+[[redirects]]
   from   = "/*"
   to     = "/404.html"
   status = 404

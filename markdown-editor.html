@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Markdown matnini yozing, jonli previewda ko‘ring va .md fayl qilib yuklab oling.">
+  <meta name="theme-color" content="#05061a">
+  <title>Markdown tahriri — Vositalar</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/tools.css">
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+  </script>
+  <script async src="https://plausible.io/js/pa-1tvT8A7vmmUUFXAZjVNJw.js"></script>
+  <script>
+    window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments); };
+    plausible.init = plausible.init || function (options) { plausible.o = options || {}; };
+    plausible.init();
+  </script>
+</head>
+<body class="minimal-home tools-page markdown-editor-page">
+  <div class="page-loader" role="status" aria-label="Sahifa yuklanmoqda"><span class="loading-spinner" aria-hidden="true"></span></div>
+  <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
+  <div class="minimal-page">
+    <button class="theme-toggle" type="button" aria-label="Light themega o'tish" aria-pressed="false"><span class="theme-toggle-label">light</span></button>
+    <main id="main" class="minimal-main">
+      <header class="minimal-hero reveal visible">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">bosh sahifa</a><span aria-hidden="true">›</span>
+          <a href="/tools">vositalar</a><span aria-hidden="true">›</span>
+          <span aria-current="page">markdown tahriri</span>
+        </nav>
+        <h1>Markdown tahriri</h1>
+        <p>Markdown yozing, natijani jonli ko‘ring va .md fayl qilib yuklab oling.</p>
+      </header>
+
+      <section class="markdown-editor-section reveal visible" aria-label="Markdown tahriri va preview">
+        <div class="markdown-editor-toolbar">
+          <label class="markdown-filename" for="markdown-filename">Fayl nomi
+            <input id="markdown-filename" type="text" value="hujjat" maxlength="80" autocomplete="off">
+          </label>
+          <div class="markdown-editor-actions">
+            <button id="clear-markdown" class="tool-button" type="button" disabled>Tozalash</button>
+            <button id="download-markdown" class="tool-primary" type="button" disabled>Markdown faylni yuklab olish</button>
+          </div>
+        </div>
+        <p id="markdown-help" class="markdown-help">Sarlavhalar, ro‘yxatlar, havolalar, kod bloklari, iqtiboslar, GFM jadvallari va boshqa Markdown imkoniyatlari qo‘llanadi.</p>
+
+        <div class="markdown-editor-grid">
+          <section class="markdown-pane" aria-labelledby="markdown-source-title">
+            <div class="markdown-pane-header">
+              <label id="markdown-source-title" for="markdown-source">Markdown matn</label>
+              <span>tahrirlash</span>
+            </div>
+            <textarea id="markdown-source" class="markdown-source" spellcheck="false" placeholder="# Sarlavha&#10;&#10;**Qalin matn**, *kursiv matn*&#10;&#10;- Ro‘yxat bandi&#10;- Yana bir band&#10;&#10;&gt; Iqtibos&#10;&#10;```js&#10;console.log('Salom!');&#10;```&#10;&#10;| Ustun | Qiymat |&#10;| --- | --- |&#10;| Namuna | 123 |" aria-describedby="markdown-help"></textarea>
+          </section>
+          <section class="markdown-pane" aria-labelledby="markdown-preview-title">
+            <div class="markdown-pane-header">
+              <h2 id="markdown-preview-title">Jonli preview</h2>
+              <span>ko‘rinish</span>
+            </div>
+            <article id="markdown-preview" class="markdown-preview" aria-label="Markdown natijasi">
+              <p class="markdown-empty">Markdown yozishni boshlang — natija shu yerda ko‘rinadi.</p>
+            </article>
+          </section>
+        </div>
+        <p id="markdown-status" class="markdown-status" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+    <footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer>
+  </div>
+  <script src="/assets/vendor/marked.umd.js"></script>
+  <script src="/assets/vendor/purify.min.js"></script>
+  <script src="/script.js"></script>
+  <script src="/markdown-editor.js"></script>
+</body>
+</html>
