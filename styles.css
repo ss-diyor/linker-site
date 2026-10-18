@@ -462,3 +462,111 @@ body.modal-open { overflow: hidden; }
 .now-detail-note { margin: 1.25rem 0 0; color: var(--muted); font-size: .78rem; line-height: 1.75; white-space: pre-wrap; }
 .now-detail-link { display: inline-block; margin-top: 1rem; color: var(--text-soft); font-size: .72rem; }
 @media (max-width: 520px) { .now-detail-dialog { padding: 1rem; } .now-detail-layout { grid-template-columns: 5.5rem 1fr; gap: .85rem; } .now-detail-image { width: 5.5rem; } }
+
+/* Homepage desktop layout */
+@media (min-width: 900px) {
+  .minimal-home {
+    --content-width: 1180px;
+  }
+
+  .minimal-home .minimal-page {
+    width: min(calc(100% - 6rem), var(--content-width));
+    padding-top: clamp(4rem, 9vh, 7rem);
+  }
+
+  .minimal-home .minimal-main {
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    column-gap: clamp(3.5rem, 8vw, 8rem);
+    align-content: start;
+  }
+
+  .minimal-home .minimal-hero {
+    grid-column: 1 / -1;
+    margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  .minimal-home .minimal-hero h1 {
+    font-size: clamp(2.4rem, 4vw, 4.6rem);
+  }
+
+  .minimal-home .minimal-hero p {
+    font-size: .95rem;
+  }
+
+  .minimal-home .minimal-hero .minimal-now {
+    margin-top: 1rem;
+    font-size: .84rem;
+  }
+
+  .minimal-home .minimal-links {
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-self: start;
+    margin-top: 0;
+    gap: .8rem;
+  }
+
+  .minimal-home .minimal-links a,
+  .minimal-home .minimal-page-button {
+    min-height: 54px;
+    padding: .75rem .9rem;
+    font-size: .9rem;
+  }
+
+  .minimal-home .home-page-links {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    margin-top: .8rem;
+    gap: .8rem;
+  }
+
+  .minimal-home .home-page-links .minimal-page-button {
+    min-height: 64px;
+  }
+
+  .minimal-home .updates-section {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    align-self: start;
+    margin-top: 0;
+  }
+
+  .minimal-home .updates-heading h2 {
+    font-size: 1.05rem;
+  }
+
+  .minimal-home .updates-list {
+    max-height: 31rem;
+    overflow: auto;
+  }
+
+  .minimal-home .minimal-timeline {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    width: min(100%, 980px);
+    margin-top: clamp(5rem, 10vh, 8rem);
+    padding-left: 1.6rem;
+  }
+
+  .minimal-home .minimal-footer {
+    width: min(100%, 980px);
+    margin: 0 auto;
+  }
+
+  .minimal-home .theme-toggle {
+    right: max(2rem, calc((100vw - var(--content-width)) / 2));
+  }
+}
+
+@media (min-width: 1200px) {
+  .minimal-home .minimal-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .minimal-home .updates-list {
+    max-height: 34rem;
+  }
+}
