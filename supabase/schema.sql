@@ -65,6 +65,19 @@ create table if not exists public.updates (
 
 drop table if exists public.projects cascade;
 
+create table if not exists public.timeline_events (
+  id uuid primary key default gen_random_uuid(),
+  year integer not null check (year >= 1900 and year <= 2200),
+  month integer check (month is null or (month >= 1 and month <= 12)),
+  title text not null,
+  description text not null default '',
+  position integer not null default 0,
+  is_current boolean not null default false,
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.about_content (
   id text primary key default 'default',
   bio_intro text not null default '',
@@ -108,11 +121,12 @@ alter table public.now_settings enable row level security;
 alter table public.books enable row level security;
 alter table public.media_items enable row level security;
 alter table public.updates enable row level security;
+alter table public.timeline_events enable row level security;
 alter table public.about_content enable row level security;
 
-revoke all on table public.admin_users, public.now_settings, public.books, public.media_items from anon, authenticated;
-grant select on table public.now_settings, public.books, public.media_items, public.updates, public.about_content to anon, authenticated;
-grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items, public.updates, public.about_content to authenticated;
+revoke all on table public.admin_users, public.now_settings, public.books, public.media_items, public.timeline_events from anon, authenticated;
+grant select on table public.now_settings, public.books, public.media_items, public.updates, public.timeline_events, public.about_content to anon, authenticated;
+grant select, insert, update, delete on table public.admin_users, public.now_settings, public.books, public.media_items, public.updates, public.timeline_events, public.about_content to authenticated;
 
 drop policy if exists "Public can read now settings" on public.now_settings;
 create policy "Public can read now settings"
@@ -138,6 +152,19 @@ create policy "Public can read published updates"
 on public.updates for select
 to anon, authenticated
 using (is_published = true);
+
+drop policy if exists "Public can read published timeline" on public.timeline_events;
+create policy "Public can read published timeline"
+on public.timeline_events for select
+to anon, authenticated
+using (is_published = true);
+
+drop policy if exists "Admin can manage timeline" on public.timeline_events;
+create policy "Admin can manage timeline"
+on public.timeline_events for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
 
 drop policy if exists "Public can read about content" on public.about_content;
 create policy "Public can read about content" on public.about_content for select to anon, authenticated using (true);
@@ -198,5 +225,7 @@ drop trigger if exists media_touch on public.media_items;
 create trigger media_touch before update on public.media_items for each row execute function public.touch_now_updated_at();
 drop trigger if exists updates_touch on public.updates;
 create trigger updates_touch before update on public.updates for each row execute function public.touch_now_updated_at();
+drop trigger if exists timeline_events_touch on public.timeline_events;
+create trigger timeline_events_touch before update on public.timeline_events for each row execute function public.touch_now_updated_at();
 drop trigger if exists about_content_touch on public.about_content;
 create trigger about_content_touch before update on public.about_content for each row execute function public.touch_now_updated_at();
