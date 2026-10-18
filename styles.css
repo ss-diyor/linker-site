@@ -570,3 +570,133 @@ body.modal-open { overflow: hidden; }
     max-height: 34rem;
   }
 }
+
+/* Inner pages desktop layout */
+@media (min-width: 900px) {
+  .minimal-about-page .minimal-page,
+  .minimal-now-page .minimal-page,
+  .minimal-404-page .minimal-page {
+    width: min(calc(100% - 6rem), 1120px);
+    padding-top: clamp(4rem, 9vh, 7rem);
+  }
+
+  .minimal-about-page .minimal-main {
+    display: grid;
+    grid-template-columns: minmax(13rem, .65fr) minmax(0, 1.35fr);
+    column-gap: clamp(3.5rem, 8vw, 8rem);
+    align-items: start;
+  }
+
+  .minimal-about-page .minimal-hero {
+    grid-column: 1;
+    position: sticky;
+    top: 5rem;
+  }
+
+  .minimal-about-page .minimal-hero h1 {
+    max-width: 10ch;
+    font-size: clamp(2.5rem, 5vw, 4.6rem);
+    line-height: .98;
+  }
+
+  .minimal-about-page .breadcrumb {
+    margin-bottom: 3.5rem;
+  }
+
+  .minimal-about-page .about-copy {
+    max-width: 720px;
+    margin-top: 0;
+  }
+
+  .minimal-about-page .about-copy > p,
+  .minimal-about-page .about-subsection,
+  .minimal-about-page .about-quote {
+    font-size: .86rem;
+  }
+
+  .minimal-about-page .about-facts {
+    padding: 1.25rem 1rem;
+  }
+
+  .minimal-about-page .about-fact {
+    grid-template-columns: minmax(9rem, .42fr) 1fr;
+    gap: 1.5rem;
+  }
+
+  .minimal-about-page .about-skills {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    padding: 1.1rem 1rem;
+  }
+
+  .minimal-about-page .minimal-footer,
+  .minimal-now-page .minimal-footer,
+  .minimal-404-page .minimal-footer {
+    width: min(100%, 980px);
+    margin: 0 auto;
+  }
+
+  .minimal-now-page .minimal-main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .minimal-now-page .minimal-hero,
+  .minimal-now-page .now-focus {
+    grid-column: 1 / -1;
+  }
+
+  .minimal-now-page .minimal-hero {
+    margin-bottom: 1rem;
+  }
+
+  .minimal-now-page .now-focus {
+    margin-top: 1.5rem;
+  }
+
+  .minimal-now-page .now-section {
+    margin-top: 4rem;
+  }
+
+  .minimal-now-page .now-section-heading {
+    min-height: 2rem;
+  }
+
+  .minimal-now-page .now-entry {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .minimal-now-page .now-subnav,
+  .minimal-now-page .now-updated {
+    grid-column: 1 / -1;
+  }
+
+  .minimal-404-page .minimal-main {
+    width: min(100%, 760px);
+    margin: 0 auto;
+  }
+
+  .minimal-404-page .minimal-hero h1 {
+    font-size: clamp(4rem, 10vw, 8rem);
+  }
+
+  .minimal-404-page .not-found-copy {
+    max-width: 620px;
+    margin-top: 3rem;
+    font-size: .88rem;
+  }
+
+  .minimal-404-page .not-found-links {
+    width: min(100%, 360px);
+    margin-top: 2.5rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .minimal-404-page .minimal-main {
+    display: block;
+  }
+}
