@@ -1,5 +1,2 @@
-/admin /admin.html 200
-/now /now.html 200
-/about /about.html 200
-/tools/password-generator /password-generator.html 200
-/tools/qr-code-generator /qr-code-generator.html 200
+/tools/password-generator /password-generator 200
+/tools/qr-code-generator /qr-code-generator 200
