@@ -20,7 +20,8 @@
     if (languages) languages.innerHTML = lines(data.languages).map((item) => `<div class="about-fact"><span>${esc(capitalizeFirst(item.name))}</span><strong>${esc(item.level)}</strong></div>`).join('');
     const interests = document.getElementById('about-interests');
     if (interests) interests.innerHTML = lines(data.interests).map((item) => { const name = typeof item === 'string' ? item : item.name; const color = typeof item === 'object' && /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(item.color || '') ? item.color : ''; return `<span class="about-interest-tag"${color ? ` style="--interest-color:${color}"` : ''}>${esc(name)}</span>`; }).join('');
-    set('about-quote', data.quote);
+    const quote = document.getElementById('about-quote');
+    if (quote) { quote.textContent = data.quote || ''; const quoteColor = /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(data.quote_color || '') ? data.quote_color : ''; quote.style.setProperty('--quote-line-color', quoteColor || 'var(--accent)'); }
     page.querySelector('.about-copy')?.removeAttribute('hidden');
   };
   render();

@@ -443,7 +443,7 @@ button { font: inherit; }
 .about-skills p { margin: .35rem 0 0; color: var(--muted); font-size: .76rem; line-height: 1.6; }
 .about-interests { display: flex; flex-wrap: wrap; gap: .45rem; }
 .about-interests span { padding: .4rem .55rem; border: 1px solid var(--interest-color, var(--line)); color: var(--interest-color, var(--muted)); font-size: .7rem; }
-.about-quote { margin: 2.5rem 0 0; padding: 1rem .8rem; border-left: 2px solid var(--accent); color: var(--text-soft); font-size: .86rem; line-height: 1.7; }
+.about-quote { margin: 2.5rem 0 0; padding: 1rem .8rem; border-left: 2px solid var(--quote-line-color, var(--accent)); color: var(--text-soft); font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.12rem; font-style: italic; font-weight: 500; letter-spacing: .01em; line-height: 1.55; }
 
 body.modal-open { overflow: hidden; }
 .now-detail-modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1rem; }

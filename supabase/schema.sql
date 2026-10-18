@@ -89,12 +89,13 @@ create table if not exists public.about_content (
   interests jsonb not null default '[]'::jsonb,
   bio_tech text not null default '',
   quote text not null default '',
+  quote_color text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
-insert into public.about_content (id, bio_intro, education_facts, bio_goal, hard_skills, soft_skills, languages, interests, bio_tech, quote)
-values ('default', 'Mening ismim Diyorbek, ko‘pchilik esa meni shunchaki Diyor deb chaqiradi.', '[{"label":"universitet","value":"Chirchiq davlat pedagogika universiteti"},{"label":"ta’lim yo‘nalishi","value":"Xorijiy til va adabiyoti: ingliz tili"},{"label":"bosqich","value":"Bakalavriat 1-kurs"},{"label":"class","value":"Class of ’30"}]'::jsonb, 'Asosiy maqsadim — xorijiy til o‘qituvchisi bo‘lish yo‘lida o‘z bilim va tajribamni rivojlantirish.', '["HTML/CSS","JavaScript","Graphic design","AI tools"]'::jsonb, '["Communication","Teamwork","Volunteering","Event organization"]'::jsonb, '[{"name":"O‘zbek tili","level":"native"},{"name":"Ingliz tili","level":"B2"}]'::jsonb, '["Kitoblar","Kino","Sport","Volontyorlik"]'::jsonb, 'So‘nggi ikki yil davomida grafik dizayn, dasturlash, sun’iy intellekt va LLM yo‘nalishlarida ko‘nikmalarni egalladim.', 'Har kuni kechagidan yaxshiroq bo‘lishga harakat qilaman.')
+insert into public.about_content (id, bio_intro, education_facts, bio_goal, hard_skills, soft_skills, languages, interests, bio_tech, quote, quote_color)
+values ('default', 'Mening ismim Diyorbek, ko‘pchilik esa meni shunchaki Diyor deb chaqiradi.', '[{"label":"universitet","value":"Chirchiq davlat pedagogika universiteti"},{"label":"ta’lim yo‘nalishi","value":"Xorijiy til va adabiyoti: ingliz tili"},{"label":"bosqich","value":"Bakalavriat 1-kurs"},{"label":"class","value":"Class of ’30"}]'::jsonb, 'Asosiy maqsadim — xorijiy til o‘qituvchisi bo‘lish yo‘lida o‘z bilim va tajribamni rivojlantirish.', '["HTML/CSS","JavaScript","Graphic design","AI tools"]'::jsonb, '["Communication","Teamwork","Volunteering","Event organization"]'::jsonb, '[{"name":"O‘zbek tili","level":"native"},{"name":"Ingliz tili","level":"B2"}]'::jsonb, '["Kitoblar","Kino","Sport","Volontyorlik"]'::jsonb, 'So‘nggi ikki yil davomida grafik dizayn, dasturlash, sun’iy intellekt va LLM yo‘nalishlarida ko‘nikmalarni egalladim.', 'Har kuni kechagidan yaxshiroq bo‘lishga harakat qilaman.', '')
 on conflict (id) do nothing;
 
 insert into public.now_settings (id)
