@@ -700,3 +700,38 @@ body.modal-open { overflow: hidden; }
     display: block;
   }
 }
+
+/* About desktop refinement: keep the page centered instead of using a left rail */
+@media (min-width: 900px) {
+  .minimal-about-page .minimal-page {
+    width: min(calc(100% - 6rem), 960px);
+  }
+
+  .minimal-about-page .minimal-main {
+    display: block;
+    width: min(100%, 820px);
+    margin: 0 auto;
+  }
+
+  .minimal-about-page .minimal-hero {
+    position: static;
+  }
+
+  .minimal-about-page .minimal-hero h1 {
+    max-width: none;
+    font-size: clamp(2.6rem, 6vw, 4.8rem);
+  }
+
+  .minimal-about-page .breadcrumb {
+    margin-bottom: 3rem;
+  }
+
+  .minimal-about-page .about-copy {
+    max-width: 760px;
+    margin-top: 3.5rem;
+  }
+
+  .minimal-about-page .minimal-footer {
+    width: min(100%, 820px);
+  }
+}
