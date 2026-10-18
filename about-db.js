@@ -19,7 +19,7 @@
     const languages = document.getElementById('about-languages');
     if (languages) languages.innerHTML = lines(data.languages).map((item) => `<div class="about-fact"><span>${esc(capitalizeFirst(item.name))}</span><strong>${esc(item.level)}</strong></div>`).join('');
     const interests = document.getElementById('about-interests');
-    if (interests) interests.innerHTML = lines(data.interests).map((item) => `<span>${esc(item)}</span>`).join('');
+    if (interests) interests.innerHTML = lines(data.interests).map((item) => { const name = typeof item === 'string' ? item : item.name; const color = typeof item === 'object' && /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(item.color || '') ? item.color : ''; return `<span class="about-interest-tag"${color ? ` style="--interest-color:${color}"` : ''}>${esc(name)}</span>`; }).join('');
     set('about-quote', data.quote);
     page.querySelector('.about-copy')?.removeAttribute('hidden');
   };
