@@ -69,6 +69,9 @@ Cloudflare Pages uchun repository root’ida `_redirects` nomli fayl yarating:
 /admin  /admin.html  200
 /now    /now.html    200
 /about  /about.html  200
+/tools  /tools.html  200
+/tools/password-generator  /password-generator.html  200
+/tools/qr-code-generator  /qr-code-generator.html  200
 /*      /404.html    404
 ```
 
@@ -122,7 +125,10 @@ Custom domainni ulashdan oldin `*.pages.dev` manzilda quyidagilarni tekshiring:
 - `/` homepage ochilishi;
 - `/about` About sahifasiga olib borishi;
 - `/now` Now sahifasini ochishi;
-- `/admin` admin login sahifasini ochishi;
+- `/admin` admin login sahifasini ochish;
+- `/tools` tools katalogini ochish;
+- `/tools/password-generator` password generator sahifasini ochish;
+- `/tools/qr-code-generator` QR generator sahifasini ochish;
 - noto‘g‘ri URL 404 sahifasini qaytarishi;
 - Dark va Light theme ishlashi;
 - Mutolaa linki ishlashi;
