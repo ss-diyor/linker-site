@@ -5,3 +5,38 @@
   .tools-page .minimal-page { padding-top: 4rem; }
   .tools-page .breadcrumb { flex-wrap: wrap; row-gap: .35rem; }
 }
+
+.word-counter-panel { padding: 1.15rem .8rem; }
+.word-counter-input { min-height: 12rem; resize: vertical; }
+.word-counter-actions { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: .5rem; }
+.word-counter-actions .tool-status { margin: 0; }
+.word-counter-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: 1.1rem 0 0; padding: 0; }
+.word-counter-stat { min-width: 0; margin: 0; padding: .8rem; border: 1px solid var(--line); background: var(--surface); }
+.word-counter-stat dt { color: var(--subtle); font-size: .68rem; line-height: 1.45; }
+.word-counter-stat dd { margin: .45rem 0 0; color: var(--text-soft); font-size: 1.1rem; font-weight: 500; line-height: 1.25; overflow-wrap: anywhere; }
+.word-limit-section { margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--line); }
+.word-limit-section h2 { margin-bottom: .9rem; }
+.word-limit-controls { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(8rem, .6fr); gap: 1rem; align-items: end; }
+.word-limit-controls select,
+.word-limit-controls input { display: block; width: 100%; min-height: 2.45rem; margin-top: .45rem; padding: .55rem .65rem; border: 1px solid var(--line); border-radius: 0; background: var(--surface); color: var(--text); font: inherit; font-size: .74rem; }
+.word-limit-controls select:focus,
+.word-limit-controls input:focus { border-color: var(--accent); }
+.word-limit-controls option { background: var(--bg); color: var(--text); }
+.word-limit-meter { height: .55rem; margin-top: 1rem; overflow: hidden; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
+.word-limit-progress { width: 0; height: 100%; background: var(--accent); transition: width .15s ease, background .15s ease; }
+.word-counter-panel { --limit-near: #805600; --limit-over: #a42d2d; }
+:root:not([data-theme='light']) .word-counter-panel { --limit-near: #ffd878; --limit-over: #ff8b8b; }
+.word-limit-meter.is-near .word-limit-progress { background: var(--limit-near); }
+.word-limit-meter.is-over .word-limit-progress { background: var(--limit-over); }
+.word-limit-status { min-height: 1.2em; margin: .65rem 0 0; line-height: 1.6; }
+.word-limit-status.is-near { color: var(--limit-near); font-weight: 500; }
+.word-limit-status.is-over { color: var(--limit-over); font-weight: 500; }
+.word-limit-status.is-invalid { color: var(--muted); }
+@media (max-width: 620px) {
+  .word-counter-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .word-limit-controls { grid-template-columns: 1fr; }
+  .word-counter-actions { align-items: flex-start; flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .word-limit-progress { transition: none; }
+}

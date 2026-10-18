@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Matndagi so‘zlar, belgilar, qatorlar va taxminiy o‘qish vaqtini hisoblang.">
+  <meta name="theme-color" content="#05061a">
+  <title>So‘z va belgi sanagich — Vositalar</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/tools.css">
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+  </script>
+  <script async src="https://plausible.io/js/pa-1tvT8A7vmmUUFXAZjVNJw.js"></script>
+  <script>
+    window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments); };
+    plausible.init = plausible.init || function (options) { plausible.o = options || {}; };
+    plausible.init();
+  </script>
+</head>
+<body class="minimal-home tools-page">
+  <div class="page-loader" role="status" aria-label="Sahifa yuklanmoqda"><span class="loading-spinner" aria-hidden="true"></span></div>
+  <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
+  <div class="minimal-page">
+    <button class="theme-toggle" type="button" aria-label="Light themega o'tish" aria-pressed="false"><span class="theme-toggle-label">light</span></button>
+    <main id="main" class="minimal-main">
+      <header class="minimal-hero reveal visible">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">bosh sahifa</a><span aria-hidden="true">›</span>
+          <a href="/tools">vositalar</a><span aria-hidden="true">›</span>
+          <span aria-current="page">so‘z va belgi sanagich</span>
+        </nav>
+        <h1>So‘z va belgi sanagich</h1>
+        <p>Matnni kiriting — hisoblar darhol yangilanadi.</p>
+      </header>
+      <section class="tool-panel word-counter-panel reveal visible" aria-labelledby="word-counter-title">
+        <h2 id="word-counter-title">Matn tahlili</h2>
+        <label for="word-counter-input">Matn</label>
+        <textarea id="word-counter-input" class="word-counter-input" rows="9" placeholder="Matnni shu yerga yozing yoki joylashtiring…" spellcheck="true"></textarea>
+        <div class="word-counter-actions">
+          <p class="tool-status">Hisob-kitoblar qurilmangizda bajariladi; o‘qish vaqti 200 so‘z/daq. tezlikda taxmin qilinadi.</p>
+          <button id="clear-word-counter" class="tool-button" type="button">Matnni tozalash</button>
+        </div>
+
+        <dl class="word-counter-stats" aria-label="Matn statistikasi">
+          <div class="word-counter-stat"><dt>So‘zlar soni</dt><dd id="word-count">0</dd></div>
+          <div class="word-counter-stat"><dt>Belgilar soni</dt><dd id="character-count">0</dd></div>
+          <div class="word-counter-stat"><dt>Bo‘shliqsiz belgilar soni</dt><dd id="nonspace-count">0</dd></div>
+          <div class="word-counter-stat"><dt>Qatorlar soni</dt><dd id="line-count">0</dd></div>
+          <div class="word-counter-stat"><dt>O‘qish vaqti</dt><dd id="reading-time">0 daqiqa</dd></div>
+        </dl>
+
+        <section class="word-limit-section" aria-labelledby="word-limit-title">
+          <h2 id="word-limit-title">Limit indikatori</h2>
+          <div class="word-limit-controls">
+            <label for="word-limit-type">Limit turi
+              <select id="word-limit-type">
+                <option value="characters">Belgilar</option>
+                <option value="nonspace">Bo‘shliqsiz belgilar</option>
+                <option value="words">So‘zlar</option>
+              </select>
+            </label>
+            <label for="word-limit-value">Limit miqdori
+              <input id="word-limit-value" type="number" min="1" max="1000000" step="1" value="500" inputmode="numeric">
+            </label>
+          </div>
+          <div id="word-limit-meter" class="word-limit-meter" role="progressbar" aria-label="Belgilangan limitdan foydalanish" aria-valuemin="0" aria-valuemax="500" aria-valuenow="0" aria-valuetext="0 / 500 belgi">
+            <div id="word-limit-progress" class="word-limit-progress"></div>
+          </div>
+          <p id="word-limit-status" class="tool-status word-limit-status" aria-live="polite">Matn kiriting. Limitga 80% yetganda ogohlantirish ko‘rsatiladi.</p>
+        </section>
+      </section>
+    </main>
+    <footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer>
+  </div>
+  <script src="/script.js"></script>
+  <script src="/word-counter.js"></script>
+</body>
+</html>
