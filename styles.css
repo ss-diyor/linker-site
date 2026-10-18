@@ -501,9 +501,16 @@ body.modal-open { overflow: hidden; }
     font-size: .84rem;
   }
 
-  .minimal-home .minimal-links {
+  .minimal-home .home-link-column {
     grid-column: 1;
     grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    gap: .8rem;
+  }
+
+  .minimal-home .minimal-links {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-self: start;
     margin-top: 0;
@@ -518,10 +525,8 @@ body.modal-open { overflow: hidden; }
   }
 
   .minimal-home .home-page-links {
-    grid-column: 1;
-    grid-row: 3;
     align-self: start;
-    margin-top: .8rem;
+    margin-top: 0;
     gap: .8rem;
   }
 
@@ -531,7 +536,7 @@ body.modal-open { overflow: hidden; }
 
   .minimal-home .updates-section {
     grid-column: 2;
-    grid-row: 2 / span 2;
+    grid-row: 2;
     align-self: start;
     margin-top: 0;
   }
@@ -547,7 +552,7 @@ body.modal-open { overflow: hidden; }
 
   .minimal-home .minimal-timeline {
     grid-column: 1 / -1;
-    grid-row: 4;
+    grid-row: 3;
     width: min(100%, 980px);
     margin-top: clamp(5rem, 10vh, 8rem);
     padding-left: 1.6rem;
