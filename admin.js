@@ -8,6 +8,8 @@
   const status = document.getElementById('admin-status');
   let books = [], media = [], updates = [], timeline = [], playlistTracks = [], about = null;
   const $ = (id) => document.getElementById(id);
+  const playlistDefaultColors = { spotify:'#1DB954', yandex:'#FFCC00', apple:'#FA243C', youtube:'#FF0000' };
+  const validPlaylistHex = (value) => /^#[0-9a-fA-F]{6}$/.test(value || '');
   const setStatus = (text, isError = false) => { status.textContent = text; status.classList.toggle('admin-error', isError); };
   const esc = (value = '') => String(value).replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const isAdmin = async () => { const { data: { user } } = await client.auth.getUser(); if (!user) return null; const { data } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); return data ? user : null; };
@@ -38,6 +40,8 @@
     $('playlist-yandex').value = links.yandex || '';
     $('playlist-apple').value = links.apple || '';
     $('playlist-youtube').value = links.youtube || '';
+    const colors = track.platform_colors && typeof track.platform_colors === 'object' ? track.platform_colors : {};
+    Object.entries(playlistDefaultColors).forEach(([key, fallback]) => { const color = validPlaylistHex(colors[key]) ? colors[key].toUpperCase() : fallback; $('playlist-color-picker-' + key).value = color; $('playlist-color-hex-' + key).value = color; });
     $('playlist-position').value = Number(track.position) || 0;
     $('playlist-published').checked = !!track.is_published;
     $('playlist-form').hidden = false;
@@ -84,10 +88,16 @@
       };
       Object.keys(links).forEach((key) => { if (!links[key]) delete links[key]; });
       if (!Object.keys(links).length) return setStatus('Kamida bitta platforma havolasini kiriting.', true);
+      const platformColors = Object.fromEntries(Object.entries(playlistDefaultColors).map(([key, fallback]) => {
+        const value = $('playlist-color-hex-' + key).value.trim();
+        if (value && !validPlaylistHex(value)) throw new Error('Rangni #RRGGBB HEX shaklida kiriting.');
+        return [key, value ? value.toUpperCase() : fallback];
+      }));
       await save('playlist_tracks', $('playlist-id').value, {
         title: $('playlist-title').value.trim(),
         artist: $('playlist-artist').value.trim(),
         links,
+        platform_colors: platformColors,
         position: Number($('playlist-position').value) || 0,
         is_published: $('playlist-published').checked,
         updated_at: new Date().toISOString()
@@ -96,7 +106,7 @@
       await loadAll();
       setStatus('Trek saqlandi.');
     } catch (error) {
-      setStatus(error.message === 'Faqat HTTPS havolalar ruxsat etiladi.' ? error.message : 'Trek saqlanmadi. Supabase jadvali va RLS sozlamalarini tekshiring.', true);
+      setStatus(['Faqat HTTPS havolalar ruxsat etiladi.', 'Rangni #RRGGBB HEX shaklida kiriting.'].includes(error.message) ? error.message : 'Trek saqlanmadi. Supabase jadvali va RLS sozlamalarini tekshiring.', true);
     }
   });
   $('timeline-form').addEventListener('submit', async (e) => { e.preventDefault(); try { const current = $('timeline-current').checked; if (current) await client.from('timeline_events').update({ is_current:false }).neq('id', $('timeline-id').value || '00000000-0000-0000-0000-000000000000'); await save('timeline_events', $('timeline-id').value, { year:Number($('timeline-year').value), month:$('timeline-month').value ? Number($('timeline-month').value) : null, title:$('timeline-title').value.trim(), description:$('timeline-description').value.trim(), position:Number($('timeline-position').value)||0, is_current:current, is_published:$('timeline-published').checked }); $('timeline-form').hidden=true; await loadAll(); } catch { setStatus('Timeline saqlashda xatolik.', true); } });
@@ -109,9 +119,19 @@
   $('about-quote-color').addEventListener('input', (e) => { if (/^#[0-9a-fA-F]{6}$/.test(e.target.value)) $('about-quote-picker').value = e.target.value; });
   $('reset-quote-color').addEventListener('click', () => { $('about-quote-color').value = ''; $('about-quote-picker').value = '#a8a5ff'; });
   document.addEventListener('input', (e) => { const row = e.target.closest('.about-interest-row'); if (!row) return; if (e.target.classList.contains('about-interest-picker')) row.querySelector('.about-interest-color').value = e.target.value.toUpperCase(); if (e.target.classList.contains('about-interest-color') && /^#[0-9a-fA-F]{6}$/.test(e.target.value)) row.querySelector('.about-interest-picker').value = e.target.value; });
+  document.addEventListener('input', (event) => { const picker = event.target.closest('[data-playlist-color-picker]'); if (picker) { $('playlist-color-hex-' + picker.dataset.playlistColorPicker).value = picker.value.toUpperCase(); return; } if (event.target.classList.contains('playlist-color-hex') && validPlaylistHex(event.target.value)) { const key = event.target.id.replace('playlist-color-hex-', ''); $('playlist-color-picker-' + key).value = event.target.value.toUpperCase(); } });
   document.addEventListener('click', (e) => { if (e.target.dataset.removeLanguage) e.target.closest('.about-language-row').remove(); if (e.target.dataset.removeInterest) e.target.closest('.about-interest-row').remove(); if (e.target.dataset.resetInterestColor) { const row = e.target.closest('.about-interest-row'); row.querySelector('.about-interest-color').value = ''; row.querySelector('.about-interest-picker').value = '#808080'; } });
   document.addEventListener('click', async (e) => { const t=e.target; if(t.dataset.add){ $(t.dataset.add+'-form').hidden=false; if(t.dataset.add === 'update' && !$('update-date').value) $('update-date').value = new Date().toISOString().slice(0, 10); } if(t.dataset.cancel){ $(t.dataset.cancel+'-form').hidden=true; } if(t.dataset.editBook){ fill('book', books.find((x)=>x.id===t.dataset.editBook)); } if(t.dataset.editMedia){ fill('media', media.find((x)=>x.id===t.dataset.editMedia)); } if(t.dataset.editUpdate){ fillUpdate(updates.find((x)=>x.id===t.dataset.editUpdate)); } if(t.dataset.editTimeline){ fillTimeline(timeline.find((x)=>x.id===t.dataset.editTimeline)); } if(t.dataset.deleteUpdate && confirm('Bu qayd o‘chirilsinmi?')){ await client.from('updates').delete().eq('id',t.dataset.deleteUpdate); await loadAll(); } if(t.dataset.deleteBook && confirm('Bu kitob o‘chirilsinmi?')){ await client.from('books').delete().eq('id',t.dataset.deleteBook); await loadAll(); } if(t.dataset.deleteMedia && confirm('Bu media o‘chirilsinmi?')){ await client.from('media_items').delete().eq('id',t.dataset.deleteMedia); await loadAll(); } if(t.dataset.deleteTimeline && confirm('Bu timeline voqeasi o‘chirilsinmi?')){ await client.from('timeline_events').delete().eq('id',t.dataset.deleteTimeline); await loadAll(); } });
   document.addEventListener('click', async (event) => {
+    const resetColor = event.target.closest('[data-reset-playlist-color]');
+    if (resetColor) {
+      const key = resetColor.dataset.resetPlaylistColor;
+      if (playlistDefaultColors[key]) {
+        $('playlist-color-picker-' + key).value = playlistDefaultColors[key];
+        $('playlist-color-hex-' + key).value = playlistDefaultColors[key];
+      }
+      return;
+    }
     const add = event.target.closest('[data-add="playlist"]');
     if (add) { resetPlaylistForm(); return; }
     const edit = event.target.closest('[data-edit-playlist]');

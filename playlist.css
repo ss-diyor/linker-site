@@ -10,8 +10,9 @@
 .playlist-track-details h3 { margin: 0; color: var(--text-soft); font-size: .86rem; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
 .playlist-track-details p { margin: .25rem 0 0; color: var(--subtle); font-size: .7rem; line-height: 1.5; }
 .playlist-platform-links { grid-column: 2; display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .2rem; }
-.playlist-platform-link { display: inline-flex; min-height: 2rem; align-items: center; padding: .35rem .55rem; border: 1px solid var(--line); color: var(--muted); font-size: .64rem; line-height: 1.2; transition: border-color .2s ease, color .2s ease, background .2s ease; }
-.playlist-platform-link:hover { border-color: var(--line-hover); background: var(--accent-soft); color: var(--text); }
+.playlist-platform-link { --platform-color: var(--line-strong); display: inline-flex; min-height: 2rem; align-items: center; padding: .35rem .55rem; border: 1px solid var(--line); border-left: 2px solid var(--platform-color); background: var(--surface); color: var(--text-soft); font-size: .64rem; line-height: 1.2; transition: border-color .2s ease, color .2s ease, background .2s ease; }
+@supports (background: color-mix(in srgb, red 10%, white)) { .playlist-platform-link { border-color: color-mix(in srgb, var(--platform-color) 52%, var(--line)); background: color-mix(in srgb, var(--platform-color) 13%, var(--surface)); } .playlist-platform-link:hover { border-color: color-mix(in srgb, var(--platform-color) 78%, var(--line)); background: color-mix(in srgb, var(--platform-color) 23%, var(--surface)); } }
+.playlist-platform-link:hover { border-left-color: var(--platform-color); color: var(--text); }
 .playlist-empty { display: grid; justify-items: start; gap: .45rem; padding: 1.2rem .8rem; border-bottom: 1px solid var(--line); color: var(--subtle); }
 .playlist-empty[hidden] { display: none; }
 .playlist-empty p { margin: 0; color: var(--text-soft); font-size: .78rem; }

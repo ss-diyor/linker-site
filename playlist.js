@@ -7,11 +7,12 @@
   if (!list || !empty || !count) return;
 
   const platforms = [
-    ['spotify', 'Spotify'],
-    ['yandex', 'Yandex Music'],
-    ['apple', 'Apple Music'],
-    ['youtube', 'YouTube']
+    ['spotify', 'Spotify', '#1DB954'],
+    ['yandex', 'Yandex Music', '#FFCC00'],
+    ['apple', 'Apple Music', '#FA243C'],
+    ['youtube', 'YouTube', '#FF0000']
   ];
+  const safeColor = (value, fallback) => typeof value === 'string' && /^#[0-9a-fA-F]{6}$/.test(value) ? value.toUpperCase() : fallback;
   const safeUrl = (value) => {
     if (typeof value !== 'string' || !value.trim()) return '';
     try {
@@ -56,7 +57,7 @@
       const links = document.createElement('div');
       links.className = 'playlist-platform-links';
       links.setAttribute('aria-label', `${track.title.trim()} tinglash havolalari`);
-      platforms.forEach(([key, label]) => {
+      platforms.forEach(([key, label, defaultColor]) => {
         const href = safeUrl(track.links?.[key]);
         if (!href) return;
         const anchor = document.createElement('a');
@@ -64,6 +65,7 @@
         anchor.href = href;
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
+        anchor.style.setProperty('--platform-color', safeColor(track.platform_colors?.[key], defaultColor));
         anchor.textContent = label;
         links.append(anchor);
       });
@@ -83,7 +85,7 @@
     try {
       const client = window.supabase.createClient(window.supabaseConfig.url, window.supabaseConfig.publishableKey);
       const { data, error } = await client.from('playlist_tracks')
-        .select('title, artist, links')
+        .select('title, artist, links, platform_colors')
         .eq('is_published', true)
         .order('position', { ascending: true })
         .order('created_at', { ascending: true });

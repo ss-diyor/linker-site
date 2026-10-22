@@ -66,3 +66,10 @@
 
 .playlist-admin-links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
 @media(max-width:620px) { .playlist-admin-links { grid-template-columns:1fr; } }
+
+.playlist-admin-platform { display:grid; gap:.4rem; }
+.playlist-color-controls { display:grid; grid-template-columns:3.5rem minmax(0,1fr) auto; align-items:end; gap:.5rem; }
+.playlist-color-controls label { display:grid; gap:.35rem; color:var(--subtle); font-size:.68rem; }
+.playlist-color-controls input[type="color"] { width:3.5rem; height:2.25rem; box-sizing:border-box; padding:.2rem; cursor:pointer; }
+.playlist-color-controls .playlist-color-hex { min-width:0; text-transform:uppercase; }
+.playlist-color-controls button { white-space:nowrap; }

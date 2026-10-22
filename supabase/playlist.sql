@@ -6,11 +6,15 @@ create table if not exists public.playlist_tracks (
   title text not null check (length(trim(title)) > 0),
   artist text not null default '',
   links jsonb not null default '{}'::jsonb check (jsonb_typeof(links) = 'object'),
+  platform_colors jsonb not null default '{}'::jsonb check (jsonb_typeof(platform_colors) = 'object'),
   position integer not null default 0 check (position >= 0),
   is_published boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.playlist_tracks
+  add column if not exists platform_colors jsonb not null default '{}'::jsonb;
 
 create index if not exists playlist_tracks_public_order_idx
   on public.playlist_tracks (is_published, position, created_at);
