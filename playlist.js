@@ -22,6 +22,7 @@
       return '';
     }
   };
+  const safeImageUrl = (value) => safeUrl(value);
   const render = (source, hasError = false) => {
     const tracks = Array.isArray(source)
       ? source.filter((track) => track && typeof track.title === 'string' && track.title.trim())
@@ -42,6 +43,21 @@
       number.className = 'playlist-track-number';
       number.setAttribute('aria-hidden', 'true');
       number.textContent = String(index + 1).padStart(2, '0');
+
+      const main = document.createElement('div');
+      main.className = 'playlist-track-main';
+      const coverUrl = safeImageUrl(track.cover_url);
+      if (coverUrl) {
+        const cover = document.createElement('img');
+        cover.className = 'playlist-track-cover';
+        cover.src = coverUrl;
+        cover.alt = `${track.title.trim()} albom muqovasi`;
+        cover.width = 240;
+        cover.height = 240;
+        cover.loading = 'lazy';
+        cover.decoding = 'async';
+        main.append(cover);
+      }
 
       const details = document.createElement('div');
       details.className = 'playlist-track-details';
@@ -70,7 +86,8 @@
         links.append(anchor);
       });
 
-      item.append(number, details);
+      main.append(details);
+      item.append(number, main);
       if (links.childElementCount) item.append(links);
       fragment.append(item);
     });
@@ -85,7 +102,7 @@
     try {
       const client = window.supabase.createClient(window.supabaseConfig.url, window.supabaseConfig.publishableKey);
       const { data, error } = await client.from('playlist_tracks')
-        .select('title, artist, links, platform_colors')
+        .select('title, artist, links, platform_colors, cover_url')
         .eq('is_published', true)
         .order('position', { ascending: true })
         .order('created_at', { ascending: true });

@@ -10,6 +10,48 @@
   const $ = (id) => document.getElementById(id);
   const playlistDefaultColors = { spotify:'#1DB954', yandex:'#FFCC00', apple:'#FA243C', youtube:'#FF0000' };
   const validPlaylistHex = (value) => /^#[0-9a-fA-F]{6}$/.test(value || '');
+  const playlistCoverBucket = 'playlist-covers';
+  const playlistCoverMaxBytes = 5 * 1024 * 1024;
+  const playlistCoverTypes = { 'image/jpeg':'jpg', 'image/png':'png', 'image/webp':'webp', 'image/avif':'avif' };
+  let playlistCoverPreviewObjectUrl = '';
+  const showPlaylistCoverPreview = (source, alt = 'Trek muqovasi') => {
+    const preview = $('playlist-cover-preview');
+    if (playlistCoverPreviewObjectUrl && playlistCoverPreviewObjectUrl !== source) { URL.revokeObjectURL(playlistCoverPreviewObjectUrl); playlistCoverPreviewObjectUrl = ''; }
+    preview.replaceChildren();
+    preview.classList.toggle('is-empty', !source);
+    if (!source) { const label = document.createElement('span'); label.textContent = 'Muqova tanlanmagan'; preview.append(label); return; }
+    const image = document.createElement('img'); image.src = source; image.alt = alt; preview.append(image);
+  };
+  const ownedPlaylistCoverPath = (value) => {
+    if (!value) return null;
+    try {
+      const imageUrl = new URL(value);
+      const projectUrl = new URL(config.url);
+      const prefix = `/storage/v1/object/public/${playlistCoverBucket}/`;
+      if (imageUrl.origin !== projectUrl.origin || !imageUrl.pathname.startsWith(prefix)) return null;
+      return decodeURIComponent(imageUrl.pathname.slice(prefix.length));
+    } catch { return null; }
+  };
+  const removePlaylistCover = async (value) => {
+    const path = ownedPlaylistCoverPath(value);
+    if (!path) return;
+    try {
+      const { error: storageError } = await client.storage.from(playlistCoverBucket).remove([path]);
+      if (storageError) console.warn('Playlist cover cleanup failed:', storageError.message);
+    } catch (storageError) { console.warn('Playlist cover cleanup failed:', storageError); }
+  };
+  const uploadPlaylistCover = async (file) => {
+    if (!file) return null;
+    if (!playlistCoverTypes[file.type]) throw new Error('Muqova JPG, PNG, WebP yoki AVIF formatida bo‘lishi kerak.');
+    if (file.size > playlistCoverMaxBytes) throw new Error('Muqova fayli 5 MB dan katta bo‘lmasligi kerak.');
+    const path = `tracks/${crypto.randomUUID()}.${playlistCoverTypes[file.type]}`;
+    const { error: uploadError } = await client.storage.from(playlistCoverBucket).upload(path, file, {
+      cacheControl:'31536000', upsert:false, contentType:file.type
+    });
+    if (uploadError) throw new Error('Fayl yuklanmadi. Supabase SQL Editor’da supabase/playlist.sql migration’ini bajaring.');
+    const { data } = client.storage.from(playlistCoverBucket).getPublicUrl(path);
+    return { path, url:data.publicUrl };
+  };
   const setStatus = (text, isError = false) => { status.textContent = text; status.classList.toggle('admin-error', isError); };
   const esc = (value = '') => String(value).replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const isAdmin = async () => { const { data: { user } } = await client.auth.getUser(); if (!user) return null; const { data } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); return data ? user : null; };
@@ -26,6 +68,9 @@
   const resetPlaylistForm = () => {
     $('playlist-form').reset();
     $('playlist-id').value = '';
+    $('playlist-cover-file').value = '';
+    $('playlist-cover-url').value = '';
+    showPlaylistCoverPreview('');
     $('playlist-position').value = playlistTracks.reduce((max, item) => Math.max(max, Number(item.position) || 0), -1) + 1;
     $('playlist-published').checked = true;
     $('playlist-form').hidden = false;
@@ -40,6 +85,9 @@
     $('playlist-yandex').value = links.yandex || '';
     $('playlist-apple').value = links.apple || '';
     $('playlist-youtube').value = links.youtube || '';
+    $('playlist-cover-file').value = '';
+    $('playlist-cover-url').value = track.cover_url || '';
+    showPlaylistCoverPreview(track.cover_url || '', `${track.title || 'Trek'} muqovasi`);
     const colors = track.platform_colors && typeof track.platform_colors === 'object' ? track.platform_colors : {};
     Object.entries(playlistDefaultColors).forEach(([key, fallback]) => { const color = validPlaylistHex(colors[key]) ? colors[key].toUpperCase() : fallback; $('playlist-color-picker-' + key).value = color; $('playlist-color-hex-' + key).value = color; });
     $('playlist-position').value = Number(track.position) || 0;
@@ -76,6 +124,19 @@
   $('media-poster-url').addEventListener('input', updatePosterPreview);
   const updateBookCoverPreview = async () => { const input = $('book-cover-url'); const preview = $('book-cover-preview'); if (!input || !preview) return; const typedUrl = input.value.trim(); preview.hidden = !typedUrl; preview.classList.remove('is-error'); preview.innerHTML = typedUrl ? '<span>muqova yuklanmoqda…</span>' : ''; if (!typedUrl) return; const url = await resolvePosterUrl(typedUrl); preview.innerHTML = `<img src="${esc(url)}" alt="Cover preview" onerror="this.parentElement.classList.add('is-error'); this.innerHTML='<span>Rasm URL ishlamadi</span>';">`; };
   $('book-cover-url').addEventListener('input', updateBookCoverPreview);
+  $('playlist-cover-file').addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!playlistCoverTypes[file.type]) { event.target.value = ''; showPlaylistCoverPreview($('playlist-cover-url').value || ''); setStatus('Muqova JPG, PNG, WebP yoki AVIF formatida bo‘lishi kerak.', true); return; }
+    if (file.size > playlistCoverMaxBytes) { event.target.value = ''; showPlaylistCoverPreview($('playlist-cover-url').value || ''); setStatus('Muqova fayli 5 MB dan katta bo‘lmasligi kerak.', true); return; }
+    playlistCoverPreviewObjectUrl = URL.createObjectURL(file);
+    showPlaylistCoverPreview(playlistCoverPreviewObjectUrl, `${$('playlist-title').value.trim() || 'Trek'} muqovasi`);
+  });
+  $('playlist-cover-clear').addEventListener('click', () => {
+    $('playlist-cover-file').value = '';
+    $('playlist-cover-url').value = '';
+    showPlaylistCoverPreview('');
+  });
 
   $('playlist-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -93,20 +154,37 @@
         if (value && !validPlaylistHex(value)) throw new Error('Rangni #RRGGBB HEX shaklida kiriting.');
         return [key, value ? value.toUpperCase() : fallback];
       }));
-      await save('playlist_tracks', $('playlist-id').value, {
-        title: $('playlist-title').value.trim(),
-        artist: $('playlist-artist').value.trim(),
-        links,
-        platform_colors: platformColors,
-        position: Number($('playlist-position').value) || 0,
-        is_published: $('playlist-published').checked,
-        updated_at: new Date().toISOString()
-      });
+      const previousCover = $('playlist-cover-url').value || '';
+      const selectedFile = $('playlist-cover-file').files?.[0] || null;
+      let uploadedCover = null;
+      let coverUrl = previousCover || null;
+      if (selectedFile) {
+        setStatus('Muqova yuklanmoqda…');
+        uploadedCover = await uploadPlaylistCover(selectedFile);
+        coverUrl = uploadedCover.url;
+      }
+      try {
+        await save('playlist_tracks', $('playlist-id').value, {
+          title: $('playlist-title').value.trim(),
+          artist: $('playlist-artist').value.trim(),
+          links,
+          platform_colors: platformColors,
+          cover_url: coverUrl,
+          position: Number($('playlist-position').value) || 0,
+          is_published: $('playlist-published').checked,
+          updated_at: new Date().toISOString()
+        });
+      } catch (error) {
+        if (uploadedCover) await removePlaylistCover(uploadedCover.url);
+        throw error;
+      }
+      if (previousCover && previousCover !== coverUrl) await removePlaylistCover(previousCover);
       $('playlist-form').hidden = true;
       await loadAll();
       setStatus('Trek saqlandi.');
     } catch (error) {
-      setStatus(['Faqat HTTPS havolalar ruxsat etiladi.', 'Rangni #RRGGBB HEX shaklida kiriting.'].includes(error.message) ? error.message : 'Trek saqlanmadi. Supabase jadvali va RLS sozlamalarini tekshiring.', true);
+      const message = ['Faqat HTTPS havolalar ruxsat etiladi.', 'Rangni #RRGGBB HEX shaklida kiriting.', 'Muqova JPG, PNG, WebP yoki AVIF formatida bo‘lishi kerak.', 'Muqova fayli 5 MB dan katta bo‘lmasligi kerak.'].includes(error.message) ? error.message : error.message.startsWith('Fayl yuklanmadi.') ? error.message : 'Trek saqlanmadi. Supabase jadvali, Storage va RLS sozlamalarini tekshiring.';
+      setStatus(message, true);
     }
   });
   $('timeline-form').addEventListener('submit', async (e) => { e.preventDefault(); try { const current = $('timeline-current').checked; if (current) await client.from('timeline_events').update({ is_current:false }).neq('id', $('timeline-id').value || '00000000-0000-0000-0000-000000000000'); await save('timeline_events', $('timeline-id').value, { year:Number($('timeline-year').value), month:$('timeline-month').value ? Number($('timeline-month').value) : null, title:$('timeline-title').value.trim(), description:$('timeline-description').value.trim(), position:Number($('timeline-position').value)||0, is_current:current, is_published:$('timeline-published').checked }); $('timeline-form').hidden=true; await loadAll(); } catch { setStatus('Timeline saqlashda xatolik.', true); } });
@@ -143,8 +221,10 @@
     const remove = event.target.closest('[data-delete-playlist]');
     if (!remove || !confirm('Bu trek o‘chirilsinmi?')) return;
     try {
+      const track = playlistTracks.find((item) => item.id === remove.dataset.deletePlaylist);
       const result = await client.from('playlist_tracks').delete().eq('id', remove.dataset.deletePlaylist);
       if (result.error) throw result.error;
+      if (track?.cover_url) await removePlaylistCover(track.cover_url);
       await loadAll();
       setStatus('Trek o‘chirildi.');
     } catch {
