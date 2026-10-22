@@ -48,14 +48,17 @@
       main.className = 'playlist-track-main';
       const coverUrl = safeImageUrl(track.cover_url);
       if (coverUrl) {
-        const cover = document.createElement('img');
+        const cover = document.createElement('div');
         cover.className = 'playlist-track-cover';
-        cover.src = coverUrl;
-        cover.alt = `${track.title.trim()} albom muqovasi`;
-        cover.width = 240;
-        cover.height = 240;
-        cover.loading = 'lazy';
-        cover.decoding = 'async';
+        const image = document.createElement('img');
+        image.className = 'playlist-track-cover-image';
+        image.src = coverUrl;
+        image.alt = `${track.title.trim()} albom muqovasi`;
+        image.width = 240;
+        image.height = 240;
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        cover.append(image);
         main.append(cover);
       }
 
