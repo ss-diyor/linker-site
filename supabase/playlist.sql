@@ -77,3 +77,32 @@ drop policy if exists "Admins can delete playlist covers" on storage.objects;
 create policy "Admins can delete playlist covers"
   on storage.objects for delete to authenticated
   using (bucket_id = 'playlist-covers' and public.is_admin());
+
+
+-- Short text notes shown beneath the playlist tracks.
+create table if not exists public.playlist_notes (
+  id uuid primary key default gen_random_uuid(),
+  content text not null check (length(trim(content)) between 1 and 500),
+  position integer not null default 0 check (position >= 0),
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists playlist_notes_public_order_idx
+  on public.playlist_notes (is_published, position, created_at);
+
+alter table public.playlist_notes enable row level security;
+grant select on table public.playlist_notes to anon, authenticated;
+grant insert, update, delete on table public.playlist_notes to authenticated;
+
+drop policy if exists "Public can read published playlist notes" on public.playlist_notes;
+create policy "Public can read published playlist notes"
+  on public.playlist_notes for select to anon, authenticated
+  using (is_published = true);
+
+drop policy if exists "Admins can manage playlist notes" on public.playlist_notes;
+create policy "Admins can manage playlist notes"
+  on public.playlist_notes for all to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());

@@ -33,3 +33,12 @@
   .playlist-track-cover { flex-basis:3.75rem; width:3.75rem; height:3.75rem; }
 }
 @media (prefers-reduced-motion: reduce) { .playlist-track, .playlist-platform-link { transition: none; } }
+
+
+.playlist-notes-section { width:100%; margin-top:1.5rem; }
+.playlist-notes-section[hidden] { display:none; }
+.playlist-notes-section h2 { margin:0 0 .7rem; color:var(--faint); font-size:.68rem; font-weight:400; letter-spacing:.12em; text-transform:uppercase; }
+.playlist-notes-list { display:grid; gap:.55rem; margin:0; padding:0; list-style:none; }
+.playlist-note { padding:.75rem .9rem; border:1px solid var(--line); border-left:2px solid var(--accent); background:var(--surface); color:var(--text-soft); }
+.playlist-note p { margin:0; font-size:.72rem; line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere; }
+@media (max-width:620px) { .playlist-notes-section { margin-top:1.1rem; } }

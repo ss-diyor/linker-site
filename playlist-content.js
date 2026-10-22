@@ -23,6 +23,24 @@
     }
   };
   const safeImageUrl = (value) => safeUrl(value);
+  const renderNotes = (source) => {
+    const section = document.getElementById('playlist-notes-section');
+    const notesList = document.getElementById('playlist-notes-list');
+    if (!section || !notesList) return;
+    const notes = Array.isArray(source) ? source.filter((note) => note && typeof note.content === 'string' && note.content.trim()) : [];
+    section.hidden = notes.length === 0;
+    const fragment = document.createDocumentFragment();
+    notes.forEach((note) => {
+      const item = document.createElement('li');
+      item.className = 'playlist-note';
+      const text = document.createElement('p');
+      text.textContent = note.content.trim();
+      item.append(text);
+      fragment.append(item);
+    });
+    notesList.replaceChildren(fragment);
+  };
+
   const render = (source, hasError = false) => {
     const tracks = Array.isArray(source)
       ? source.filter((track) => track && typeof track.title === 'string' && track.title.trim())
@@ -111,6 +129,18 @@
         .order('created_at', { ascending: true });
       if (error) throw error;
       render(data || []);
+      try {
+        const { data: notes, error: notesError } = await client.from('playlist_notes')
+          .select('content')
+          .eq('is_published', true)
+          .order('position', { ascending: true })
+          .order('created_at', { ascending: true });
+        if (notesError) throw notesError;
+        renderNotes(notes || []);
+      } catch (notesError) {
+        console.warn('Playlist notes could not be loaded:', notesError);
+        renderNotes([]);
+      }
     } catch (error) {
       console.error('Playlist could not be loaded:', error);
       render(window.playlistData || [], true);
