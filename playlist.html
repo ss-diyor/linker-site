@@ -27,16 +27,18 @@
         <p>Men yoqtirgan musiqalar — tinglash havolalari bilan.</p>
       </header>
       <section class="playlist-section reveal visible" aria-labelledby="playlist-title">
-        <div class="playlist-heading"><h2 id="playlist-title">Musiqalarim</h2><span id="playlist-count" aria-live="polite">0 ta trek</span></div>
-        <ol id="playlist-list" class="playlist-list" aria-label="Musiqalar ro‘yxati"></ol>
-        <div id="playlist-empty" class="playlist-empty" role="status">
+        <div class="playlist-heading"><h2 id="playlist-title">Musiqalarim</h2><span id="playlist-count" aria-live="polite" hidden></span></div>
+        <div id="playlist-loading" class="playlist-empty" role="status"><span>Musiqalar yuklanmoqda...</span></div>
+        <ol id="playlist-list" class="playlist-list" aria-label="Musiqalar ro‘yxati" hidden></ol>
+        <div id="playlist-empty" class="playlist-empty" role="status" hidden>
           <p>Hozircha musiqa qo‘shilmagan.</p>
           <span>Har bir trek uchun Spotify, Yandex Music, Apple Music yoki YouTube havolalari shu yerda chiqadi.</span>
         </div>
+        <p id="playlist-error" class="playlist-error" role="alert" hidden>Musiqalar ro‘yxatini yuklab bo‘lmadi.</p>
       </section>
     </main>
     <footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer>
   </div>
-  <script src="/data/playlist.js"></script><script src="/script.js"></script><script src="/playlist.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/data/playlist.js"></script><script src="/script.js"></script><script src="/playlist.js"></script>
 </body>
 </html>

@@ -63,3 +63,6 @@
 .about-quote-picker { width:3rem; height:2.35rem; padding:.2rem; cursor:pointer; }
 .about-quote-color-controls input:not([type="color"]) { flex:1; }
 @media (max-width:620px) { .about-quote-color-controls { flex-wrap:wrap; } .about-quote-color-controls input:not([type="color"]) { min-width:10rem; } }
+
+.playlist-admin-links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
+@media(max-width:620px) { .playlist-admin-links { grid-template-columns:1fr; } }
