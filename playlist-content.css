@@ -42,3 +42,15 @@
 .playlist-note { padding:.75rem .9rem; border:1px solid var(--line); border-left:2px solid var(--accent); background:var(--surface); color:var(--text-soft); }
 .playlist-note p { margin:0; font-size:.72rem; line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere; }
 @media (max-width:620px) { .playlist-notes-section { margin-top:1.1rem; } }
+
+.playlist-folders-section { width:100%; margin-top:3rem; }
+.playlist-folders-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+.playlist-folder-card { position:relative; display:flex; min-height:9rem; flex-direction:column; justify-content:flex-end; overflow:hidden; border:1px solid color-mix(in srgb,var(--folder-color) 45%,var(--line)); background:var(--surface); color:var(--text); transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
+.playlist-folder-card::before { content:""; position:absolute; top:0; left:0; width:42%; height:1.3rem; border-radius:0 0 .7rem 0; background:var(--folder-color); opacity:.9; }
+.playlist-folder-card::after { content:""; position:absolute; inset:1.15rem 0 0; z-index:0; background:linear-gradient(to top, color-mix(in srgb,var(--folder-color) 48%,var(--bg)), transparent 72%); opacity:.55; pointer-events:none; }
+.playlist-folder-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.72; }
+.playlist-folder-body { position:relative; z-index:1; display:block; padding:2.8rem .8rem .75rem; background:linear-gradient(transparent, color-mix(in srgb,var(--bg) 88%,transparent)); }
+.playlist-folder-body strong { display:block; font-size:.8rem; font-weight:500; overflow-wrap:anywhere; }
+.playlist-folder-body small { display:block; margin-top:.3rem; color:var(--subtle); font-size:.65rem; }
+.playlist-folder-card:hover,.playlist-folder-card.is-active { transform:translateY(-.2rem); border-color:var(--folder-color); box-shadow:0 .5rem 1.5rem color-mix(in srgb,var(--folder-color) 15%,transparent); }
+@media(max-width:620px){.playlist-folders-section{margin-top:2.25rem}.playlist-folders-grid{grid-template-columns:1fr}.playlist-folder-card{min-height:8rem}}

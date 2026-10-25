@@ -6,7 +6,7 @@
   const dashboard = document.getElementById('dashboard-view');
   const error = document.getElementById('login-error');
   const status = document.getElementById('admin-status');
-  let books = [], media = [], updates = [], timeline = [], playlistTracks = [], playlistNotes = [], about = null;
+  let books = [], media = [], updates = [], timeline = [], playlistTracks = [], playlistFolders = [], playlistNotes = [], about = null;
   const $ = (id) => document.getElementById(id);
   const playlistDefaultColors = { spotify:'#1DB954', yandex:'#FFCC00', apple:'#FA243C', youtube:'#FF0000' };
   const validPlaylistHex = (value) => /^#[0-9a-fA-F]{6}$/.test(value || '');
@@ -14,8 +14,8 @@
   const playlistCoverMaxBytes = 5 * 1024 * 1024;
   const playlistCoverTypes = { 'image/jpeg':'jpg', 'image/png':'png', 'image/webp':'webp', 'image/avif':'avif' };
   let playlistCoverPreviewObjectUrl = '';
-  const showPlaylistCoverPreview = (source, alt = 'Trek muqovasi') => {
-    const preview = $('playlist-cover-preview');
+  const showPlaylistCoverPreview = (source, alt = 'Trek muqovasi', previewId = 'playlist-cover-preview') => {
+    const preview = $(previewId);
     if (playlistCoverPreviewObjectUrl && playlistCoverPreviewObjectUrl !== source) { URL.revokeObjectURL(playlistCoverPreviewObjectUrl); playlistCoverPreviewObjectUrl = ''; }
     preview.replaceChildren();
     preview.classList.toggle('is-empty', !source);
@@ -40,15 +40,15 @@
       if (storageError) console.warn('Playlist cover cleanup failed:', storageError.message);
     } catch (storageError) { console.warn('Playlist cover cleanup failed:', storageError); }
   };
-  const uploadPlaylistCover = async (file) => {
+  const uploadPlaylistCover = async (file, prefix = 'tracks') => {
     if (!file) return null;
     if (!playlistCoverTypes[file.type]) throw new Error('Muqova JPG, PNG, WebP yoki AVIF formatida bo‘lishi kerak.');
     if (file.size > playlistCoverMaxBytes) throw new Error('Muqova fayli 5 MB dan katta bo‘lmasligi kerak.');
-    const path = `tracks/${crypto.randomUUID()}.${playlistCoverTypes[file.type]}`;
+    const path = `${prefix}/${crypto.randomUUID()}.${playlistCoverTypes[file.type]}`;
     const { error: uploadError } = await client.storage.from(playlistCoverBucket).upload(path, file, {
       cacheControl:'31536000', upsert:false, contentType:file.type
     });
-    if (uploadError) throw new Error('Fayl yuklanmadi. Supabase SQL Editor’da supabase/playlist.sql migration’ini bajaring.');
+    if (uploadError) throw new Error('Fayl yuklanmadi. Supabase SQL Editor’da supabase/playlist.sql va supabase/playlist-folders.sql migration’larini bajaring.');
     const { data } = client.storage.from(playlistCoverBucket).getPublicUrl(path);
     return { path, url:data.publicUrl };
   };
@@ -56,8 +56,11 @@
   const esc = (value = '') => String(value).replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const isAdmin = async () => { const { data: { user } } = await client.auth.getUser(); if (!user) return null; const { data } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); return data ? user : null; };
   const showDashboard = async (user) => { if (!user) { loginView.hidden = false; dashboard.hidden = true; return; } const { data: adminRow, error: adminError } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); if (adminError || !adminRow) { await client.auth.signOut(); loginView.hidden = false; dashboard.hidden = true; error.textContent = adminError ? 'Admin jadvalini tekshirishda xatolik yuz berdi.' : 'Login muvaffaqiyatli, lekin bu account admin sifatida ruxsat etilmagan.'; error.hidden = false; return; } loginView.hidden = true; dashboard.hidden = false; $('admin-user').textContent = user.email || 'admin'; await loadAll(); };
-  const loadAll = async () => { setStatus('yuklanmoqda…'); const [settings, bookResult, mediaResult, updateResult, timelineResult, aboutResult, playlistResult, notesResult] = await Promise.all([client.from('now_settings').select('*').eq('id','default').maybeSingle(), client.from('books').select('*').order('position').order('created_at'), client.from('media_items').select('*').order('position').order('created_at'), client.from('updates').select('*').order('published_on', { ascending: false }).order('position').order('created_at', { ascending: false }), client.from('timeline_events').select('*').order('year').order('month', { ascending: true, nullsFirst: true }).order('position').order('created_at'), client.from('about_content').select('*').eq('id','default').maybeSingle(), client.from('playlist_tracks').select('*').order('position').order('created_at'), client.from('playlist_notes').select('*').order('position').order('created_at')]); if (settings.error || bookResult.error || mediaResult.error || updateResult.error || timelineResult.error || aboutResult.error) return setStatus('Ma’lumotlarni yuklashda xatolik yuz berdi. Supabase migration ishlaganini tekshiring.', true); books = bookResult.data || []; media = mediaResult.data || []; updates = updateResult.data || []; timeline = timelineResult.data || []; about = aboutResult.data || {}; playlistTracks = playlistResult.error ? [] : (playlistResult.data || []); playlistNotes = notesResult.error ? [] : (notesResult.data || []); $('focus-title').value = settings.data?.focus_title || ''; $('focus-subtitle').value = settings.data?.focus_subtitle || ''; fillAboutForm(); renderLists(); renderPlaylistList(); renderPlaylistNotesList(); setStatus(playlistResult.error || notesResult.error ? 'Playlist yoki notes jadvali topilmadi. Supabase SQL Editor’da supabase/playlist.sql migration’ini bajaring.' : ''); };
+  const loadAll = async () => { setStatus('yuklanmoqda…'); const [settings, bookResult, mediaResult, updateResult, timelineResult, aboutResult, playlistResult, folderResult, notesResult] = await Promise.all([client.from('now_settings').select('*').eq('id','default').maybeSingle(), client.from('books').select('*').order('position').order('created_at'), client.from('media_items').select('*').order('position').order('created_at'), client.from('updates').select('*').order('published_on', { ascending: false }).order('position').order('created_at', { ascending: false }), client.from('timeline_events').select('*').order('year').order('month', { ascending: true, nullsFirst: true }).order('position').order('created_at'), client.from('about_content').select('*').eq('id','default').maybeSingle(), client.from('playlist_tracks').select('*').order('position').order('created_at'), client.from('playlist_folders').select('*').order('position').order('created_at'), client.from('playlist_notes').select('*').order('position').order('created_at')]); if (settings.error || bookResult.error || mediaResult.error || updateResult.error || timelineResult.error || aboutResult.error) return setStatus('Ma’lumotlarni yuklashda xatolik yuz berdi. Supabase migration ishlaganini tekshiring.', true); books = bookResult.data || []; media = mediaResult.data || []; updates = updateResult.data || []; timeline = timelineResult.data || []; about = aboutResult.data || {}; playlistTracks = playlistResult.error ? [] : (playlistResult.data || []); playlistFolders = folderResult.error ? [] : (folderResult.data || []); playlistNotes = notesResult.error ? [] : (notesResult.data || []); $('focus-title').value = settings.data?.focus_title || ''; $('focus-subtitle').value = settings.data?.focus_subtitle || ''; fillAboutForm(); renderLists(); renderPlaylistFolders(); renderPlaylistList(); renderPlaylistNotesList(); setStatus(playlistResult.error || folderResult.error || notesResult.error ? 'Playlist, folder yoki notes jadvali topilmadi. Supabase SQL Editor’da supabase/playlist.sql va supabase/playlist-folders.sql migration’larini bajaring.' : ''); };
   const renderLists = () => { $('books-admin-list').innerHTML = books.length ? books.map((b) => `<div class="admin-list-item"><div><strong>${esc(b.title)}</strong><small>${esc(b.author)} · ${esc(b.status)}</small></div><div class="admin-list-actions"><button type="button" data-edit-book="${b.id}">tahrirlash</button><button type="button" data-delete-book="${b.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha kitob yo‘q.</p>'; $('media-admin-list').innerHTML = media.length ? media.map((m) => `<div class="admin-list-item"><div><strong>${esc(m.title)}</strong><small>${esc(m.type)} · ${esc(m.status)}${m.rating == null ? '' : ` · ${esc(m.rating)}/10`}</small></div><div class="admin-list-actions"><button type="button" data-edit-media="${m.id}">tahrirlash</button><button type="button" data-delete-media="${m.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha media yo‘q.</p>'; $('updates-admin-list').innerHTML = updates.length ? updates.map((u) => `<div class="admin-list-item"><div><strong>${esc(u.title)}</strong><small>${esc(u.published_on)} · ${u.is_published ? 'published' : 'yashirilgan'}</small></div><div class="admin-list-actions"><button type="button" data-edit-update="${u.id}">tahrirlash</button><button type="button" data-delete-update="${u.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha qayd yo‘q.</p>'; const months=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr']; const timelineDate=(item)=>item.month ? `${months[item.month-1]} ${item.year}` : String(item.year); $('timeline-admin-list').innerHTML = timeline.length ? timeline.map((item) => `<div class="admin-list-item"><div><strong>${esc(item.title)}</strong><small>${esc(timelineDate(item))} · ${item.is_current ? 'joriy' : 'tarix'} · ${item.is_published ? 'published' : 'yashirilgan'}</small></div><div class="admin-list-actions"><button type="button" data-edit-timeline="${item.id}">tahrirlash</button><button type="button" data-delete-timeline="${item.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha timeline voqeasi yo‘q.</p>'; };
+  const renderPlaylistFolders = () => { $('playlist-folder-admin-list').innerHTML = playlistFolders.length ? playlistFolders.map((folder) => `<div class="admin-list-item"><div><strong>${esc(folder.name)}</strong><small>${folder.is_published ? 'saytda ko‘rinadi' : 'qoralama'} · ${playlistTracks.filter((track) => track.folder_id === folder.id).length} ta trek</small></div><div class="admin-list-actions"><button type="button" data-edit-playlist-folder="${esc(folder.id)}">tahrirlash</button><button type="button" data-delete-playlist-folder="${esc(folder.id)}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha folder yo‘q.</p>'; const select = $('playlist-folder-id'); if (select) { const current = select.value; select.innerHTML = '<option value="">Folder tanlanmagan</option>' + playlistFolders.map((folder) => `<option value="${esc(folder.id)}">${esc(folder.name)}</option>`).join(''); if (playlistFolders.some((folder) => folder.id === current)) select.value = current; } };
+  const resetPlaylistFolderForm = () => { $('playlist-folder-form').reset(); $('playlist-folder-id').value=''; $('playlist-folder-color').value='#A8A5FF'; $('playlist-folder-color-picker').value='#A8A5FF'; $('playlist-folder-cover-file').value=''; $('playlist-folder-cover-url').value=''; showPlaylistCoverPreview('', 'Folder cover', 'playlist-folder-cover-preview'); $('playlist-folder-position').value=playlistFolders.reduce((max,item)=>Math.max(max,Number(item.position)||0),-1)+1; $('playlist-folder-published').checked=true; $('playlist-folder-form').hidden=false; $('playlist-folder-form').scrollIntoView({behavior:'smooth',block:'center'}); };
+  const fillPlaylistFolder = (folder) => { $('playlist-folder-id').value=folder.id||''; $('playlist-folder-name').value=folder.name||''; $('playlist-folder-description').value=folder.description||''; $('playlist-folder-color').value=folder.color||'#A8A5FF'; $('playlist-folder-color-picker').value=folder.color||'#A8A5FF'; $('playlist-folder-cover-file').value=''; $('playlist-folder-cover-url').value=folder.cover_url||''; showPlaylistCoverPreview(folder.cover_url||'', `${folder.name||'Folder'} cover`, 'playlist-folder-cover-preview'); $('playlist-folder-position').value=Number(folder.position)||0; $('playlist-folder-published').checked=!!folder.is_published; $('playlist-folder-form').hidden=false; $('playlist-folder-form').scrollIntoView({behavior:'smooth',block:'center'}); };
   const renderPlaylistList = () => {
     const platformLabels = { spotify:'Spotify', yandex:'Yandex Music', apple:'Apple Music', youtube:'YouTube' };
     $('playlist-admin-list').innerHTML = playlistTracks.length ? playlistTracks.map((track) => {
@@ -90,7 +93,7 @@
     $('playlist-cover-file').value = '';
     $('playlist-cover-url').value = '';
     showPlaylistCoverPreview('');
-    $('playlist-position').value = playlistTracks.reduce((max, item) => Math.max(max, Number(item.position) || 0), -1) + 1;
+    $('playlist-folder-id').value = ''; $('playlist-position').value = playlistTracks.reduce((max, item) => Math.max(max, Number(item.position) || 0), -1) + 1;
     $('playlist-published').checked = true;
     $('playlist-form').hidden = false;
     $('playlist-form').scrollIntoView({behavior:'smooth',block:'center'});
@@ -99,7 +102,7 @@
     const links = track.links && typeof track.links === 'object' ? track.links : {};
     $('playlist-id').value = track.id || '';
     $('playlist-title').value = track.title || '';
-    $('playlist-artist').value = track.artist || '';
+    $('playlist-artist').value = track.artist || ''; $('playlist-folder-id').value = track.folder_id || '';
     $('playlist-spotify').value = links.spotify || '';
     $('playlist-yandex').value = links.yandex || '';
     $('playlist-apple').value = links.apple || '';
@@ -177,6 +180,12 @@
     showPlaylistCoverPreview('');
   });
 
+  $('playlist-folder-cover-file').addEventListener('change', (event) => { const file=event.target.files?.[0]; if (!file) return; if (!playlistCoverTypes[file.type] || file.size > playlistCoverMaxBytes) { event.target.value=''; return; } playlistCoverPreviewObjectUrl=URL.createObjectURL(file); showPlaylistCoverPreview(playlistCoverPreviewObjectUrl, `${$('playlist-folder-name').value.trim() || 'Folder'} cover`, 'playlist-folder-cover-preview'); });
+  $('playlist-folder-cover-clear').addEventListener('click', () => { $('playlist-folder-cover-file').value=''; $('playlist-folder-cover-url').value=''; showPlaylistCoverPreview('', 'Folder cover', 'playlist-folder-cover-preview'); });
+  $('playlist-folder-color-picker').addEventListener('input', (e) => $('playlist-folder-color').value=e.target.value.toUpperCase());
+  $('playlist-folder-color').addEventListener('input', (e) => { if (validPlaylistHex(e.target.value)) $('playlist-folder-color-picker').value=e.target.value; });
+  $('reset-playlist-folder-color').addEventListener('click', () => { $('playlist-folder-color').value='#A8A5FF'; $('playlist-folder-color-picker').value='#A8A5FF'; });
+  $('playlist-folder-form').addEventListener('submit', async (e) => { e.preventDefault(); let uploaded=null; try { const color=$('playlist-folder-color').value.trim(); if (!validPlaylistHex(color)) throw new Error('Folder rangini #RRGGBB HEX shaklida kiriting.'); const previous=$('playlist-folder-cover-url').value||''; const file=$('playlist-folder-cover-file').files?.[0]||null; let cover=previous||null; if(file){ uploaded=await uploadPlaylistCover(file,'folders'); cover=uploaded.url; } await save('playlist_folders',$('playlist-folder-id').value,{name:$('playlist-folder-name').value.trim(),description:$('playlist-folder-description').value.trim(),color:color.toUpperCase(),cover_url:cover,position:Number($('playlist-folder-position').value)||0,is_published:$('playlist-folder-published').checked,updated_at:new Date().toISOString()}); if(previous&&previous!==cover) await removePlaylistCover(previous); $('playlist-folder-form').hidden=true; await loadAll(); setStatus('Folder saqlandi.'); } catch(error){ if(uploaded) await removePlaylistCover(uploaded.url); setStatus(error.message||'Folder saqlashda xatolik.',true); } });
   $('playlist-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     try {
@@ -205,6 +214,7 @@
       try {
         await save('playlist_tracks', $('playlist-id').value, {
           title: $('playlist-title').value.trim(),
+          folder_id: $('playlist-folder-id').value || null,
           artist: $('playlist-artist').value.trim(),
           links,
           platform_colors: platformColors,
@@ -296,6 +306,12 @@
       } catch { setStatus('Qisqa note o‘chirishda xatolik yuz berdi.', true); }
       return;
     }
+    const addFolder = event.target.closest('[data-add="playlist-folder"]');
+    if (addFolder) { resetPlaylistFolderForm(); return; }
+    const editFolder = event.target.closest('[data-edit-playlist-folder]');
+    if (editFolder) { const folder = playlistFolders.find((item) => item.id === editFolder.dataset.editPlaylistFolder); if (folder) fillPlaylistFolder(folder); return; }
+    const deleteFolder = event.target.closest('[data-delete-playlist-folder]');
+    if (deleteFolder && confirm('Bu folder o‘chirilsinmi? Treklar folderdan ajratiladi.')) { await client.from('playlist_folders').delete().eq('id', deleteFolder.dataset.deletePlaylistFolder); await loadAll(); return; }
     const add = event.target.closest('[data-add="playlist"]');
     if (add) { resetPlaylistForm(); return; }
     const edit = event.target.closest('[data-edit-playlist]');
