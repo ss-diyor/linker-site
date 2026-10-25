@@ -69,7 +69,7 @@
     }
     foldersGrid.replaceChildren();
     visibleFolders.forEach((folder) => {
-      const card = document.createElement('a'); card.className = 'playlist-folder-card'; card.href = `/playlist/folder/${encodeURIComponent(folder.id)}`; card.style.setProperty('--folder-color', safeColor(folder.color, '#A8A5FF'));
+      const card = document.createElement('a'); card.className = 'playlist-folder-card'; card.href = `/playlist?folder=${encodeURIComponent(folder.id)}`; card.style.setProperty('--folder-color', safeColor(folder.color, '#A8A5FF'));
       const visual = document.createElement('span'); visual.className = 'playlist-folder-visual'; visual.setAttribute('aria-hidden', 'true');
       const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); icon.setAttribute('viewBox', '0 0 160 120'); icon.setAttribute('focusable', 'false');
       const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path'); shape.setAttribute('d', 'M13 28a9 9 0 0 1 9-9h42l16 13h58a9 9 0 0 1 9 9v56a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z'); shape.setAttribute('fill', 'currentColor'); icon.append(shape);
@@ -85,8 +85,7 @@
       const body = document.createElement('span'); body.className = 'playlist-folder-body'; const name = document.createElement('strong'); name.textContent = folder.name; const countText = document.createElement('small'); countText.textContent = `${tracks.filter((track) => track.folder_id === folder.id).length} ta trek`; body.append(name, countText); card.append(visual, body); foldersGrid.append(card);
     });
     if (currentFolder) {
-      const canonicalPath = `/playlist/folder/${encodeURIComponent(currentFolder.id)}`;
-      if (!location.pathname.startsWith('/playlist/folder/')) history.replaceState(null, '', canonicalPath);
+      const canonicalPath = `/playlist?folder=${encodeURIComponent(currentFolder.id)}`;
       document.title = `${currentFolder.name} — Playlist — Diyorbek Sultanov`;
       document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://diyorsultanov.uz${canonicalPath}`);
     } else {
