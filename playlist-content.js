@@ -36,7 +36,7 @@
     const currentFolderPanel = document.getElementById('playlist-current-folder');
     if (foldersLoading) foldersLoading.hidden = true;
     if (folderCount) { folderCount.textContent = currentFolder ? `${tracks.filter((track) => track.folder_id === currentFolder.id).length} ta trek` : `${visibleFolders.length} ta folder`; folderCount.hidden = false; }
-    if (foldersEmpty) foldersEmpty.hidden = visibleFolders.length > 0 || Boolean(selectedFolder);
+    if (foldersEmpty) foldersEmpty.hidden = visibleFolders.length > 0 || Boolean(currentFolder);
     foldersGrid.hidden = visibleFolders.length === 0 || Boolean(currentFolder);
     if (currentFolderPanel) {
       currentFolderPanel.hidden = !currentFolder;
