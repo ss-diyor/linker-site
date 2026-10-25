@@ -19,6 +19,11 @@
   status = 200
 
 [[redirects]]
+  from   = "/playlist/folder/*"
+  to     = "/playlist.html"
+  status = 200
+
+[[redirects]]
   from   = "/tools"
   to     = "/tools.html"
   status = 200

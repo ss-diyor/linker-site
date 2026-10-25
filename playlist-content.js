@@ -27,13 +27,23 @@
     }
   };
   const safeImageUrl = (value) => safeUrl(value);
+  const requestedFolderId = () => {
+    const match = location.pathname.match(/^\/playlist\/folder\/([^/]+)\/?$/);
+    if (match) { try { return decodeURIComponent(match[1]); } catch { return ''; } }
+    return new URLSearchParams(location.search).get('folder') || '';
+  };
   const renderFolders = (folders, tracks) => {
     if (!foldersGrid) return;
-    const params = new URLSearchParams(location.search);
-    const selectedFolder = params.get('folder');
+    const selectedFolder = requestedFolderId();
     const visibleFolders = Array.isArray(folders) ? folders : [];
     const currentFolder = visibleFolders.find((folder) => folder.id === selectedFolder);
     const currentFolderPanel = document.getElementById('playlist-current-folder');
+    const foldersSection = document.getElementById('playlist-folders-section');
+    const tracksSection = document.querySelector('.playlist-section');
+    if (foldersSection) foldersSection.hidden = Boolean(currentFolder);
+    if (tracksSection) tracksSection.hidden = !currentFolder;
+    const notesSection = document.getElementById('playlist-notes-section');
+    if (notesSection) notesSection.hidden = true;
     if (foldersLoading) foldersLoading.hidden = true;
     if (folderCount) { folderCount.textContent = currentFolder ? `${tracks.filter((track) => track.folder_id === currentFolder.id).length} ta trek` : `${visibleFolders.length} ta folder`; folderCount.hidden = false; }
     if (foldersEmpty) foldersEmpty.hidden = visibleFolders.length > 0 || Boolean(currentFolder);
@@ -42,23 +52,47 @@
       currentFolderPanel.hidden = !currentFolder;
       currentFolderPanel.replaceChildren();
       if (currentFolder) {
-        const back = document.createElement('a'); back.className = 'playlist-folder-back'; back.href = '/playlist'; back.textContent = '← Barcha folderlar';
+        const breadcrumb = document.createElement('nav'); breadcrumb.className = 'playlist-folder-breadcrumb'; breadcrumb.setAttribute('aria-label', 'Breadcrumb');
+        const homeLink = document.createElement('a'); homeLink.href = '/'; homeLink.textContent = 'Bosh sahifa';
+        const playlistLink = document.createElement('a'); playlistLink.href = '/playlist'; playlistLink.textContent = 'Playlist folderlari';
+        const currentName = document.createElement('span'); currentName.setAttribute('aria-current', 'page'); currentName.textContent = currentFolder.name;
+        breadcrumb.append(homeLink, document.createTextNode(' / '), playlistLink, document.createTextNode(' / '), currentName);
         const cover = document.createElement('div'); cover.className = 'playlist-current-folder-cover'; cover.style.setProperty('--folder-color', safeColor(currentFolder.color, '#A8A5FF'));
         if (safeImageUrl(currentFolder.cover_url)) { const image = document.createElement('img'); image.src = safeImageUrl(currentFolder.cover_url); image.alt = ''; image.loading = 'eager'; cover.append(image); }
-        else { const mark = document.createElement('span'); mark.setAttribute('aria-hidden', 'true'); mark.textContent = '♫'; cover.append(mark); }
+        else { const mark = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); mark.setAttribute('viewBox', '0 0 160 120'); mark.setAttribute('aria-hidden', 'true'); mark.innerHTML = '<path d="M13 28a9 9 0 0 1 9-9h42l16 13h58a9 9 0 0 1 9 9v56a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z" fill="currentColor"/><path d="M13 45h134v52a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z" fill="white" fill-opacity=".13"/>'; cover.append(mark); }
         const details = document.createElement('div'); details.className = 'playlist-current-folder-details';
         const title = document.createElement('h2'); title.textContent = currentFolder.name;
         details.append(title);
         if (currentFolder.description?.trim()) { const description = document.createElement('p'); description.textContent = currentFolder.description.trim(); details.append(description); }
-        currentFolderPanel.append(back, cover, details);
+        currentFolderPanel.append(breadcrumb, cover, details);
       }
     }
     foldersGrid.replaceChildren();
     visibleFolders.forEach((folder) => {
-      const card = document.createElement('a'); card.className = 'playlist-folder-card' + (selectedFolder === folder.id ? ' is-active' : ''); card.href = `/playlist?folder=${encodeURIComponent(folder.id)}`; card.style.setProperty('--folder-color', safeColor(folder.color, '#a8a5ff'));
-      if (folder.cover_url && safeImageUrl(folder.cover_url)) { const image = document.createElement('img'); image.src = safeImageUrl(folder.cover_url); image.alt = `${folder.name} cover`; image.loading = 'lazy'; card.append(image); }
-      const body = document.createElement('span'); body.className = 'playlist-folder-body'; const name = document.createElement('strong'); name.textContent = folder.name; const countText = document.createElement('small'); countText.textContent = `${tracks.filter((track) => track.folder_id === folder.id).length} ta trek`; body.append(name, countText); card.append(body); foldersGrid.append(card);
+      const card = document.createElement('a'); card.className = 'playlist-folder-card'; card.href = `/playlist/folder/${encodeURIComponent(folder.id)}`; card.style.setProperty('--folder-color', safeColor(folder.color, '#A8A5FF'));
+      const visual = document.createElement('span'); visual.className = 'playlist-folder-visual'; visual.setAttribute('aria-hidden', 'true');
+      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); icon.setAttribute('viewBox', '0 0 160 120'); icon.setAttribute('focusable', 'false');
+      const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path'); shape.setAttribute('d', 'M13 28a9 9 0 0 1 9-9h42l16 13h58a9 9 0 0 1 9 9v56a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z'); shape.setAttribute('fill', 'currentColor'); icon.append(shape);
+      const coverUrl = safeImageUrl(folder.cover_url);
+      if (coverUrl) {
+        const clipId = `playlist-folder-cover-${String(folder.id).replace(/[^a-zA-Z0-9_-]/g, '')}`;
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const clip = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath'); clip.id = clipId;
+        const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); clipRect.setAttribute('x', '20'); clipRect.setAttribute('y', '43'); clipRect.setAttribute('width', '120'); clipRect.setAttribute('height', '48'); clipRect.setAttribute('rx', '5'); clip.append(clipRect); defs.append(clip); icon.append(defs);
+        const image = document.createElementNS('http://www.w3.org/2000/svg', 'image'); image.setAttribute('href', coverUrl); image.setAttribute('x', '20'); image.setAttribute('y', '43'); image.setAttribute('width', '120'); image.setAttribute('height', '48'); image.setAttribute('preserveAspectRatio', 'xMidYMid slice'); image.setAttribute('clip-path', `url(#${clipId})`); icon.append(image);
+      }
+      visual.append(icon);
+      const body = document.createElement('span'); body.className = 'playlist-folder-body'; const name = document.createElement('strong'); name.textContent = folder.name; const countText = document.createElement('small'); countText.textContent = `${tracks.filter((track) => track.folder_id === folder.id).length} ta trek`; body.append(name, countText); card.append(visual, body); foldersGrid.append(card);
     });
+    if (currentFolder) {
+      const canonicalPath = `/playlist/folder/${encodeURIComponent(currentFolder.id)}`;
+      if (!location.pathname.startsWith('/playlist/folder/')) history.replaceState(null, '', canonicalPath);
+      document.title = `${currentFolder.name} — Playlist — Diyorbek Sultanov`;
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://diyorsultanov.uz${canonicalPath}`);
+    } else {
+      document.title = 'Playlist — Diyorbek Sultanov';
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://diyorsultanov.uz/playlist');
+    }
   };
 
   const renderNotes = (source) => {
@@ -66,7 +100,7 @@
     const notesList = document.getElementById('playlist-notes-list');
     if (!section || !notesList) return;
     const notes = Array.isArray(source) ? source.filter((note) => note && typeof note.content === 'string' && note.content.trim()) : [];
-    section.hidden = notes.length === 0;
+    section.hidden = true;
     const fragment = document.createDocumentFragment();
     notes.forEach((note) => {
       const item = document.createElement('li');
@@ -171,9 +205,9 @@
       }
       const tracks = data || [];
       renderFolders(foldersError ? [] : (folders || []), tracks);
-      const selectedFolder = new URLSearchParams(location.search).get('folder');
-      render(foldersError ? tracks : selectedFolder ? tracks.filter((track) => track.folder_id === selectedFolder) : []);
-      if (!selectedFolder && !foldersError) { if (empty) empty.hidden = true; if (list) list.hidden = true; if (count) { count.textContent = 'Folder ichidan trek tanlang'; count.hidden = false; } }
+      const selectedFolder = requestedFolderId();
+      const folderExists = (folders || []).some((folder) => folder.id === selectedFolder);
+      render(!foldersError && folderExists ? tracks.filter((track) => track.folder_id === selectedFolder) : [], Boolean(foldersError));
       try {
         const { data: notes, error: notesError } = await client.from('playlist_notes')
           .select('content')
