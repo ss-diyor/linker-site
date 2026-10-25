@@ -2,3 +2,5 @@
 /tools/qr-code-generator /qr-code-generator 200
 /tools/word-counter /word-counter 200
 /tools/markdown-editor /markdown-editor 200
+/admin /admin.html 200
+/playlist /playlist.html 200
