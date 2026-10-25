@@ -57,7 +57,32 @@
               <label id="markdown-source-title" for="markdown-source">Markdown matn</label>
               <span>tahrirlash</span>
             </div>
-            <textarea id="markdown-source" class="markdown-source" spellcheck="false" placeholder="# Sarlavha&#10;&#10;**Qalin matn**, *kursiv matn*&#10;&#10;- Ro‘yxat bandi&#10;- Yana bir band&#10;&#10;&gt; Iqtibos&#10;&#10;```js&#10;console.log('Salom!');&#10;```&#10;&#10;| Ustun | Qiymat |&#10;| --- | --- |&#10;| Namuna | 123 |" aria-describedby="markdown-help"></textarea>
+            <p id="markdown-format-help" class="markdown-format-help">Matnni yozing, formatlash uchun so‘z yoki jumlani belgilang va yuqoridagi tugmani bosing. Belgilanmagan bo‘lsa, namuna kiritilib tanlanadi. Tagiga chizish previewda HTML orqali ko‘rsatiladi.</p>
+            <input id="markdown-open-file" class="markdown-file-input" type="file" accept=".md,.markdown,text/markdown,text/plain" tabindex="-1" aria-hidden="true">
+            <div id="markdown-format-toolbar" class="markdown-format-toolbar" role="toolbar" aria-label="Markdown formatlash tugmalari" aria-describedby="markdown-format-help">
+              <button class="markdown-format-button" type="button" data-md-action="open" aria-label="Markdown faylni ochish" title="Markdown faylni ochish"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 8.5V5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1.5"/></svg></button>
+              <button class="markdown-format-button" type="button" data-md-action="undo" aria-label="Ortga qaytarish" title="Ortga qaytarish" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 0 14h-2"/></svg></button>
+              <button class="markdown-format-button" type="button" data-md-action="redo" aria-label="Qayta bajarish" title="Qayta bajarish" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0 0 14h2"/></svg></button>
+              <span class="markdown-toolbar-divider" role="separator" aria-orientation="vertical"></span>
+              <button class="markdown-format-button markdown-format-text" type="button" data-md-action="heading" aria-label="Sarlavha (H2)" title="Sarlavha (H2)">H2</button>
+              <button class="markdown-format-button markdown-format-text is-bold" type="button" data-md-action="bold" aria-label="Qalin (Ctrl+B)" title="Qalin (Ctrl+B)">B</button>
+              <button class="markdown-format-button markdown-format-text is-italic" type="button" data-md-action="italic" aria-label="Kursiv (Ctrl+I)" title="Kursiv (Ctrl+I)">I</button>
+              <button class="markdown-format-button markdown-format-text is-underline" type="button" data-md-action="underline" aria-label="Tagiga chizish (Ctrl+U)" title="Tagiga chizish (Ctrl+U)">U</button>
+              <button class="markdown-format-button markdown-format-text is-strike" type="button" data-md-action="strike" aria-label="Ustidan chizish" title="Ustidan chizish">S</button>
+              <span class="markdown-toolbar-divider" role="separator" aria-orientation="vertical"></span>
+              <button class="markdown-format-button markdown-format-text" type="button" data-md-action="ul" aria-label="Belgili ro‘yxat" title="Belgili ro‘yxat">☷</button>
+              <button class="markdown-format-button markdown-format-text" type="button" data-md-action="ol" aria-label="Raqamli ro‘yxat" title="Raqamli ro‘yxat">1.</button>
+              <button class="markdown-format-button" type="button" data-md-action="task" aria-label="Vazifalar ro‘yxati" title="Vazifalar ro‘yxati"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1 1 2-2m-3 7 1 1 2-2m-3 7 1 1 2-2"/></svg></button>
+              <button class="markdown-format-button markdown-format-text" type="button" data-md-action="quote" aria-label="Iqtibos" title="Iqtibos">❞</button>
+              <span class="markdown-toolbar-divider" role="separator" aria-orientation="vertical"></span>
+              <button class="markdown-format-button markdown-format-text is-code" type="button" data-md-action="inline-code" aria-label="Qator ichidagi kod" title="Qator ichidagi kod">&lt;/&gt;</button>
+              <button class="markdown-format-button" type="button" data-md-action="code-block" aria-label="Kod bloki" title="Kod bloki"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></button>
+              <button class="markdown-format-button" type="button" data-md-action="link" aria-label="Havola qo‘shish" title="Havola qo‘shish"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3A5 5 0 0 0 13 2.93l-1.72 1.72"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3A5 5 0 0 0 11 21.07l1.72-1.72"/></svg></button>
+              <button class="markdown-format-button" type="button" data-md-action="image" aria-label="Rasm qo‘shish" title="Rasm qo‘shish"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/></svg></button>
+              <button class="markdown-format-button" type="button" data-md-action="table" aria-label="Jadval qo‘shish" title="Jadval qo‘shish"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M3 15h18M9 4v16M15 4v16"/></svg></button>
+              <button class="markdown-format-button markdown-format-text" type="button" data-md-action="rule" aria-label="Ajratuvchi chiziq" title="Ajratuvchi chiziq">—</button>
+            </div>
+            <textarea id="markdown-source" class="markdown-source" spellcheck="false" aria-describedby="markdown-help markdown-format-help"></textarea>
           </section>
           <section class="markdown-pane" aria-labelledby="markdown-preview-title">
             <div class="markdown-pane-header">

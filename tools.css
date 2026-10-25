@@ -50,6 +50,23 @@
 .markdown-editor-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; }
 .markdown-editor-actions button { min-height: 2.4rem; }
 .markdown-help { margin: 0 0 .9rem; color: var(--subtle); font-size: .68rem; line-height: 1.6; }
+.markdown-format-help { margin:0; padding:.65rem .75rem; border-bottom:1px solid var(--line); background:var(--accent-soft); color:var(--subtle); font-size:.65rem; line-height:1.6; }
+.markdown-format-toolbar { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:.2rem; min-width:0; overflow-x:auto; padding:.35rem .4rem; border-bottom:1px solid var(--line); background:var(--bg); scrollbar-width:thin; scrollbar-color:var(--line-strong) transparent; }
+.markdown-format-toolbar::-webkit-scrollbar { height:4px; }
+.markdown-format-toolbar::-webkit-scrollbar-thumb { background:var(--line-strong); }
+.markdown-format-button { display:inline-grid; width:2rem; height:2rem; flex:0 0 2rem; place-items:center; padding:0; border:1px solid transparent; border-radius:.3rem; background:transparent; color:var(--muted); cursor:pointer; font:500 .77rem/1 var(--mono); transition:background .15s ease,color .15s ease,border-color .15s ease; }
+.markdown-format-button svg { width:1rem; height:1rem; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.markdown-format-button:hover:not(:disabled) { border-color:var(--line); background:var(--accent-soft); color:var(--text); }
+.markdown-format-button:disabled { cursor:not-allowed; opacity:.35; }
+.markdown-format-button:focus-visible { position:relative; z-index:1; outline:2px solid var(--accent-strong); outline-offset:-2px; }
+.markdown-format-text { font-size:.72rem; }
+.markdown-format-text.is-bold { font-weight:700; }
+.markdown-format-text.is-italic { font-style:italic; }
+.markdown-format-text.is-underline { text-decoration:underline; text-underline-offset:2px; }
+.markdown-format-text.is-strike { text-decoration:line-through; }
+.markdown-format-text.is-code { font-size:.62rem; letter-spacing:-.08em; }
+.markdown-toolbar-divider { width:1px; height:1.15rem; flex:0 0 1px; margin:0 .22rem; background:var(--line-strong); }
+.markdown-file-input { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); white-space:nowrap; }
 .markdown-editor-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
 .markdown-pane { min-width: 0; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
 .markdown-pane-header { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .7rem .8rem; border-bottom: 1px solid var(--line); }
@@ -100,6 +117,8 @@
   .markdown-editor-section { margin-top: 2.25rem; padding: 1rem .55rem; }
   .markdown-editor-actions { width: 100%; }
   .markdown-editor-actions button { flex: 1 1 auto; }
+  .markdown-format-help { padding:.55rem .6rem; }
+  .markdown-format-toolbar { margin-inline:-.1rem; }
 }
 
 .tool-card-list { margin: 0; padding-left: 2.25rem; list-style-type: decimal-leading-zero; color: var(--faint); font-size: .68rem; }
