@@ -136,7 +136,7 @@
 .playlist-folder-body strong { font-size:.9rem; }
 .playlist-folder-body small { margin-top:.25rem; }
 @media(max-width:620px) {
-  .playlist-folders-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.1rem .55rem; }
+  .playlist-folders-grid { position:relative; left:-.75rem; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.1rem .55rem; }
   .playlist-folder-card { grid-template-rows:7.1rem auto; gap:.15rem; padding:.1rem 0; }
   .playlist-folder-visual { min-height:0; }
   .playlist-folder-visual svg { width:min(7.2rem,92%); max-height:6.8rem; }
