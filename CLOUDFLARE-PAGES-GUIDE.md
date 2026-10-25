@@ -153,8 +153,8 @@ Admin panelda login ishlamasa, avval quyidagilarni tekshiring:
 1. Cloudflare Dashboard’da **Workers & Pages** → loyihangizni oching.
 2. **Custom domains** → **Set up a domain** ni tanlang.
 3. Yangi domainni kiriting.
-4. Agar root domain ishlatilsa, masalan `sultanov.space`, Cloudflare nameserver’larini domain registrar’da o‘rnating.
-5. Agar subdomain ishlatilsa, masalan `www.sultanov.space`, DNS provider’da CNAME record yarating:
+4. Agar root domain ishlatilsa, masalan `diyorsultanov.uz`, Cloudflare nameserver’larini domain registrar’da o‘rnating.
+5. Agar subdomain ishlatilsa, masalan `www.diyorsultanov.uz`, DNS provider’da CNAME record yarating:
 
 ```text
 Type:  CNAME

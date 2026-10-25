@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin.html
-Sitemap: https://sultanov.space/sitemap.xml
+Sitemap: https://diyorsultanov.uz/sitemap.xml
