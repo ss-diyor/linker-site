@@ -143,3 +143,9 @@
   .playlist-folder-body strong { font-size:.75rem; }
   .playlist-folder-body small { font-size:.6rem; }
 }
+
+@media(min-width:900px) {
+  .playlist-page .minimal-page { width:min(calc(100% - 6rem),1280px); }
+  .playlist-page .minimal-main { width:100%; }
+  .playlist-folders-grid { width:100%; grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
