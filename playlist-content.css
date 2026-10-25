@@ -145,7 +145,7 @@
 }
 
 @media(min-width:900px) {
-  .playlist-page .minimal-page { width:min(calc(100% - 6rem),1280px); }
+  .playlist-page .minimal-page { width:min(calc(100% - 4rem),1600px); }
   .playlist-page .minimal-main { width:100%; }
-  .playlist-folders-grid { width:100%; grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .playlist-folders-grid { width:100%; grid-template-columns:repeat(auto-fit,minmax(calc((100% - 6rem) / 5),1fr)); }
 }
