@@ -49,16 +49,15 @@
       const color = item && typeof item === 'object' && colorIsValid(item.color) ? item.color : '';
       const imageUrl = item && typeof item === 'object' ? secureImageUrl(item.image_url) : '';
       const previewId = `about-interest-preview-${index + 1}`;
-      const initial = Array.from(String(name))[0] || '?';
       const colorStyle = color ? ` style="--interest-color:${color}"` : '';
-      const artClass = imageUrl ? 'about-interest-preview-art has-image' : 'about-interest-preview-art';
-      const imageHtml = imageUrl ? `<img class="about-interest-preview-image" src="${esc(imageUrl)}" alt="" loading="lazy" decoding="async">` : '';
+      const tag = imageUrl
+        ? `<button class="about-interest-tag" type="button" aria-expanded="false" aria-controls="${previewId}">${esc(name)}</button>`
+        : `<span class="about-interest-tag about-interest-tag-static">${esc(name)}</span>`;
+      const preview = imageUrl
+        ? `<img class="about-interest-preview-image" id="${previewId}" src="${esc(imageUrl)}" alt="" aria-hidden="true" loading="lazy" decoding="async">`
+        : '';
       return `<span class="about-interest-item"${colorStyle}>
-        <button class="about-interest-tag" type="button" aria-expanded="false" aria-controls="${previewId}" aria-describedby="${previewId}">${esc(name)}</button>
-        <span class="about-interest-preview" id="${previewId}" role="tooltip" aria-hidden="true">
-          <span class="${artClass}" aria-hidden="true">${imageHtml}<span class="about-interest-preview-initial"${imageUrl ? ' hidden' : ''}>${esc(initial)}</span><span class="about-interest-preview-index">DI · ${String(index + 1).padStart(2, '0')}</span></span>
-          <span class="about-interest-preview-copy"><span class="about-interest-preview-label">qiziqish</span><strong>${esc(name)}</strong></span>
-        </span>
+        ${tag}${preview}
       </span>`;
     }).join('');
   };
@@ -90,11 +89,11 @@
 
     interestsList.addEventListener('pointerout', (event) => {
       if (event.pointerType === 'touch') return;
-      const trigger = event.target.closest('.about-interest-tag');
-      if (!trigger || !interestsList.contains(trigger)) return;
-      const item = trigger.closest('.about-interest-item');
+      const item = event.target.closest('.about-interest-item');
+      if (!item || !interestsList.contains(item)) return;
       if (item && item.contains(event.relatedTarget)) return;
       if (item && item.matches(':focus-within')) return;
+      const trigger = item.querySelector('.about-interest-tag:not(.about-interest-tag-static)');
       setInterestPreviewOpen(trigger, false);
     });
 
@@ -137,8 +136,14 @@
       const image = event.target;
       if (!image.matches || !image.matches('.about-interest-preview-image')) return;
       image.hidden = true;
-      const fallback = image.parentElement.querySelector('.about-interest-preview-initial');
-      if (fallback) fallback.hidden = false;
+      const item = image.closest('.about-interest-item');
+      const trigger = item && item.querySelector('.about-interest-tag:not(.about-interest-tag-static)');
+      if (item) item.classList.add('no-preview');
+      if (trigger) {
+        setInterestPreviewOpen(trigger, false);
+        trigger.disabled = true;
+        trigger.classList.add('about-interest-tag-static');
+      }
     }, true);
   };
 
