@@ -52,11 +52,6 @@
       currentFolderPanel.hidden = !currentFolder;
       currentFolderPanel.replaceChildren();
       if (currentFolder) {
-        const breadcrumb = document.createElement('nav'); breadcrumb.className = 'playlist-folder-breadcrumb'; breadcrumb.setAttribute('aria-label', 'Breadcrumb');
-        const homeLink = document.createElement('a'); homeLink.href = '/'; homeLink.textContent = 'Bosh sahifa';
-        const playlistLink = document.createElement('a'); playlistLink.href = '/playlist'; playlistLink.textContent = 'Playlist folderlari';
-        const currentName = document.createElement('span'); currentName.setAttribute('aria-current', 'page'); currentName.textContent = currentFolder.name;
-        breadcrumb.append(homeLink, document.createTextNode(' / '), playlistLink, document.createTextNode(' / '), currentName);
         const cover = document.createElement('div'); cover.className = 'playlist-current-folder-cover'; cover.style.setProperty('--folder-color', safeColor(currentFolder.color, '#A8A5FF'));
         if (safeImageUrl(currentFolder.cover_url)) { const image = document.createElement('img'); image.src = safeImageUrl(currentFolder.cover_url); image.alt = ''; image.loading = 'eager'; cover.append(image); }
         else { const mark = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); mark.setAttribute('viewBox', '0 0 160 120'); mark.setAttribute('aria-hidden', 'true'); mark.innerHTML = '<path d="M13 28a9 9 0 0 1 9-9h42l16 13h58a9 9 0 0 1 9 9v56a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z" fill="currentColor"/><path d="M13 45h134v52a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z" fill="white" fill-opacity=".13"/>'; cover.append(mark); }
@@ -64,7 +59,7 @@
         const title = document.createElement('h2'); title.textContent = currentFolder.name;
         details.append(title);
         if (currentFolder.description?.trim()) { const description = document.createElement('p'); description.textContent = currentFolder.description.trim(); details.append(description); }
-        currentFolderPanel.append(breadcrumb, cover, details);
+        currentFolderPanel.append(cover, details);
       }
     }
     foldersGrid.replaceChildren();
