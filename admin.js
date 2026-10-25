@@ -65,9 +65,6 @@
     playlistFolders = data || [];
     renderPlaylistFolders();
   };
-  $('playlist-folder-id').addEventListener('focus', async () => {
-    try { await refreshPlaylistFolders(); } catch { setStatus('Folderlarni yuklashda xatolik yuz berdi.', true); }
-  });
   const resetPlaylistFolderForm = () => { $('playlist-folder-form').reset(); $('playlist-folder-id').value=''; $('playlist-folder-color').value='#A8A5FF'; $('playlist-folder-color-picker').value='#A8A5FF'; $('playlist-folder-cover-file').value=''; $('playlist-folder-cover-url').value=''; showPlaylistCoverPreview('', 'Folder cover', 'playlist-folder-cover-preview'); $('playlist-folder-position').value=playlistFolders.reduce((max,item)=>Math.max(max,Number(item.position)||0),-1)+1; $('playlist-folder-published').checked=true; $('playlist-folder-form').hidden=false; $('playlist-folder-form').scrollIntoView({behavior:'smooth',block:'center'}); };
   const fillPlaylistFolder = (folder) => { $('playlist-folder-id').value=folder.id||''; $('playlist-folder-name').value=folder.name||''; $('playlist-folder-description').value=folder.description||''; $('playlist-folder-color').value=folder.color||'#A8A5FF'; $('playlist-folder-color-picker').value=folder.color||'#A8A5FF'; $('playlist-folder-cover-file').value=''; $('playlist-folder-cover-url').value=folder.cover_url||''; showPlaylistCoverPreview(folder.cover_url||'', `${folder.name||'Folder'} cover`, 'playlist-folder-cover-preview'); $('playlist-folder-position').value=Number(folder.position)||0; $('playlist-folder-published').checked=!!folder.is_published; $('playlist-folder-form').hidden=false; $('playlist-folder-form').scrollIntoView({behavior:'smooth',block:'center'}); };
   const renderPlaylistList = () => {
