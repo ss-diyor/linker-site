@@ -63,20 +63,16 @@
       const trackCount = playlistTracks.filter((track) => track.folder_id === folder.id).length;
       return `<div class="admin-list-item"><div><strong>${esc(folder.name)}</strong><small>${folder.is_published ? 'saytda ko‘rinadi' : 'qoralama'} · ${trackCount} ta trek · ${esc(folder.color || '#A8A5FF')}</small></div><div class="admin-list-actions"><button type="button" data-edit-playlist-folder="${esc(folder.id)}">tahrirlash</button><button type="button" data-delete-playlist-folder="${esc(folder.id)}">o‘chirish</button></div></div>`;
     }).join('') : '<p class="admin-note">Hozircha folder yo‘q. “+ yangi folder” tugmasi orqali yarating.</p>';
-    const select = $('playlist-folder-id');
+    const selection = $('playlist-folder-id');
     const picker = $('playlist-folder-options');
-    if (!select || !picker) return;
-    const current = select.value;
-    select.replaceChildren(new Option('Folder tanlanmagan', ''));
+    if (!selection || !picker) return;
+    const current = selection.value;
     picker.replaceChildren();
     const noFolder = document.createElement('button');
     noFolder.type = 'button'; noFolder.className = 'playlist-folder-option'; noFolder.dataset.playlistFolderOption = '';
     noFolder.setAttribute('aria-pressed', current ? 'false' : 'true');
-    noFolder.innerHTML = '<span class="playlist-folder-option-icon" aria-hidden="true">♪</span><span><strong>Foldersiz</strong><small>Umumiy ro‘yxatda ko‘rinadi</small></span>';
-    picker.append(noFolder);
+    noFolder.innerHTML = '<span class="playlist-folder-option-icon" aria-hidden="true">♪</span><span class="playlist-folder-option-copy"><strong>Foldersiz</strong><small>Umumiy ro‘yxatda ko‘rinadi</small></span>';
     playlistFolders.forEach((folder) => {
-      const option = new Option(folder.name, folder.id);
-      select.add(option);
       const button = document.createElement('button');
       button.type = 'button'; button.className = 'playlist-folder-option';
       button.dataset.playlistFolderOption = folder.id;
@@ -89,7 +85,8 @@
       const meta = document.createElement('small'); meta.textContent = `${playlistTracks.filter((track) => track.folder_id === folder.id).length} ta trek${folder.is_published ? '' : ' · qoralama'}`;
       label.append(name, meta); button.append(icon, label); picker.append(button);
     });
-    if (playlistFolders.some((folder) => folder.id === current)) select.value = current;
+    picker.append(noFolder);
+    if (!playlistFolders.some((folder) => folder.id === current)) selection.value = '';
     $('playlist-folder-picker-help').textContent = playlistFolders.length ? 'Tanlangan folder ichida treklar alohida ko‘rsatiladi.' : 'Hozircha folder yo‘q. Avval “Playlist folderlari” bo‘limida folder yarating.';
   };
   const syncPlaylistFolderSelection = () => {
