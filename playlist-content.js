@@ -32,10 +32,27 @@
     const params = new URLSearchParams(location.search);
     const selectedFolder = params.get('folder');
     const visibleFolders = Array.isArray(folders) ? folders : [];
+    const currentFolder = visibleFolders.find((folder) => folder.id === selectedFolder);
+    const currentFolderPanel = document.getElementById('playlist-current-folder');
     if (foldersLoading) foldersLoading.hidden = true;
-    if (folderCount) { folderCount.textContent = `${visibleFolders.length} ta folder`; folderCount.hidden = false; }
-    if (foldersEmpty) foldersEmpty.hidden = visibleFolders.length > 0;
-    foldersGrid.hidden = visibleFolders.length === 0;
+    if (folderCount) { folderCount.textContent = currentFolder ? `${tracks.filter((track) => track.folder_id === currentFolder.id).length} ta trek` : `${visibleFolders.length} ta folder`; folderCount.hidden = false; }
+    if (foldersEmpty) foldersEmpty.hidden = visibleFolders.length > 0 || Boolean(selectedFolder);
+    foldersGrid.hidden = visibleFolders.length === 0 || Boolean(currentFolder);
+    if (currentFolderPanel) {
+      currentFolderPanel.hidden = !currentFolder;
+      currentFolderPanel.replaceChildren();
+      if (currentFolder) {
+        const back = document.createElement('a'); back.className = 'playlist-folder-back'; back.href = '/playlist'; back.textContent = '← Barcha folderlar';
+        const cover = document.createElement('div'); cover.className = 'playlist-current-folder-cover'; cover.style.setProperty('--folder-color', safeColor(currentFolder.color, '#A8A5FF'));
+        if (safeImageUrl(currentFolder.cover_url)) { const image = document.createElement('img'); image.src = safeImageUrl(currentFolder.cover_url); image.alt = ''; image.loading = 'eager'; cover.append(image); }
+        else { const mark = document.createElement('span'); mark.setAttribute('aria-hidden', 'true'); mark.textContent = '♫'; cover.append(mark); }
+        const details = document.createElement('div'); details.className = 'playlist-current-folder-details';
+        const title = document.createElement('h2'); title.textContent = currentFolder.name;
+        details.append(title);
+        if (currentFolder.description?.trim()) { const description = document.createElement('p'); description.textContent = currentFolder.description.trim(); details.append(description); }
+        currentFolderPanel.append(back, cover, details);
+      }
+    }
     foldersGrid.replaceChildren();
     visibleFolders.forEach((folder) => {
       const card = document.createElement('a'); card.className = 'playlist-folder-card' + (selectedFolder === folder.id ? ' is-active' : ''); card.href = `/playlist?folder=${encodeURIComponent(folder.id)}`; card.style.setProperty('--folder-color', safeColor(folder.color, '#a8a5ff'));

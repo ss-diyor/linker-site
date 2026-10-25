@@ -54,3 +54,18 @@
 .playlist-folder-body small { display:block; margin-top:.3rem; color:var(--subtle); font-size:.65rem; }
 .playlist-folder-card:hover,.playlist-folder-card.is-active { transform:translateY(-.2rem); border-color:var(--folder-color); box-shadow:0 .5rem 1.5rem color-mix(in srgb,var(--folder-color) 15%,transparent); }
 @media(max-width:620px){.playlist-folders-section{margin-top:2.25rem}.playlist-folders-grid{grid-template-columns:1fr}.playlist-folder-card{min-height:8rem}}
+
+.playlist-current-folder { display:grid; grid-template-columns:auto 5.5rem minmax(0,1fr); align-items:center; gap:1rem; margin-top:1.2rem; padding:1rem; border:1px solid color-mix(in srgb,var(--folder-color,#A8A5FF) 45%,var(--line)); background:color-mix(in srgb,var(--folder-color,#A8A5FF) 8%,var(--surface)); }
+.playlist-current-folder[hidden] { display:none; }
+.playlist-folder-back { grid-column:1/-1; justify-self:start; color:var(--subtle); font-size:.68rem; }
+.playlist-folder-back:hover { color:var(--text); }
+.playlist-current-folder-cover { display:grid; width:5.5rem; aspect-ratio:1; place-items:center; overflow:hidden; border-radius:.5rem; background:var(--folder-color); color:white; font-size:2.2rem; }
+.playlist-current-folder-cover img { width:100%; height:100%; object-fit:cover; }
+.playlist-current-folder-details h2 { margin:0; color:var(--text); font-size:1.1rem; font-weight:500; overflow-wrap:anywhere; }
+.playlist-current-folder-details p { margin:.4rem 0 0; color:var(--subtle); font-size:.72rem; line-height:1.6; }
+.playlist-folder-card { min-height:10.5rem; border-radius:.65rem; }
+.playlist-folder-card::before { z-index:1; width:38%; height:1rem; border-radius:.45rem .45rem .25rem 0; }
+.playlist-folder-card img { opacity:.86; }
+.playlist-folder-body { width:100%; box-sizing:border-box; backdrop-filter:blur(5px); }
+@media(min-width:900px) { .playlist-folders-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; } }
+@media(max-width:620px) { .playlist-current-folder { grid-template-columns:4.5rem minmax(0,1fr); gap:.75rem; } .playlist-current-folder-cover { width:4.5rem; } .playlist-current-folder-details h2 { font-size:.92rem; } }

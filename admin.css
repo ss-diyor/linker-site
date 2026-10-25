@@ -91,3 +91,15 @@
 
 .playlist-notes-admin { margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--line); }
 .playlist-notes-admin h3 { margin:0; color:var(--text-soft); font-size:.82rem; font-weight:500; }
+
+.playlist-folder-picker { display:grid; gap:.55rem; }
+.playlist-folder-picker-label { color:var(--subtle); font-size:.7rem; }
+.playlist-folder-options { display:grid; grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr)); gap:.55rem; }
+.playlist-folder-option { --folder-color:var(--accent); display:flex; min-width:0; align-items:center; gap:.65rem; padding:.55rem; border:1px solid var(--line); border-left:3px solid var(--folder-color); background:var(--surface); color:var(--text-soft); text-align:left; font:inherit; cursor:pointer; }
+.playlist-folder-option[aria-pressed="true"] { border-color:var(--folder-color); background:color-mix(in srgb,var(--folder-color) 13%,var(--surface)); box-shadow:0 0 0 1px var(--folder-color); }
+.playlist-folder-option-icon { display:grid; flex:0 0 2.5rem; width:2.5rem; height:2.5rem; place-items:center; overflow:hidden; border-radius:.35rem; background:color-mix(in srgb,var(--folder-color) 24%,var(--surface)); color:var(--folder-color); font-size:1.1rem; }
+.playlist-folder-option-icon img { width:100%; height:100%; object-fit:cover; }
+.playlist-folder-option-copy { display:grid; min-width:0; gap:.2rem; }
+.playlist-folder-option-copy strong { overflow:hidden; color:var(--text-soft); font-size:.68rem; font-weight:500; text-overflow:ellipsis; white-space:nowrap; }
+.playlist-folder-option-copy small { color:var(--subtle); font-size:.58rem; }
+.playlist-folder-option:focus-visible { outline:2px solid var(--folder-color); outline-offset:2px; }

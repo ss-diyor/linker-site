@@ -56,9 +56,48 @@
   const esc = (value = '') => String(value).replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const isAdmin = async () => { const { data: { user } } = await client.auth.getUser(); if (!user) return null; const { data } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); return data ? user : null; };
   const showDashboard = async (user) => { if (!user) { loginView.hidden = false; dashboard.hidden = true; return; } const { data: adminRow, error: adminError } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); if (adminError || !adminRow) { await client.auth.signOut(); loginView.hidden = false; dashboard.hidden = true; error.textContent = adminError ? 'Admin jadvalini tekshirishda xatolik yuz berdi.' : 'Login muvaffaqiyatli, lekin bu account admin sifatida ruxsat etilmagan.'; error.hidden = false; return; } loginView.hidden = true; dashboard.hidden = false; $('admin-user').textContent = user.email || 'admin'; await loadAll(); };
-  const loadAll = async () => { setStatus('yuklanmoqda…'); const [settings, bookResult, mediaResult, updateResult, timelineResult, aboutResult, playlistResult, folderResult, notesResult] = await Promise.all([client.from('now_settings').select('*').eq('id','default').maybeSingle(), client.from('books').select('*').order('position').order('created_at'), client.from('media_items').select('*').order('position').order('created_at'), client.from('updates').select('*').order('published_on', { ascending: false }).order('position').order('created_at', { ascending: false }), client.from('timeline_events').select('*').order('year').order('month', { ascending: true, nullsFirst: true }).order('position').order('created_at'), client.from('about_content').select('*').eq('id','default').maybeSingle(), client.from('playlist_tracks').select('*').order('position').order('created_at'), client.from('playlist_folders').select('*').order('position').order('created_at'), client.from('playlist_notes').select('*').order('position').order('created_at')]); if (settings.error || bookResult.error || mediaResult.error || updateResult.error || timelineResult.error || aboutResult.error) return setStatus('Ma’lumotlarni yuklashda xatolik yuz berdi. Supabase migration ishlaganini tekshiring.', true); books = bookResult.data || []; media = mediaResult.data || []; updates = updateResult.data || []; timeline = timelineResult.data || []; about = aboutResult.data || {}; playlistTracks = playlistResult.error ? [] : (playlistResult.data || []); playlistFolders = folderResult.error ? [] : (folderResult.data || []); playlistNotes = notesResult.error ? [] : (notesResult.data || []); $('focus-title').value = settings.data?.focus_title || ''; $('focus-subtitle').value = settings.data?.focus_subtitle || ''; fillAboutForm(); renderLists(); renderPlaylistFolders(); renderPlaylistList(); renderPlaylistNotesList(); setStatus(playlistResult.error || folderResult.error || notesResult.error ? 'Playlist, folder yoki notes jadvali topilmadi. Supabase SQL Editor’da supabase/playlist.sql va supabase/playlist-folders.sql migration’larini bajaring.' : ''); };
+  const loadAll = async () => { setStatus('yuklanmoqda…'); const [settings, bookResult, mediaResult, updateResult, timelineResult, aboutResult, playlistResult, folderResult, notesResult] = await Promise.all([client.from('now_settings').select('*').eq('id','default').maybeSingle(), client.from('books').select('*').order('position').order('created_at'), client.from('media_items').select('*').order('position').order('created_at'), client.from('updates').select('*').order('published_on', { ascending: false }).order('position').order('created_at', { ascending: false }), client.from('timeline_events').select('*').order('year').order('month', { ascending: true, nullsFirst: true }).order('position').order('created_at'), client.from('about_content').select('*').eq('id','default').maybeSingle(), client.from('playlist_tracks').select('*').order('position').order('created_at'), client.from('playlist_folders').select('*').order('position').order('created_at'), client.from('playlist_notes').select('*').order('position').order('created_at')]); if (settings.error || bookResult.error || mediaResult.error || updateResult.error || timelineResult.error || aboutResult.error) return setStatus('Ma’lumotlarni yuklashda xatolik yuz berdi. Supabase migration ishlaganini tekshiring.', true); books = bookResult.data || []; media = mediaResult.data || []; updates = updateResult.data || []; timeline = timelineResult.data || []; about = aboutResult.data || {}; playlistTracks = playlistResult.error ? [] : (playlistResult.data || []); playlistFolders = folderResult.error ? [] : (folderResult.data || []); playlistNotes = notesResult.error ? [] : (notesResult.data || []); $('focus-title').value = settings.data?.focus_title || ''; $('focus-subtitle').value = settings.data?.focus_subtitle || ''; fillAboutForm(); renderLists(); renderPlaylistFolders(); renderPlaylistList(); renderPlaylistNotesList(); const playlistLoadError = folderResult.error ? `Folder jadvali yuklanmadi: ${folderResult.error.message}` : playlistResult.error ? `Treklar jadvali yuklanmadi: ${playlistResult.error.message}` : notesResult.error ? `Playlist notes yuklanmadi: ${notesResult.error.message}` : ''; setStatus(playlistLoadError || ''); };
   const renderLists = () => { $('books-admin-list').innerHTML = books.length ? books.map((b) => `<div class="admin-list-item"><div><strong>${esc(b.title)}</strong><small>${esc(b.author)} · ${esc(b.status)}</small></div><div class="admin-list-actions"><button type="button" data-edit-book="${b.id}">tahrirlash</button><button type="button" data-delete-book="${b.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha kitob yo‘q.</p>'; $('media-admin-list').innerHTML = media.length ? media.map((m) => `<div class="admin-list-item"><div><strong>${esc(m.title)}</strong><small>${esc(m.type)} · ${esc(m.status)}${m.rating == null ? '' : ` · ${esc(m.rating)}/10`}</small></div><div class="admin-list-actions"><button type="button" data-edit-media="${m.id}">tahrirlash</button><button type="button" data-delete-media="${m.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha media yo‘q.</p>'; $('updates-admin-list').innerHTML = updates.length ? updates.map((u) => `<div class="admin-list-item"><div><strong>${esc(u.title)}</strong><small>${esc(u.published_on)} · ${u.is_published ? 'published' : 'yashirilgan'}</small></div><div class="admin-list-actions"><button type="button" data-edit-update="${u.id}">tahrirlash</button><button type="button" data-delete-update="${u.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha qayd yo‘q.</p>'; const months=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr']; const timelineDate=(item)=>item.month ? `${months[item.month-1]} ${item.year}` : String(item.year); $('timeline-admin-list').innerHTML = timeline.length ? timeline.map((item) => `<div class="admin-list-item"><div><strong>${esc(item.title)}</strong><small>${esc(timelineDate(item))} · ${item.is_current ? 'joriy' : 'tarix'} · ${item.is_published ? 'published' : 'yashirilgan'}</small></div><div class="admin-list-actions"><button type="button" data-edit-timeline="${item.id}">tahrirlash</button><button type="button" data-delete-timeline="${item.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha timeline voqeasi yo‘q.</p>'; };
-  const renderPlaylistFolders = () => { $('playlist-folder-admin-list').innerHTML = playlistFolders.length ? playlistFolders.map((folder) => `<div class="admin-list-item"><div><strong>${esc(folder.name)}</strong><small>${folder.is_published ? 'saytda ko‘rinadi' : 'qoralama'} · ${playlistTracks.filter((track) => track.folder_id === folder.id).length} ta trek</small></div><div class="admin-list-actions"><button type="button" data-edit-playlist-folder="${esc(folder.id)}">tahrirlash</button><button type="button" data-delete-playlist-folder="${esc(folder.id)}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha folder yo‘q.</p>'; const select = $('playlist-folder-id'); if (select) { const current = select.value; select.innerHTML = '<option value="">Folder tanlanmagan</option>' + playlistFolders.map((folder) => `<option value="${esc(folder.id)}">${esc(folder.name)}</option>`).join(''); if (playlistFolders.some((folder) => folder.id === current)) select.value = current; } };
+  const renderPlaylistFolders = () => {
+    $('playlist-folder-admin-list').innerHTML = playlistFolders.length ? playlistFolders.map((folder) => {
+      const trackCount = playlistTracks.filter((track) => track.folder_id === folder.id).length;
+      return `<div class="admin-list-item"><div><strong>${esc(folder.name)}</strong><small>${folder.is_published ? 'saytda ko‘rinadi' : 'qoralama'} · ${trackCount} ta trek · ${esc(folder.color || '#A8A5FF')}</small></div><div class="admin-list-actions"><button type="button" data-edit-playlist-folder="${esc(folder.id)}">tahrirlash</button><button type="button" data-delete-playlist-folder="${esc(folder.id)}">o‘chirish</button></div></div>`;
+    }).join('') : '<p class="admin-note">Hozircha folder yo‘q. “+ yangi folder” tugmasi orqali yarating.</p>';
+    const select = $('playlist-folder-id');
+    const picker = $('playlist-folder-options');
+    if (!select || !picker) return;
+    const current = select.value;
+    select.replaceChildren(new Option('Folder tanlanmagan', ''));
+    picker.replaceChildren();
+    const noFolder = document.createElement('button');
+    noFolder.type = 'button'; noFolder.className = 'playlist-folder-option'; noFolder.dataset.playlistFolderOption = '';
+    noFolder.setAttribute('aria-pressed', current ? 'false' : 'true');
+    noFolder.innerHTML = '<span class="playlist-folder-option-icon" aria-hidden="true">♪</span><span><strong>Foldersiz</strong><small>Umumiy ro‘yxatda ko‘rinadi</small></span>';
+    picker.append(noFolder);
+    playlistFolders.forEach((folder) => {
+      const option = new Option(folder.name, folder.id);
+      select.add(option);
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'playlist-folder-option';
+      button.dataset.playlistFolderOption = folder.id;
+      button.style.setProperty('--folder-color', validPlaylistHex(folder.color) ? folder.color : '#A8A5FF');
+      button.setAttribute('aria-pressed', current === folder.id ? 'true' : 'false');
+      const icon = document.createElement('span'); icon.className = 'playlist-folder-option-icon'; icon.setAttribute('aria-hidden', 'true');
+      if (folder.cover_url) { const image = document.createElement('img'); image.src = folder.cover_url; image.alt = ''; image.loading = 'lazy'; icon.replaceChildren(image); } else icon.textContent = '▰';
+      const label = document.createElement('span'); label.className = 'playlist-folder-option-copy';
+      const name = document.createElement('strong'); name.textContent = folder.name;
+      const meta = document.createElement('small'); meta.textContent = `${playlistTracks.filter((track) => track.folder_id === folder.id).length} ta trek${folder.is_published ? '' : ' · qoralama'}`;
+      label.append(name, meta); button.append(icon, label); picker.append(button);
+    });
+    if (playlistFolders.some((folder) => folder.id === current)) select.value = current;
+    $('playlist-folder-picker-help').textContent = playlistFolders.length ? 'Tanlangan folder ichida treklar alohida ko‘rsatiladi.' : 'Hozircha folder yo‘q. Avval “Playlist folderlari” bo‘limida folder yarating.';
+  };
+  const syncPlaylistFolderSelection = () => {
+    const selectedId = $('playlist-folder-id').value;
+    $('playlist-folder-options').querySelectorAll('[data-playlist-folder-option]').forEach((button) => {
+      button.setAttribute('aria-pressed', button.dataset.playlistFolderOption === selectedId ? 'true' : 'false');
+    });
+  };
   const refreshPlaylistFolders = async () => {
     const { data, error: folderError } = await client.from('playlist_folders').select('id, name, description, color, cover_url, position, is_published').order('position');
     if (folderError) throw folderError;
@@ -71,7 +110,8 @@
     const platformLabels = { spotify:'Spotify', yandex:'Yandex Music', apple:'Apple Music', youtube:'YouTube' };
     $('playlist-admin-list').innerHTML = playlistTracks.length ? playlistTracks.map((track) => {
       const platforms = Object.keys(platformLabels).filter((key) => track.links && track.links[key]).map((key) => platformLabels[key]).join(', ') || 'havola yo‘q';
-      return `<div class="admin-list-item"><div><strong>${esc(track.title)}</strong><small>${esc(track.artist || 'Ijrochi ko‘rsatilmagan')} · ${esc(platforms)} · ${track.is_published ? 'saytda ko‘rinadi' : 'qoralama'}</small></div><div class="admin-list-actions"><button type="button" data-edit-playlist="${esc(track.id)}">tahrirlash</button><button type="button" data-delete-playlist="${esc(track.id)}">o‘chirish</button></div></div>`;
+      const folderName = playlistFolders.find((folder) => folder.id === track.folder_id)?.name || 'Foldersiz';
+      return `<div class="admin-list-item"><div><strong>${esc(track.title)}</strong><small>${esc(track.artist || 'Ijrochi ko‘rsatilmagan')} · ${esc(folderName)} · ${esc(platforms)} · ${track.is_published ? 'saytda ko‘rinadi' : 'qoralama'}</small></div><div class="admin-list-actions"><button type="button" data-edit-playlist="${esc(track.id)}">tahrirlash</button><button type="button" data-delete-playlist="${esc(track.id)}">o‘chirish</button></div></div>`;
     }).join('') : '<p class="admin-note">Hozircha trek qo‘shilmagan.</p>';
   };
   const renderPlaylistNotesList = () => {
@@ -99,7 +139,7 @@
     $('playlist-cover-file').value = '';
     $('playlist-cover-url').value = '';
     showPlaylistCoverPreview('');
-    $('playlist-folder-id').value = ''; $('playlist-position').value = playlistTracks.reduce((max, item) => Math.max(max, Number(item.position) || 0), -1) + 1;
+    $('playlist-folder-id').value = ''; syncPlaylistFolderSelection(); $('playlist-position').value = playlistTracks.reduce((max, item) => Math.max(max, Number(item.position) || 0), -1) + 1;
     $('playlist-published').checked = true;
     $('playlist-form').hidden = false;
     $('playlist-form').scrollIntoView({behavior:'smooth',block:'center'});
@@ -108,7 +148,7 @@
     const links = track.links && typeof track.links === 'object' ? track.links : {};
     $('playlist-id').value = track.id || '';
     $('playlist-title').value = track.title || '';
-    $('playlist-artist').value = track.artist || ''; $('playlist-folder-id').value = track.folder_id || '';
+    $('playlist-artist').value = track.artist || ''; $('playlist-folder-id').value = track.folder_id || ''; syncPlaylistFolderSelection();
     $('playlist-spotify').value = links.spotify || '';
     $('playlist-yandex').value = links.yandex || '';
     $('playlist-apple').value = links.apple || '';
@@ -284,6 +324,13 @@
   document.addEventListener('click', (e) => { if (e.target.dataset.removeLanguage) e.target.closest('.about-language-row').remove(); if (e.target.dataset.removeInterest) e.target.closest('.about-interest-row').remove(); if (e.target.dataset.resetInterestColor) { const row = e.target.closest('.about-interest-row'); row.querySelector('.about-interest-color').value = ''; row.querySelector('.about-interest-picker').value = '#808080'; } });
   document.addEventListener('click', async (e) => { const t=e.target; if(t.dataset.add){ $(t.dataset.add+'-form').hidden=false; if(t.dataset.add === 'update' && !$('update-date').value) $('update-date').value = new Date().toISOString().slice(0, 10); } if(t.dataset.cancel){ $(t.dataset.cancel+'-form').hidden=true; } if(t.dataset.editBook){ fill('book', books.find((x)=>x.id===t.dataset.editBook)); } if(t.dataset.editMedia){ fill('media', media.find((x)=>x.id===t.dataset.editMedia)); } if(t.dataset.editUpdate){ fillUpdate(updates.find((x)=>x.id===t.dataset.editUpdate)); } if(t.dataset.editTimeline){ fillTimeline(timeline.find((x)=>x.id===t.dataset.editTimeline)); } if(t.dataset.deleteUpdate && confirm('Bu qayd o‘chirilsinmi?')){ await client.from('updates').delete().eq('id',t.dataset.deleteUpdate); await loadAll(); } if(t.dataset.deleteBook && confirm('Bu kitob o‘chirilsinmi?')){ await client.from('books').delete().eq('id',t.dataset.deleteBook); await loadAll(); } if(t.dataset.deleteMedia && confirm('Bu media o‘chirilsinmi?')){ await client.from('media_items').delete().eq('id',t.dataset.deleteMedia); await loadAll(); } if(t.dataset.deleteTimeline && confirm('Bu timeline voqeasi o‘chirilsinmi?')){ await client.from('timeline_events').delete().eq('id',t.dataset.deleteTimeline); await loadAll(); } });
   document.addEventListener('click', async (event) => {
+    const folderOption = event.target.closest('[data-playlist-folder-option]');
+    if (folderOption) {
+      const folderId = folderOption.dataset.playlistFolderOption || '';
+      $('playlist-folder-id').value = folderId;
+      syncPlaylistFolderSelection();
+      return;
+    }
     const resetColor = event.target.closest('[data-reset-playlist-color]');
     if (resetColor) {
       const key = resetColor.dataset.resetPlaylistColor;
@@ -319,11 +366,11 @@
     const deleteFolder = event.target.closest('[data-delete-playlist-folder]');
     if (deleteFolder && confirm('Bu folder o‘chirilsinmi? Treklar folderdan ajratiladi.')) { await client.from('playlist_folders').delete().eq('id', deleteFolder.dataset.deletePlaylistFolder); await loadAll(); return; }
     const add = event.target.closest('[data-add="playlist"]');
-    if (add) { try { await refreshPlaylistFolders(); resetPlaylistForm(); } catch { resetPlaylistForm(); setStatus('Folderlarni yuklashda xatolik yuz berdi.', true); } return; }
+    if (add) { try { await refreshPlaylistFolders(); resetPlaylistForm(); } catch (error) { renderPlaylistFolders(); resetPlaylistForm(); setStatus(`Folderlar yuklanmadi: ${error.message}`, true); } return; }
     const edit = event.target.closest('[data-edit-playlist]');
     if (edit) {
       const track = playlistTracks.find((item) => item.id === edit.dataset.editPlaylist);
-      if (track) { try { await refreshPlaylistFolders(); } catch { setStatus('Folderlarni yuklashda xatolik yuz berdi.', true); } fillPlaylist(track); }
+      if (track) { try { await refreshPlaylistFolders(); } catch (error) { renderPlaylistFolders(); setStatus(`Folderlar yuklanmadi: ${error.message}`, true); } fillPlaylist(track); }
       return;
     }
     const remove = event.target.closest('[data-delete-playlist]');
