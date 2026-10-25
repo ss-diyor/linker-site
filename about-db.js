@@ -4,6 +4,7 @@
 
   const content = page.querySelector('.about-copy');
   const loading = page.querySelector('#about-content-loading');
+  const interestsList = page.querySelector('#about-interests');
   if (!content) return;
 
   const revealContent = () => {
@@ -21,6 +22,111 @@
     const element = document.getElementById(id);
     if (element) element.textContent = value == null ? '' : String(value);
   };
+
+  const setInterestPreviewOpen = (trigger, open) => {
+    if (!trigger) return;
+    const item = trigger.closest('.about-interest-item');
+    const preview = document.getElementById(trigger.getAttribute('aria-controls'));
+    trigger.setAttribute('aria-expanded', String(open));
+    if (preview) preview.setAttribute('aria-hidden', String(!open));
+    if (item) item.classList.toggle('is-open', open);
+  };
+
+  const renderInterests = (items) => {
+    if (!interestsList) return;
+    interestsList.innerHTML = lines(items).map((item, index) => {
+      const name = typeof item === 'string' ? item : item && typeof item === 'object' ? item.name : '';
+      if (!name) return '';
+      const color = item && typeof item === 'object' && colorIsValid(item.color) ? item.color : '';
+      const previewId = `about-interest-preview-${index + 1}`;
+      const initial = Array.from(String(name))[0] || '?';
+      const colorStyle = color ? ` style="--interest-color:${color}"` : '';
+      return `<span class="about-interest-item"${colorStyle}>
+        <button class="about-interest-tag" type="button" aria-expanded="false" aria-controls="${previewId}" aria-describedby="${previewId}">${esc(name)}</button>
+        <span class="about-interest-preview" id="${previewId}" role="tooltip" aria-hidden="true">
+          <span class="about-interest-preview-art" aria-hidden="true"><span class="about-interest-preview-initial">${esc(initial)}</span><span class="about-interest-preview-index">DI · ${String(index + 1).padStart(2, '0')}</span></span>
+          <span class="about-interest-preview-copy"><span class="about-interest-preview-label">qiziqish</span><strong>${esc(name)}</strong></span>
+        </span>
+      </span>`;
+    }).join('');
+  };
+
+  const bindInterestPreviews = () => {
+    if (!interestsList || interestsList.dataset.previewBound) return;
+    interestsList.dataset.previewBound = 'true';
+    let touchPointerTrigger = null;
+
+    const closeAll = (except = null) => {
+      interestsList.querySelectorAll('.about-interest-tag[aria-expanded="true"]').forEach((trigger) => {
+        if (trigger !== except) setInterestPreviewOpen(trigger, false);
+      });
+    };
+
+    interestsList.addEventListener('pointerdown', (event) => {
+      touchPointerTrigger = event.pointerType === 'touch' ? event.target.closest('.about-interest-tag') : null;
+    });
+
+    interestsList.addEventListener('pointerover', (event) => {
+      if (event.pointerType === 'touch') return;
+      const trigger = event.target.closest('.about-interest-tag');
+      if (!trigger || !interestsList.contains(trigger)) return;
+      const item = trigger.closest('.about-interest-item');
+      if (item && item.contains(event.relatedTarget)) return;
+      closeAll(trigger);
+      setInterestPreviewOpen(trigger, true);
+    });
+
+    interestsList.addEventListener('pointerout', (event) => {
+      if (event.pointerType === 'touch') return;
+      const trigger = event.target.closest('.about-interest-tag');
+      if (!trigger || !interestsList.contains(trigger)) return;
+      const item = trigger.closest('.about-interest-item');
+      if (item && item.contains(event.relatedTarget)) return;
+      if (item && item.matches(':focus-within')) return;
+      setInterestPreviewOpen(trigger, false);
+    });
+
+    interestsList.addEventListener('focusin', (event) => {
+      const trigger = event.target.closest('.about-interest-tag');
+      if (!trigger || !interestsList.contains(trigger)) return;
+      if (touchPointerTrigger === trigger) return;
+      closeAll(trigger);
+      setInterestPreviewOpen(trigger, true);
+    });
+
+    interestsList.addEventListener('focusout', (event) => {
+      const trigger = event.target.closest('.about-interest-tag');
+      if (!trigger || !interestsList.contains(trigger)) return;
+      const item = trigger.closest('.about-interest-item');
+      if (!item || !item.contains(event.relatedTarget)) setInterestPreviewOpen(trigger, false);
+    });
+
+    interestsList.addEventListener('click', (event) => {
+      const trigger = event.target.closest('.about-interest-tag');
+      if (!trigger || !interestsList.contains(trigger) || !window.matchMedia('(hover: none)').matches) return;
+      const isTouchTap = touchPointerTrigger === trigger;
+      const shouldOpen = isTouchTap ? trigger.getAttribute('aria-expanded') !== 'true' : true;
+      touchPointerTrigger = null;
+      closeAll(trigger);
+      setInterestPreviewOpen(trigger, shouldOpen);
+    });
+
+    interestsList.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      closeAll();
+      event.stopPropagation();
+    });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (!interestsList.contains(event.target)) closeAll();
+    });
+  };
+
+  if (interestsList) {
+    const fallbackInterests = Array.from(interestsList.children).map((element) => element.textContent.trim()).filter(Boolean);
+    bindInterestPreviews();
+    renderInterests(fallbackInterests);
+  }
 
   const render = async () => {
     try {
@@ -42,12 +148,6 @@
         .filter((item) => item && typeof item === 'object')
         .map((item) => `<div class="about-fact"><span>${esc(capitalizeFirst(item.name))}</span><strong>${esc(item.level)}</strong></div>`)
         .join('');
-      const interestsHtml = lines(data.interests).map((item) => {
-        const name = typeof item === 'string' ? item : item && typeof item === 'object' ? item.name : '';
-        if (!name) return '';
-        const color = item && typeof item === 'object' && colorIsValid(item.color) ? item.color : '';
-        return `<span class="about-interest-tag"${color ? ` style="--interest-color:${color}"` : ''}>${esc(name)}</span>`;
-      }).join('');
       const quoteColor = colorIsValid(data.quote_color) ? data.quote_color : 'var(--accent)';
 
       setText('about-bio', data.bio_intro);
@@ -60,8 +160,7 @@
       if (skills) skills.innerHTML = skillsHtml;
       const languages = document.getElementById('about-languages');
       if (languages) languages.innerHTML = languagesHtml;
-      const interests = document.getElementById('about-interests');
-      if (interests) interests.innerHTML = interestsHtml;
+      renderInterests(data.interests);
 
       const quote = document.getElementById('about-quote');
       if (quote) {
