@@ -54,10 +54,17 @@
   }
 }
 
-.about-interest-row { display:grid; grid-template-columns:minmax(0, 1fr) 3rem 10rem auto auto; gap:.55rem; margin-top:.55rem; align-items:center; }
+.about-interest-row { display:grid; grid-template-columns:minmax(0,1fr) 3rem minmax(6.5rem,10rem) auto auto; grid-template-areas:"name picker color reset remove" "image image image image image"; gap:.5rem; margin-top:.55rem; align-items:center; }
 .about-interest-row input { width:100%; }
+.about-interest-name { grid-area:name; }
+.about-interest-image-url { grid-area:image; }
 .about-interest-picker { height:2.35rem; padding:.2rem; cursor:pointer; }
-@media (max-width:620px) { .about-interest-row { grid-template-columns:1fr 1fr; } .about-interest-row .admin-quiet-button { justify-self:start; } }
+.about-interest-row .about-interest-picker { grid-area:picker; }
+.about-interest-row .about-interest-color { grid-area:color; }
+.about-interest-row [data-reset-interest-color] { grid-area:reset; }
+.about-interest-row [data-remove-interest] { grid-area:remove; }
+.about-interest-row .admin-quiet-button { white-space:nowrap; }
+@media (max-width:620px) { .about-interest-row { grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-areas:"name name" "image image" "picker color" "reset remove"; } .about-interest-row .admin-quiet-button { justify-self:start; } }
 
 .about-quote-color-controls { display:flex; align-items:center; gap:.55rem; margin-top:.55rem; }
 .about-quote-picker { width:3rem; height:2.35rem; padding:.2rem; cursor:pointer; }

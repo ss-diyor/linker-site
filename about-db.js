@@ -18,6 +18,15 @@
     return text ? text.charAt(0).toLocaleUpperCase('uz-UZ') + text.slice(1) : '';
   };
   const colorIsValid = (value) => typeof value === 'string' && /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(value);
+  const secureImageUrl = (value) => {
+    if (typeof value !== 'string' || !value.trim()) return '';
+    try {
+      const url = new URL(value.trim());
+      return url.protocol === 'https:' && url.hostname && !url.username && !url.password ? url.href : '';
+    } catch {
+      return '';
+    }
+  };
   const setText = (id, value) => {
     const element = document.getElementById(id);
     if (element) element.textContent = value == null ? '' : String(value);
@@ -38,13 +47,16 @@
       const name = typeof item === 'string' ? item : item && typeof item === 'object' ? item.name : '';
       if (!name) return '';
       const color = item && typeof item === 'object' && colorIsValid(item.color) ? item.color : '';
+      const imageUrl = item && typeof item === 'object' ? secureImageUrl(item.image_url) : '';
       const previewId = `about-interest-preview-${index + 1}`;
       const initial = Array.from(String(name))[0] || '?';
       const colorStyle = color ? ` style="--interest-color:${color}"` : '';
+      const artClass = imageUrl ? 'about-interest-preview-art has-image' : 'about-interest-preview-art';
+      const imageHtml = imageUrl ? `<img class="about-interest-preview-image" src="${esc(imageUrl)}" alt="" loading="lazy" decoding="async">` : '';
       return `<span class="about-interest-item"${colorStyle}>
         <button class="about-interest-tag" type="button" aria-expanded="false" aria-controls="${previewId}" aria-describedby="${previewId}">${esc(name)}</button>
         <span class="about-interest-preview" id="${previewId}" role="tooltip" aria-hidden="true">
-          <span class="about-interest-preview-art" aria-hidden="true"><span class="about-interest-preview-initial">${esc(initial)}</span><span class="about-interest-preview-index">DI · ${String(index + 1).padStart(2, '0')}</span></span>
+          <span class="${artClass}" aria-hidden="true">${imageHtml}<span class="about-interest-preview-initial"${imageUrl ? ' hidden' : ''}>${esc(initial)}</span><span class="about-interest-preview-index">DI · ${String(index + 1).padStart(2, '0')}</span></span>
           <span class="about-interest-preview-copy"><span class="about-interest-preview-label">qiziqish</span><strong>${esc(name)}</strong></span>
         </span>
       </span>`;
@@ -120,6 +132,14 @@
     document.addEventListener('pointerdown', (event) => {
       if (!interestsList.contains(event.target)) closeAll();
     });
+
+    interestsList.addEventListener('error', (event) => {
+      const image = event.target;
+      if (!image.matches || !image.matches('.about-interest-preview-image')) return;
+      image.hidden = true;
+      const fallback = image.parentElement.querySelector('.about-interest-preview-initial');
+      if (fallback) fallback.hidden = false;
+    }, true);
   };
 
   if (interestsList) {
