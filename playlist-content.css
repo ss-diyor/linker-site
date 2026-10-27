@@ -149,3 +149,12 @@
   .playlist-page .minimal-main { width:100%; }
   .playlist-folders-grid { width:100%; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
 }
+/* Keep the selected folder visual as large as the folder browser card. */
+.playlist-current-folder { grid-template-columns:11rem minmax(0,1fr); gap:1rem 1.25rem; }
+.playlist-current-folder-cover { width:11rem; min-height:10.5rem; }
+.playlist-current-folder-cover svg { display:block; width:11rem; height:10.5rem; object-fit:contain; }
+@media(max-width:620px) {
+  .playlist-current-folder { grid-template-columns:7.2rem minmax(0,1fr); gap:.7rem; }
+  .playlist-current-folder-cover { width:7.2rem; min-height:6.8rem; }
+  .playlist-current-folder-cover svg { width:7.2rem; height:6.8rem; }
+}
