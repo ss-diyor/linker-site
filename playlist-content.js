@@ -32,6 +32,33 @@
     if (match) { try { return decodeURIComponent(match[1]); } catch { return ''; } }
     return new URLSearchParams(location.search).get('folder') || '';
   };
+  const createFolderIcon = (folder) => {
+    const color = safeColor(folder?.color, '#A8A5FF');
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('viewBox', '0 0 160 120');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.setAttribute('focusable', 'false');
+    icon.style.color = color;
+    const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    shape.setAttribute('d', 'M13 28a9 9 0 0 1 9-9h42l16 13h58a9 9 0 0 1 9 9v56a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z');
+    shape.setAttribute('fill', 'currentColor');
+    icon.append(shape);
+    const coverUrl = safeImageUrl(folder?.cover_url);
+    if (coverUrl) {
+      const clipId = `playlist-folder-cover-${String(folder?.id || Math.random()).replace(/[^a-zA-Z0-9_-]/g, '')}`;
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const clip = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+      clip.id = clipId;
+      const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      clipRect.setAttribute('x', '20'); clipRect.setAttribute('y', '43'); clipRect.setAttribute('width', '120'); clipRect.setAttribute('height', '48'); clipRect.setAttribute('rx', '5');
+      clip.append(clipRect); defs.append(clip); icon.append(defs);
+      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttribute('href', coverUrl); image.setAttribute('x', '20'); image.setAttribute('y', '43'); image.setAttribute('width', '120'); image.setAttribute('height', '48'); image.setAttribute('preserveAspectRatio', 'xMidYMid slice'); image.setAttribute('clip-path', `url(#${clipId})`);
+      icon.append(image);
+    }
+    return icon;
+  };
+
   const renderFolders = (folders, tracks) => {
     if (!foldersGrid) return;
     const selectedFolder = requestedFolderId();
@@ -52,9 +79,7 @@
       currentFolderPanel.hidden = !currentFolder;
       currentFolderPanel.replaceChildren();
       if (currentFolder) {
-        const cover = document.createElement('div'); cover.className = 'playlist-current-folder-cover'; cover.style.setProperty('--folder-color', safeColor(currentFolder.color, '#A8A5FF'));
-        if (safeImageUrl(currentFolder.cover_url)) { const image = document.createElement('img'); image.src = safeImageUrl(currentFolder.cover_url); image.alt = ''; image.loading = 'eager'; cover.append(image); }
-        else { const mark = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); mark.setAttribute('viewBox', '0 0 160 120'); mark.setAttribute('aria-hidden', 'true'); mark.innerHTML = '<path d="M13 28a9 9 0 0 1 9-9h42l16 13h58a9 9 0 0 1 9 9v56a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z" fill="currentColor"/><path d="M13 45h134v52a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z" fill="white" fill-opacity=".13"/>'; cover.append(mark); }
+        const cover = document.createElement('div'); cover.className = 'playlist-current-folder-cover'; cover.style.setProperty('--folder-color', safeColor(currentFolder.color, '#A8A5FF')); cover.append(createFolderIcon(currentFolder));
         const details = document.createElement('div'); details.className = 'playlist-current-folder-details';
         const title = document.createElement('h2'); title.textContent = currentFolder.name;
         details.append(title);
@@ -66,17 +91,7 @@
     visibleFolders.forEach((folder) => {
       const card = document.createElement('a'); card.className = 'playlist-folder-card'; card.href = `/playlist?folder=${encodeURIComponent(folder.id)}`; card.style.setProperty('--folder-color', safeColor(folder.color, '#A8A5FF'));
       const visual = document.createElement('span'); visual.className = 'playlist-folder-visual'; visual.setAttribute('aria-hidden', 'true');
-      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); icon.setAttribute('viewBox', '0 0 160 120'); icon.setAttribute('focusable', 'false');
-      const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path'); shape.setAttribute('d', 'M13 28a9 9 0 0 1 9-9h42l16 13h58a9 9 0 0 1 9 9v56a9 9 0 0 1-9 9H22a9 9 0 0 1-9-9z'); shape.setAttribute('fill', 'currentColor'); icon.append(shape);
-      const coverUrl = safeImageUrl(folder.cover_url);
-      if (coverUrl) {
-        const clipId = `playlist-folder-cover-${String(folder.id).replace(/[^a-zA-Z0-9_-]/g, '')}`;
-        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        const clip = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath'); clip.id = clipId;
-        const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); clipRect.setAttribute('x', '20'); clipRect.setAttribute('y', '43'); clipRect.setAttribute('width', '120'); clipRect.setAttribute('height', '48'); clipRect.setAttribute('rx', '5'); clip.append(clipRect); defs.append(clip); icon.append(defs);
-        const image = document.createElementNS('http://www.w3.org/2000/svg', 'image'); image.setAttribute('href', coverUrl); image.setAttribute('x', '20'); image.setAttribute('y', '43'); image.setAttribute('width', '120'); image.setAttribute('height', '48'); image.setAttribute('preserveAspectRatio', 'xMidYMid slice'); image.setAttribute('clip-path', `url(#${clipId})`); icon.append(image);
-      }
-      visual.append(icon);
+      visual.append(createFolderIcon(folder));
       const body = document.createElement('span'); body.className = 'playlist-folder-body'; const name = document.createElement('strong'); name.textContent = folder.name; const countText = document.createElement('small'); countText.textContent = `${tracks.filter((track) => track.folder_id === folder.id).length} ta trek`; body.append(name, countText); card.append(visual, body); foldersGrid.append(card);
     });
     if (currentFolder) {
