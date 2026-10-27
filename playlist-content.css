@@ -125,7 +125,7 @@
 @media(prefers-reduced-motion:reduce) { .playlist-folder-card,.playlist-folder-visual svg { transition:none; } }
 
 /* Centered folders without card frames */
-.playlist-folders-grid { width:100%; margin:0; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); align-items:start; gap:2rem 1.5rem; }
+.playlist-folders-grid { width:100%; margin:0; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); align-items:start; gap:2rem 1.5rem; }
 .playlist-folder-card { display:grid; grid-template-rows:11rem auto; justify-items:center; align-content:start; gap:.2rem; min-height:0; padding:0; overflow:visible; border:0; border-radius:0; background:transparent; box-shadow:none; text-align:center; }
 .playlist-folder-card:hover,.playlist-folder-card:focus-visible { transform:none; border:0; background:transparent; box-shadow:none; }
 .playlist-folder-card:focus-visible { outline:2px solid color-mix(in srgb,var(--folder-color) 65%,transparent); outline-offset:.25rem; border-radius:.35rem; }
@@ -147,5 +147,5 @@
 @media(min-width:900px) {
   .playlist-page .minimal-page { width:min(calc(100% - 4rem),1600px); }
   .playlist-page .minimal-main { width:100%; }
-  .playlist-folders-grid { width:100%; grid-template-columns:repeat(auto-fit,minmax(calc((100% - 13.5rem) / 10),1fr)); }
+  .playlist-folders-grid { width:100%; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
 }
