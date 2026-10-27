@@ -158,3 +158,12 @@
   .playlist-current-folder-cover { width:7.2rem; min-height:6.8rem; }
   .playlist-current-folder-cover svg { width:7.2rem; height:6.8rem; }
 }
+
+.playlist-folder-visual { position:relative; }
+.playlist-folder-visual > svg { position:relative; z-index:1; opacity:1; transition:opacity .16s ease; }
+.playlist-folder-lottie { position:absolute; inset:0; z-index:2; display:block; opacity:0; pointer-events:none; transition:opacity .16s ease; }
+.playlist-folder-lottie svg { display:block; width:100%; height:100%; overflow:visible; }
+.playlist-folder-card.is-animating .playlist-folder-visual > svg { opacity:0; }
+.playlist-folder-card.is-animating .playlist-folder-lottie { opacity:1; }
+html[data-theme="dark"] .playlist-folder-lottie { filter:invert(1); }
+@media(prefers-reduced-motion:reduce) { .playlist-folder-lottie { display:none; } .playlist-folder-card.is-animating .playlist-folder-visual > svg { opacity:1; } }

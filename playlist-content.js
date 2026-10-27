@@ -92,7 +92,14 @@
       const card = document.createElement('a'); card.className = 'playlist-folder-card'; card.href = `/playlist?folder=${encodeURIComponent(folder.id)}`; card.style.setProperty('--folder-color', safeColor(folder.color, '#A8A5FF'));
       const visual = document.createElement('span'); visual.className = 'playlist-folder-visual'; visual.setAttribute('aria-hidden', 'true');
       visual.append(createFolderIcon(folder));
+      const lottie = document.createElement('span'); lottie.className = 'playlist-folder-lottie'; lottie.setAttribute('aria-hidden', 'true'); visual.append(lottie);
       const body = document.createElement('span'); body.className = 'playlist-folder-body'; const name = document.createElement('strong'); name.textContent = folder.name; const countText = document.createElement('small'); countText.textContent = `${tracks.filter((track) => track.folder_id === folder.id).length} ta trek`; body.append(name, countText); card.append(visual, body); foldersGrid.append(card);
+      if (window.lottie && lottie) {
+        const animation = window.lottie.loadAnimation({ container: lottie, renderer: 'svg', loop: false, autoplay: false, path: '/assets/folder-hover-pinch.json', name: `folder-${folder.id}` });
+        const play = () => { card.classList.add('is-animating'); animation.goToAndPlay(0, true); };
+        const stop = () => { card.classList.remove('is-animating'); animation.goToAndStop(0, true); };
+        card.addEventListener('mouseenter', play); card.addEventListener('mouseleave', stop); card.addEventListener('focus', play); card.addEventListener('blur', stop);
+      }
     });
     if (currentFolder) {
       const canonicalPath = `/playlist?folder=${encodeURIComponent(currentFolder.id)}`;
