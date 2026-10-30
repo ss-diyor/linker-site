@@ -25,7 +25,7 @@
 <body class="minimal-home">
   <div class="page-loader" role="status" aria-label="Sahifa yuklanmoqda"><span class="loading-spinner" aria-hidden="true"></span></div>
   <div class="welcome-intro" data-welcome-intro role="status" aria-live="polite">
-    <p>Assalomu alaykum,<br><span>qadamingizga hasanot.</span></p>
+    <p aria-label="Assalomu alaykum, qadamingizga hasanot."><span class="welcome-typing-line" data-welcome-text="Assalomu alaykum,"></span><br><span class="welcome-typing-line welcome-typing-accent" data-welcome-text="qadamingizga hasanot."></span></p>
   </div>
   <div class="wave-mesh-bg" data-wave-mesh aria-hidden="true"></div>
   <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
@@ -77,14 +77,28 @@
     (() => {
       const intro = document.querySelector('[data-welcome-intro]');
       if (!intro) return;
+      const lines = [...intro.querySelectorAll('[data-welcome-text]')];
+      const typeLine = (line, delay = 0) => new Promise((resolve) => {
+        const text = line.dataset.welcomeText || '';
+        let index = 0;
+        window.setTimeout(() => {
+          const timer = window.setInterval(() => {
+            line.textContent = text.slice(0, ++index);
+            if (index >= text.length) { window.clearInterval(timer); resolve(); }
+          }, 42);
+        }, delay);
+      });
       const finish = () => {
-        intro.classList.add('is-finished');
+        intro.classList.add('is-leaving');
         window.setTimeout(() => intro.remove(), 700);
         document.body.classList.remove('welcome-is-active');
       };
       document.body.classList.add('welcome-is-active');
-      window.setTimeout(() => intro.classList.add('is-leaving'), 1900);
-      window.setTimeout(finish, 2550);
+      (async () => {
+        await typeLine(lines[0]);
+        await typeLine(lines[1], 120);
+        window.setTimeout(finish, 3000);
+      })();
     })();
   </script>
 </body>
