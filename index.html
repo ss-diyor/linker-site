@@ -24,6 +24,9 @@
 </head>
 <body class="minimal-home">
   <div class="page-loader" role="status" aria-label="Sahifa yuklanmoqda"><span class="loading-spinner" aria-hidden="true"></span></div>
+  <div class="welcome-intro" data-welcome-intro role="status" aria-live="polite">
+    <p>Assalomu alaykum,<br><span>qadamingizga hasanot.</span></p>
+  </div>
   <div class="wave-mesh-bg" data-wave-mesh aria-hidden="true"></div>
   <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
   <div class="minimal-page">
@@ -70,5 +73,19 @@
     </footer>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/script.js"></script><script src="/updates.js"></script><script src="/timeline.js"></script><script src="/wave-mesh.js"></script>
+  <script>
+    (() => {
+      const intro = document.querySelector('[data-welcome-intro]');
+      if (!intro) return;
+      const finish = () => {
+        intro.classList.add('is-finished');
+        window.setTimeout(() => intro.remove(), 700);
+        document.body.classList.remove('welcome-is-active');
+      };
+      document.body.classList.add('welcome-is-active');
+      window.setTimeout(() => intro.classList.add('is-leaving'), 1900);
+      window.setTimeout(finish, 2550);
+    })();
+  </script>
 </body>
 </html>
