@@ -27,23 +27,66 @@ alter table public.chat_messages enable row level security;
 revoke all on table public.chat_conversations, public.chat_messages from anon, authenticated;
 grant select, insert, update, delete on table public.chat_conversations to authenticated;
 grant select, insert, delete on table public.chat_messages to authenticated;
+grant update (is_read) on table public.chat_messages to authenticated;
 
--- SECURITY DEFINER helpers avoid recursive RLS policy evaluation while retaining rate limits.
+-- SECURITY DEFINER helpers use transaction-scoped locks so concurrent requests
+-- cannot exceed the conversation or visitor-message limits.
 create or replace function public.can_create_chat_conversation(p_visitor_id uuid)
-returns boolean language sql security definer set search_path = public
+returns boolean
+language plpgsql
+security definer
+set search_path = pg_catalog, public
 as $$
-  select p_visitor_id = auth.uid()
-    and (select count(*) from public.chat_conversations c
-         where c.visitor_id = p_visitor_id and c.created_at > now() - interval '24 hours') < 3;
+declare
+  conversation_count bigint;
+begin
+  if p_visitor_id is null or p_visitor_id is distinct from auth.uid() then
+    return false;
+  end if;
+
+  perform pg_catalog.pg_advisory_xact_lock(
+    pg_catalog.hashtextextended(p_visitor_id::text, 0)
+  );
+
+  select count(*) into conversation_count
+  from public.chat_conversations c
+  where c.visitor_id = p_visitor_id
+    and c.created_at > now() - interval '24 hours';
+
+  return conversation_count < 3;
+end;
 $$;
 
 create or replace function public.can_send_chat_message(p_conversation_id uuid)
-returns boolean language sql security definer set search_path = public
+returns boolean
+language plpgsql
+security definer
+set search_path = pg_catalog, public
 as $$
-  select (select count(*) from public.chat_messages m
-          where m.conversation_id = p_conversation_id
-            and m.sender_type = 'visitor'
-            and m.created_at > now() - interval '1 minute') < 8;
+declare
+  visitor_message_count bigint;
+begin
+  if p_conversation_id is null or not exists (
+    select 1
+    from public.chat_conversations c
+    where c.id = p_conversation_id
+      and c.visitor_id = auth.uid()
+  ) then
+    return false;
+  end if;
+
+  perform pg_catalog.pg_advisory_xact_lock(
+    pg_catalog.hashtextextended(p_conversation_id::text, 0)
+  );
+
+  select count(*) into visitor_message_count
+  from public.chat_messages m
+  where m.conversation_id = p_conversation_id
+    and m.sender_type = 'visitor'
+    and m.created_at > now() - interval '1 minute';
+
+  return visitor_message_count < 8;
+end;
 $$;
 
 revoke all on function public.can_create_chat_conversation(uuid) from public;
@@ -60,9 +103,10 @@ create policy "Visitors can create own conversations" on public.chat_conversatio
 with check (visitor_id = auth.uid() and public.can_create_chat_conversation(visitor_id));
 
 drop policy if exists "Visitors and admins can update conversations" on public.chat_conversations;
-create policy "Visitors and admins can update conversations" on public.chat_conversations for update to authenticated
-using (visitor_id = auth.uid() or public.is_admin())
-with check (visitor_id = auth.uid() or public.is_admin());
+drop policy if exists "Admins can update conversations" on public.chat_conversations;
+create policy "Admins can update conversations" on public.chat_conversations for update to authenticated
+using (public.is_admin())
+with check (public.is_admin());
 
 drop policy if exists "Admins can delete chat data" on public.chat_conversations;
 create policy "Admins can delete chat data" on public.chat_conversations for delete to authenticated
@@ -87,6 +131,11 @@ with check (sender_type = 'admin' and public.is_admin());
 drop policy if exists "Admins can delete chat messages" on public.chat_messages;
 create policy "Admins can delete chat messages" on public.chat_messages for delete to authenticated
 using (public.is_admin());
+
+drop policy if exists "Admins can mark chat messages read" on public.chat_messages;
+create policy "Admins can mark chat messages read" on public.chat_messages for update to authenticated
+using (public.is_admin())
+with check (public.is_admin());
 
 create or replace function public.touch_chat_conversation()
 returns trigger language plpgsql security definer set search_path = public as $$

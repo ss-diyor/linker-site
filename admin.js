@@ -55,7 +55,32 @@
   const setStatus = (text, isError = false) => { status.textContent = text; status.classList.toggle('admin-error', isError); };
   const esc = (value = '') => String(value).replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const isAdmin = async () => { const { data: { user } } = await client.auth.getUser(); if (!user) return null; const { data } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); return data ? user : null; };
-  const showDashboard = async (user) => { if (!user) { loginView.hidden = false; dashboard.hidden = true; return; } const { data: adminRow, error: adminError } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(); if (adminError || !adminRow) { await client.auth.signOut(); loginView.hidden = false; dashboard.hidden = true; error.textContent = adminError ? 'Admin jadvalini tekshirishda xatolik yuz berdi.' : 'Login muvaffaqiyatli, lekin bu account admin sifatida ruxsat etilmagan.'; error.hidden = false; return; } loginView.hidden = true; dashboard.hidden = false; $('admin-user').textContent = user.email || 'admin'; await loadAll(); };
+  const notifyChatAdminAuth = (authenticated) => {
+    document.dispatchEvent(new Event(authenticated ? 'admin:authenticated' : 'admin:unauthenticated'));
+  };
+  const showDashboard = async (user) => {
+    if (!user) {
+      loginView.hidden = false;
+      dashboard.hidden = true;
+      notifyChatAdminAuth(false);
+      return;
+    }
+    const { data: adminRow, error: adminError } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle();
+    if (adminError || !adminRow) {
+      notifyChatAdminAuth(false);
+      await client.auth.signOut();
+      loginView.hidden = false;
+      dashboard.hidden = true;
+      error.textContent = adminError ? 'Admin jadvalini tekshirishda xatolik yuz berdi.' : 'Login muvaffaqiyatli, lekin bu account admin sifatida ruxsat etilmagan.';
+      error.hidden = false;
+      return;
+    }
+    loginView.hidden = true;
+    dashboard.hidden = false;
+    $('admin-user').textContent = user.email || 'admin';
+    notifyChatAdminAuth(true);
+    await loadAll();
+  };
   const loadAll = async () => { setStatus('yuklanmoqda…'); const [settings, bookResult, mediaResult, updateResult, timelineResult, aboutResult, playlistResult, folderResult, notesResult] = await Promise.all([client.from('now_settings').select('*').eq('id','default').maybeSingle(), client.from('books').select('*').order('position').order('created_at'), client.from('media_items').select('*').order('position').order('created_at'), client.from('updates').select('*').order('published_on', { ascending: false }).order('position').order('created_at', { ascending: false }), client.from('timeline_events').select('*').order('year').order('month', { ascending: true, nullsFirst: true }).order('position').order('created_at'), client.from('about_content').select('*').eq('id','default').maybeSingle(), client.from('playlist_tracks').select('*').order('position').order('created_at'), client.from('playlist_folders').select('*').order('position').order('created_at'), client.from('playlist_notes').select('*').order('position').order('created_at')]); if (settings.error || bookResult.error || mediaResult.error || updateResult.error || timelineResult.error || aboutResult.error) return setStatus('Ma’lumotlarni yuklashda xatolik yuz berdi. Supabase migration ishlaganini tekshiring.', true); books = bookResult.data || []; media = mediaResult.data || []; updates = updateResult.data || []; timeline = timelineResult.data || []; about = aboutResult.data || {}; playlistTracks = playlistResult.error ? [] : (playlistResult.data || []); playlistFolders = folderResult.error ? [] : (folderResult.data || []); playlistNotes = notesResult.error ? [] : (notesResult.data || []); $('focus-title').value = settings.data?.focus_title || ''; $('focus-subtitle').value = settings.data?.focus_subtitle || ''; fillAboutForm(); renderLists(); renderPlaylistFolders(); renderPlaylistList(); renderPlaylistNotesList(); const playlistLoadError = folderResult.error ? `Folder jadvali yuklanmadi: ${folderResult.error.message}` : playlistResult.error ? `Treklar jadvali yuklanmadi: ${playlistResult.error.message}` : notesResult.error ? `Playlist notes yuklanmadi: ${notesResult.error.message}` : ''; setStatus(playlistLoadError || ''); };
   const renderLists = () => { $('books-admin-list').innerHTML = books.length ? books.map((b) => `<div class="admin-list-item"><div><strong>${esc(b.title)}</strong><small>${esc(b.author)} · ${esc(b.status)}</small></div><div class="admin-list-actions"><button type="button" data-edit-book="${b.id}">tahrirlash</button><button type="button" data-delete-book="${b.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha kitob yo‘q.</p>'; $('media-admin-list').innerHTML = media.length ? media.map((m) => `<div class="admin-list-item"><div><strong>${esc(m.title)}</strong><small>${esc(m.type)} · ${esc(m.status)}${m.rating == null ? '' : ` · ${esc(m.rating)}/10`}</small></div><div class="admin-list-actions"><button type="button" data-edit-media="${m.id}">tahrirlash</button><button type="button" data-delete-media="${m.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha media yo‘q.</p>'; $('updates-admin-list').innerHTML = updates.length ? updates.map((u) => `<div class="admin-list-item"><div><strong>${esc(u.title)}</strong><small>${esc(u.published_on)} · ${u.is_published ? 'published' : 'yashirilgan'}</small></div><div class="admin-list-actions"><button type="button" data-edit-update="${u.id}">tahrirlash</button><button type="button" data-delete-update="${u.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha qayd yo‘q.</p>'; const months=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr']; const timelineDate=(item)=>item.month ? `${months[item.month-1]} ${item.year}` : String(item.year); $('timeline-admin-list').innerHTML = timeline.length ? timeline.map((item) => `<div class="admin-list-item"><div><strong>${esc(item.title)}</strong><small>${esc(timelineDate(item))} · ${item.is_current ? 'joriy' : 'tarix'} · ${item.is_published ? 'published' : 'yashirilgan'}</small></div><div class="admin-list-actions"><button type="button" data-edit-timeline="${item.id}">tahrirlash</button><button type="button" data-delete-timeline="${item.id}">o‘chirish</button></div></div>`).join('') : '<p class="admin-note">Hozircha timeline voqeasi yo‘q.</p>'; };
   const renderPlaylistFolders = () => {
@@ -383,6 +408,17 @@
       setStatus('Trekni o‘chirishda xatolik yuz berdi.', true);
     }
   });
-  client.auth.onAuthStateChange(async (_event, session) => { const user = session ? await isAdmin() : null; await showDashboard(user); });
+  client.auth.onAuthStateChange((_event, session) => {
+    window.setTimeout(() => {
+      const updateDashboard = async () => {
+        const user = session ? await isAdmin() : null;
+        await showDashboard(user);
+      };
+      void updateDashboard().catch((authError) => {
+        setStatus('Admin sessiyasini tekshirib bo‘lmadi. Sahifani yangilang.', true);
+        console.error('Admin auth state handling failed:', authError);
+      });
+    }, 0);
+  });
   isAdmin().then(showDashboard);
 })();
