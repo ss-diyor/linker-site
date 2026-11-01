@@ -36,6 +36,7 @@
     dateStyle: 'short',
     timeStyle: 'short',
   }).format(new Date(value));
+  const statusLabel = (status) => ({ active: 'faol', closed: 'yopilgan', spam: 'spam' })[status] || status;
 
   const renderMessages = (items) => {
     messages.replaceChildren();
@@ -54,13 +55,14 @@
   const renderSelectedState = () => {
     if (!current) return;
     selectedId.textContent = current.id.slice(0, 8);
-    selectedStatus.textContent = `holat: ${current.status}`;
+    selectedStatus.textContent = `Holat: ${statusLabel(current.status)}`;
     const isActive = current.status === 'active';
+    selected.dataset.status = current.status;
     closeConversationButton.hidden = !isActive;
     form.hidden = !isActive;
     closedNote.hidden = isActive;
     closedNote.textContent = current.status === 'closed'
-      ? 'Bu suhbat yopilgan. Visitor yangi suhbat boshlashi mumkin.'
+      ? 'Bu suhbat yopilgan. Foydalanuvchi yangi suhbat boshlashi mumkin.'
       : 'Bu suhbat faol emas.';
   };
 
@@ -123,9 +125,10 @@
       const button = document.createElement('button');
       button.type = 'button';
       button.className = `chat-conversation-item${current?.id === item.id ? ' is-selected' : ''}`;
+      button.dataset.status = item.status;
       button.dataset.chatAdminConversation = item.id;
       const title = document.createElement('strong');
-      title.textContent = `Anonim visitor · ${item.status}`;
+      title.textContent = `Anonim suhbat · ${statusLabel(item.status)}`;
       const meta = document.createElement('small');
       meta.textContent = `${formatTime(item.updated_at)} · ${item.id.slice(0, 8)}`;
       button.append(title, meta);

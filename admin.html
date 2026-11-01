@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#05061a"><title>Admin — Diyorbek Sultanov</title>
-<link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/admin.css?v=chat-admin-fixes-1"><link rel="stylesheet" href="/chat.css?v=chat-ui-3">
+<link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/admin.css?v=admin-ui-2"><link rel="stylesheet" href="/chat.css?v=chat-ui-3">
 <script>
     (() => {
       const savedTheme = localStorage.getItem('theme');
@@ -15,8 +15,8 @@
 <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
 <div class="minimal-page">
     <button class="theme-toggle" type="button" aria-label="Light themega o'tish" aria-pressed="false"><span class="theme-toggle-label">light</span></button><main id="main" class="admin-main">
-<header class="minimal-hero admin-header"><a class="minimal-back" href="/">bosh sahifa</a><h1>Admin</h1><p>now content manager</p></header>
-<section id="login-view" class="admin-panel" aria-labelledby="login-title"><h2 id="login-title">Kirish</h2><p class="admin-note">Faqat admin account bilan kirish mumkin.</p><form id="login-form"><label>Email<input type="email" id="login-email" required autocomplete="email"></label><label>Parol<input type="password" id="login-password" required autocomplete="current-password"></label><button class="admin-submit" type="submit">kirish <span aria-hidden="true">↗</span></button><p id="login-error" class="admin-error" role="alert" hidden></p></form></section>
+<header class="minimal-hero admin-header"><a class="minimal-back" href="/">← bosh sahifa</a><span class="admin-eyebrow">SAYT BOSHQARUVI</span><h1>Admin paneli</h1><p>Kontent, playlist va visitor suhbatlarini bir joyda boshqaring.</p></header>
+<section id="login-view" class="admin-panel" aria-labelledby="login-title"><h2 id="login-title">Kirish</h2><p class="admin-note">Admin hisobingiz orqali sayt boshqaruviga kiring.</p><form id="login-form"><label>Email<input type="email" id="login-email" required autocomplete="email"></label><label>Parol<input type="password" id="login-password" required autocomplete="current-password"></label><button class="admin-submit" type="submit">Kirish <span aria-hidden="true">↗</span></button><p id="login-error" class="admin-error" role="alert" hidden></p></form></section>
 <section id="dashboard-view" hidden>
 <div class="admin-toolbar"><p id="admin-user" class="admin-note"></p><button id="logout-button" class="admin-quiet-button" type="button">chiqish</button></div>
 <section class="admin-panel"><h2>Now sozlamalari</h2><form id="settings-form" class="admin-form"><label>Focus title<input id="focus-title" required></label><label>Focus subtitle<input id="focus-subtitle" required></label><button class="admin-submit" type="submit">saqlash</button></form></section>
@@ -45,7 +45,7 @@
 <section class="admin-panel"><div class="admin-section-heading"><h2>Media diary</h2><button class="admin-quiet-button" type="button" data-add="media">+ yangi</button></div><form id="media-form" class="admin-form" hidden><input type="hidden" id="media-id"><label>Nomi<input id="media-title" required></label><label>Turi<select id="media-type"><option value="movie">film</option><option value="series">serial</option><option value="animation">multfilm</option><option value="documentary">documentary</option><option value="anime">anime</option><option value="other">boshqa</option></select></label><label>Status<select id="media-status"><option value="watched">ko‘rilgan</option><option value="watching">hozir ko‘rilmoqda</option><option value="watchlist">watchlist</option></select></label><label>Yil<input id="media-year" type="number" min="0"></label><label>Rating<input id="media-rating" type="number" min="0" max="10" step="0.5"></label><label>Havola<input id="media-url" type="url" placeholder="IMDb yoki boshqa havola"></label><label>Poster URL<input id="media-poster-url" type="url" placeholder="https://.../poster.jpg" autocomplete="off"><span id="media-poster-preview" class="media-poster-preview" hidden aria-live="polite"></span></label><p class="admin-note media-poster-help">IMDb havolasi filmga olib boradi, poster uchun esa rasmning to‘g‘ridan-to‘g‘ri URL manzilini kiriting.</p><label>Izoh<textarea id="media-note" rows="3"></textarea></label><div class="admin-form-actions"><button class="admin-submit" type="submit">saqlash</button><button class="admin-quiet-button" type="button" data-cancel="media">bekor qilish</button></div></form><div id="media-admin-list" class="admin-list"></div></section>
 <section id="chat-admin-panel" class="admin-panel chat-admin-panel" hidden>
 <div class="admin-section-heading"><h2>Anonim chat</h2><span id="chat-unread-count" class="admin-note" aria-live="polite">0 ta o‘qilmagan</span></div>
-<p class="admin-note">Visitorlar login va email kiritmasdan qoldirgan xabarlar. Suhbatni tanlab reply yuboring. Mavjud Supabase loyihasida unread va status cheklovlari uchun supabase/chat-admin-fixes.sql migratsiyasini bajaring.</p>
+<p class="admin-note">Ism va email so‘ralmaydigan visitor suhbatlari. Suhbatni tanlang, javob bering yoki yakunlang. O‘qilgan holati va suhbat statusi Supabase chat migrationlariga bog‘liq.</p>
 <p id="chat-admin-error" class="admin-error chat-admin-error" role="alert" aria-live="polite" hidden></p>
 <div class="chat-admin-layout">
 <div id="chat-conversation-list" class="admin-list chat-conversation-list" aria-label="Chat suhbatlari"></div>
@@ -53,17 +53,17 @@
 <div id="chat-admin-empty" class="chat-admin-empty">Suhbatni tanlang.</div>
 <div id="chat-admin-selected" hidden>
 <div class="chat-admin-selected-head">
-<div><p class="chat-eyebrow">anonim visitor</p><strong id="chat-admin-selected-id"></strong><small id="chat-admin-status" class="chat-admin-status"></small></div>
-<div class="chat-admin-selected-head-actions"><button id="chat-admin-close-conversation" class="admin-quiet-button" type="button">suhbatni yopish</button><button id="chat-admin-close" class="admin-quiet-button" type="button">ro‘yxatga qaytish</button></div>
+<div><p class="chat-eyebrow">anonim suhbat</p><strong id="chat-admin-selected-id"></strong><small id="chat-admin-status" class="chat-admin-status"></small></div>
+<div class="chat-admin-selected-head-actions"><button id="chat-admin-close-conversation" class="admin-quiet-button" type="button">Suhbatni yopish</button><button id="chat-admin-close" class="admin-quiet-button" type="button">Ro‘yxatga qaytish</button></div>
 </div>
 <p id="chat-admin-closed-note" class="admin-note chat-admin-closed-note" hidden></p>
 <div id="chat-admin-messages" class="chat-messages"></div>
-<form id="chat-admin-form" class="chat-form"><label class="sr-only" for="chat-admin-input">Reply</label><textarea id="chat-admin-input" rows="2" maxlength="2000" required placeholder="Reply yozing..."></textarea><button class="admin-submit" type="submit">reply yuborish</button></form>
+<form id="chat-admin-form" class="chat-form"><label class="sr-only" for="chat-admin-input">Javob</label><textarea id="chat-admin-input" rows="2" maxlength="2000" required placeholder="Javobingizni yozing..."></textarea><button class="admin-submit" type="submit">Javob yuborish</button></form>
 </div>
 </div>
 </div>
 </section>
 <p id="admin-status" class="admin-note" role="status"></p>
 </section></main><footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer></div>
-<script src="/script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/admin.js?v=chat-admin-fixes-1"></script><script src="/chat-admin.js?v=chat-admin-fixes-1"></script>
+<script src="/script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/admin.js?v=chat-admin-fixes-1"></script><script src="/chat-admin.js?v=admin-ui-2"></script>
 </body></html>
