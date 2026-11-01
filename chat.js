@@ -139,6 +139,24 @@
       });
   };
 
+  const findActiveConversation = (visitorId) => client
+    .from('chat_conversations')
+    .select('*')
+    .eq('visitor_id', visitorId)
+    .eq('status', 'active')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const showConversation = async (value, focusInput = false) => {
+    conversation = value;
+    start.hidden = true;
+    thread.hidden = false;
+    await loadMessages();
+    subscribe();
+    if (focusInput) input.focus();
+  };
+
   const getCaptchaToken = () => new Promise((resolve, reject) => {
     if (!window.turnstile || !turnstileBox) {
       reject(new Error('Turnstile yuklanmadi.'));
@@ -185,14 +203,7 @@
       }
 
       if (turnstileBox) turnstileBox.hidden = true;
-      const existing = await client
-        .from('chat_conversations')
-        .select('*')
-        .eq('visitor_id', session.user.id)
-        .eq('status', 'active')
-        .order('updated_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      const existing = await findActiveConversation(session.user.id);
       if (existing.error) throw existing.error;
 
       if (existing.data) {
@@ -207,11 +218,7 @@
         conversation = created.data;
       }
 
-      start.hidden = true;
-      thread.hidden = false;
-      await loadMessages();
-      subscribe();
-      input.focus();
+      await showConversation(conversation, true);
     } catch (chatError) {
       const message = chatError.message || '';
       setError(message.includes('Anonymous')
@@ -225,6 +232,38 @@
   };
 
   startButton?.addEventListener('click', openChat);
+
+  const resumeExistingChat = async () => {
+    startButton.disabled = true;
+    startButton.textContent = 'Suhbat tekshirilmoqda…';
+
+    try {
+      const { data: { session }, error: sessionError } = await client.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!session) {
+        startButton.textContent = 'Start ↗';
+        return;
+      }
+
+      const existing = await findActiveConversation(session.user.id);
+      if (existing.error) throw existing.error;
+      if (!existing.data) {
+        startButton.textContent = 'Yangi suhbat ↗';
+        if (greeting) greeting.textContent = 'Yangi suhbat boshlashingiz mumkin.';
+        return;
+      }
+
+      await showConversation(existing.data);
+    } catch (resumeError) {
+      console.error('Chat resume failed:', resumeError);
+      setError('Oldingi suhbatni tiklab bo‘lmadi. Start tugmasini bosib qayta urinib ko‘ring.');
+      startButton.textContent = 'Qayta urinib ko‘ring ↗';
+    } finally {
+      startButton.disabled = false;
+    }
+  };
+
+  void resumeExistingChat();
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
