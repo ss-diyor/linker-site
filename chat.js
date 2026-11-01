@@ -9,9 +9,12 @@
   const form = document.getElementById('chat-form');
   const input = document.getElementById('chat-input');
   const error = document.getElementById('chat-error');
+  const turnstileBox = document.getElementById('chat-turnstile');
   const status = document.getElementById('chat-status');
   let conversation = null;
   let channel = null;
+  let turnstileWidget = null;
+  const turnstileSiteKey = '0x4AAAAAAFuyXzBFPW9rCtNg';
   const setError = (text = '') => { error.textContent = text; error.hidden = !text; };
   const formatTime = (value) => new Intl.DateTimeFormat('uz-UZ', { dateStyle:'short', timeStyle:'short' }).format(new Date(value));
   const renderMessages = (items) => {
@@ -22,18 +25,25 @@
   };
   const loadMessages = async () => { if (!conversation) return; const { data, error: queryError } = await client.from('chat_messages').select('id, sender_type, body, created_at').eq('conversation_id', conversation.id).order('created_at'); if (queryError) return setError('Xabarlarni yuklab bo‘lmadi.'); renderMessages(data || []); };
   const subscribe = () => { channel?.unsubscribe(); channel = client.channel(`visitor-chat-${conversation.id}`).on('postgres_changes', { event:'*', schema:'public', table:'chat_messages', filter:`conversation_id=eq.${conversation.id}` }, loadMessages).subscribe(); };
+  const getCaptchaToken = () => new Promise((resolve, reject) => {
+    if (!window.turnstile || !turnstileBox) return reject(new Error('Turnstile yuklanmadi.'));
+    turnstileBox.hidden = false;
+    if (turnstileWidget !== null) { try { window.turnstile.remove(turnstileWidget); } catch {} turnstileWidget = null; turnstileBox.replaceChildren(); }
+    turnstileWidget = window.turnstile.render(turnstileBox, { sitekey: turnstileSiteKey, theme: document.documentElement.dataset.theme === 'light' ? 'light' : 'dark', callback: resolve, 'expired-callback': () => reject(new Error('Captcha muddati tugadi.')), 'error-callback': () => reject(new Error('Captcha tekshiruvi muvaffaqiyatsiz tugadi.')) });
+  });
   const openChat = async () => {
-    setError(''); startButton.disabled = true; startButton.textContent = 'ochilmoqda…';
+    setError(''); startButton.disabled = true; startButton.textContent = 'tekshirilmoqda…';
     try {
       let { data: { session }, error: authError } = await client.auth.getSession();
       if (authError) throw authError;
-      if (!session) { const result = await client.auth.signInAnonymously(); if (result.error) throw result.error; session = result.data.session; }
+      if (!session) { const captchaToken = await getCaptchaToken(); const result = await client.auth.signInAnonymously({ options: { captchaToken } }); if (result.error) throw result.error; session = result.data.session; }
+      if (turnstileBox) turnstileBox.hidden = true;
       const existing = await client.from('chat_conversations').select('*').eq('visitor_id', session.user.id).in('status', ['active','closed']).order('updated_at', { ascending:false }).limit(1).maybeSingle();
       if (existing.error) throw existing.error;
       if (existing.data) conversation = existing.data;
       else { const created = await client.from('chat_conversations').insert({ visitor_id:session.user.id }).select().single(); if (created.error) throw created.error; conversation = created.data; }
       start.hidden = true; thread.hidden = false; status.textContent = conversation.status; await loadMessages(); subscribe(); input.focus();
-    } catch (chatError) { setError(chatError.message?.includes('Anonymous') ? 'Anonim kirish Supabase Auth’da yoqilmagan.' : 'Chatni ochib bo‘lmadi. Keyinroq qayta urinib ko‘ring.'); startButton.disabled = false; startButton.textContent = 'Start ↗'; }
+    } catch (chatError) { setError(chatError.message?.includes('Anonymous') ? 'Anonim kirish Supabase Auth’da yoqilmagan.' : chatError.message?.includes('Turnstile') || chatError.message?.includes('Captcha') ? 'Captcha tekshiruvidan o‘tib bo‘lmadi. Qayta urinib ko‘ring.' : 'Chatni ochib bo‘lmadi. Keyinroq qayta urinib ko‘ring.'); startButton.disabled = false; startButton.textContent = 'Start ↗'; }
   };
   startButton?.addEventListener('click', openChat);
   form?.addEventListener('submit', async (event) => { event.preventDefault(); const body = input.value.trim(); if (!body || !conversation || conversation.status !== 'active') return; const button = form.querySelector('button'); button.disabled = true; setError(''); const result = await client.from('chat_messages').insert({ conversation_id:conversation.id, sender_type:'visitor', body }).select().single(); if (result.error) setError(result.error.message.includes('row-level') ? 'Xabar yuborish chekloviga yetdingiz. Bir ozdan keyin urinib ko‘ring.' : 'Xabar yuborilmadi.'); else { input.value = ''; await loadMessages(); } button.disabled = false; input.focus(); });
