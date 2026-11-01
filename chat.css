@@ -149,11 +149,8 @@
   .chat-workspace { min-height:calc(100svh - 4rem); grid-template-columns:3.25rem minmax(0,1fr); }
   .community-sidebar { gap:.55rem; padding:.45rem .25rem; }
   .community-rail-button { width:2.35rem; height:2.35rem; flex-basis:2.35rem; border-radius:.78rem; }
-  .community-layout { min-height:0; flex:1; grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(20rem,1fr); }
-  .community-channel-panel { max-height:9.5rem; overflow:auto; border-right:0; border-bottom:1px solid var(--line); }
-  .community-server-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .community-server-choice { padding:.42rem; }
-  .community-server-choice small { grid-column:2; }
+  .community-layout { min-height:0; flex:1; grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(20rem,1fr); }
+  .community-channel-panel { display:none; }
   .community-room { padding:0 .65rem; }
   .community-messages { max-height:calc(100svh - 25rem); }
   .community-topbar { min-height:5.4rem; padding:.75rem; }
@@ -167,9 +164,6 @@
   .chat-workspace { grid-template-columns:2.8rem minmax(0,1fr); }
   .community-sidebar { padding-inline:.18rem; }
   .community-rail-button { width:2.1rem; height:2.1rem; flex-basis:2.1rem; }
-  .community-server-list { gap:.15rem; }
-  .community-server-choice { grid-template-columns:1.8rem minmax(0,1fr); column-gap:.4rem; }
-  .community-server-icon { width:1.75rem; height:1.75rem; }
   .community-lock-state { font-size:.46rem; }
 }
 @media(prefers-reduced-motion:reduce) { .community-rail-button { transition:none; } }
