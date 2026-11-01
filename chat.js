@@ -8,7 +8,6 @@
   const input = document.getElementById('chat-input');
   const error = document.getElementById('chat-error');
   const turnstileBox = document.getElementById('chat-turnstile');
-  const status = document.getElementById('chat-status');
   const greeting = document.getElementById('chat-start-greeting');
 
   const setError = (text = '') => {
@@ -111,7 +110,6 @@
       }, (payload) => {
         if (!payload.new || payload.new.id !== conversation?.id) return;
         conversation = { ...conversation, ...payload.new };
-        status.textContent = conversation.status;
         if (conversation.status !== 'active') returnToStartAfterClosure();
       })
       .subscribe((state) => {
@@ -191,7 +189,6 @@
 
       start.hidden = true;
       thread.hidden = false;
-      status.textContent = conversation.status;
       await loadMessages();
       subscribe();
       input.focus();
