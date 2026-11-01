@@ -77,6 +77,13 @@
     (() => {
       const intro = document.querySelector('[data-welcome-intro]');
       if (!intro) return;
+      const seenKey = 'diyor-welcome-intro-seen';
+      try {
+        if (localStorage.getItem(seenKey) === 'true') {
+          intro.remove();
+          return;
+        }
+      } catch {}
       const lines = [...intro.querySelectorAll('[data-welcome-text]')];
       const typeLine = (line, delay = 0) => new Promise((resolve) => {
         const text = line.dataset.welcomeText || '';
@@ -92,6 +99,7 @@
         intro.classList.add('is-leaving');
         window.setTimeout(() => intro.remove(), 700);
         document.body.classList.remove('welcome-is-active');
+        try { localStorage.setItem(seenKey, 'true'); } catch {}
       };
       document.body.classList.add('welcome-is-active');
       (async () => {
