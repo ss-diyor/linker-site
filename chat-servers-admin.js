@@ -102,7 +102,7 @@
     for (const message of data) {
       const row = document.createElement('article'); row.className = `community-message ${message.sender_type === 'admin' ? 'is-admin' : ''}`;
       const avatar = document.createElement('span'); avatar.className = 'community-message-avatar';
-      avatar.textContent = message.sender_type === 'admin' ? 'D' : String(message.visitor_id).slice(-1).toUpperCase();
+      avatar.textContent = message.sender_type === 'admin' ? 'D' : 'M';
       const body = document.createElement('div'); body.className = 'community-message-body';
       const heading = document.createElement('div'); heading.className = 'community-message-heading';
       const author = document.createElement('strong');

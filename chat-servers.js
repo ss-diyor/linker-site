@@ -133,7 +133,7 @@
       article.dataset.messageId = item.id;
       const avatar = document.createElement('span');
       avatar.className = 'community-message-avatar';
-      avatar.textContent = item.sender_type === 'admin' ? 'D' : visitorName(item.visitor_id).slice(-1);
+      avatar.textContent = item.sender_type === 'admin' ? 'D' : 'M';
       const content = document.createElement('div');
       content.className = 'community-message-body';
       const heading = document.createElement('div');
