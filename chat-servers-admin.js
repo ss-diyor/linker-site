@@ -108,8 +108,15 @@
       const author = document.createElement('strong');
       author.textContent = message.sender_type === 'admin' ? 'Siz · admin' : `Mehmon ${String(message.visitor_id).slice(0, 4).toUpperCase()}`;
       const date = document.createElement('time'); date.dateTime = message.created_at; date.textContent = fmt(message.created_at);
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'community-message-delete';
+      remove.dataset.deleteCommunityMessage = message.id;
+      remove.setAttribute('aria-label', 'Xabarni o‘chirish');
+      remove.title = 'Xabarni o‘chirish';
+      remove.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path></svg>';
       const text = document.createElement('p'); text.textContent = message.body;
-      heading.append(author, date); body.append(heading, text); row.append(avatar, body); inboxMessages.append(row);
+      heading.append(author, date, remove); body.append(heading, text); row.append(avatar, body); inboxMessages.append(row);
     }
     inboxMessages.scrollTop = inboxMessages.scrollHeight;
   };
@@ -198,6 +205,24 @@
   inboxSelect.addEventListener('change', () => {
     activeServerId = inboxSelect.value;
     void loadInbox().catch((loadError) => { error('Server xabarlari yuklanmadi.'); console.error(loadError); });
+  });
+  inboxMessages.addEventListener('click', async (event) => {
+    const button = event.target instanceof Element ? event.target.closest('[data-delete-community-message]') : null;
+    if (!button) return;
+    const messageId = button.dataset.deleteCommunityMessage;
+    if (!window.confirm('Bu xabarni serverdan butunlay o‘chirasizmi?')) return;
+    button.disabled = true;
+    error('');
+    try {
+      const { error: deleteError } = await client.from('chat_server_messages').delete().eq('id', messageId);
+      if (deleteError) throw deleteError;
+      await loadInbox();
+    } catch (deleteError) {
+      error('Xabar o‘chirilmadi. Admin RLS siyosati va chat-servers migration’ini tekshiring.');
+      console.error('Community message delete failed:', deleteError);
+    } finally {
+      if (button.isConnected) button.disabled = false;
+    }
   });
   inboxForm.addEventListener('submit', async (event) => {
     event.preventDefault();

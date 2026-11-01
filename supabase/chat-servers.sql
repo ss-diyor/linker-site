@@ -94,6 +94,18 @@ drop trigger if exists chat_servers_touch_updated_at on public.chat_servers;
 create trigger chat_servers_touch_updated_at before update on public.chat_servers
 for each row execute function public.touch_chat_server_updated_at();
 
+-- A server update notifies public clients to re-read the room after moderation deletions.
+create or replace function public.touch_chat_server_after_message_delete()
+returns trigger language plpgsql set search_path = public as $$
+begin
+  update public.chat_servers set updated_at = now() where id = old.server_id;
+  return old;
+end;
+$$;
+drop trigger if exists chat_server_messages_notify_delete on public.chat_server_messages;
+create trigger chat_server_messages_notify_delete after delete on public.chat_server_messages
+for each row execute function public.touch_chat_server_after_message_delete();
+
 do $$
 begin
   if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'chat_servers') then

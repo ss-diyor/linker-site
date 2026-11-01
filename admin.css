@@ -280,6 +280,11 @@
 .admin-page .chat-server-inbox-form { padding-top:.75rem; }
 .admin-page .chat-server-inbox-form textarea { min-height:3rem; border-radius:.6rem; }
 .admin-page .community-inbox-blank { margin:auto; padding:2rem .5rem; color:var(--muted); font-size:.67rem; }
+.admin-page .chat-server-inbox-messages .community-message-heading { display:flex; align-items:center; }
+.admin-page .community-message-delete { display:grid; width:1.7rem; height:1.7rem; flex:0 0 1.7rem; place-items:center; margin-left:auto; border:1px solid transparent; border-radius:.45rem; background:transparent; color:var(--subtle); cursor:pointer; opacity:.72; transition:background .16s ease,border-color .16s ease,color .16s ease,opacity .16s ease; }
+.admin-page .community-message-delete svg { width:.9rem; height:.9rem; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.admin-page .community-message-delete:hover:not(:disabled) { border-color:color-mix(in srgb,#ff7185 30%,var(--line)); background:color-mix(in srgb,#ff7185 9%,transparent); color:#ff7185; opacity:1; }
+.admin-page .community-message-delete:disabled { cursor:wait; opacity:.4; }
 @media(max-width:899px) {
   .admin-page .chat-server-admin { grid-column:1/-1; }
 }
@@ -295,4 +300,5 @@
   .admin-page .chat-server-select-label select { width:100%; }
   .admin-page .chat-server-inbox-form { align-items:stretch; flex-direction:column; }
   .admin-page .chat-server-inbox-form .admin-submit { align-self:flex-end; }
+  .admin-page .community-message-delete { width:2rem; height:2rem; flex-basis:2rem; opacity:1; }
 }

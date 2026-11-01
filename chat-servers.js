@@ -177,6 +177,9 @@
         const row = payload.new;
         if (!row || messages.querySelector(`[data-message-id="${row.id}"]`)) return;
         void loadMessages();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_servers', filter: `id=eq.${serverId}` }, () => {
+        void loadMessages();
       }).subscribe((state) => {
         if (state === 'CHANNEL_ERROR' || state === 'TIMED_OUT') showError('Jonli chat uzildi. Sahifani yangilang.');
       });
