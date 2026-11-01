@@ -806,3 +806,8 @@ body.modal-open { overflow: hidden; }
   .welcome-intro p { animation:none; }
   .welcome-intro { transition-duration:.2s; }
 }
+
+.chat-toggle { position:fixed; top:1.25rem; right:4.9rem; z-index:8; display:grid; width:2rem; height:2rem; place-items:center; border:1px solid var(--line); border-radius:50%; background:var(--surface); color:var(--muted); transition:border-color .2s ease,color .2s ease,background .2s ease; }
+.chat-toggle:hover { border-color:var(--line-hover); color:var(--text); background:var(--accent-soft); }
+.chat-toggle svg { width:1.05rem; height:1.05rem; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+@media(max-width:520px) { .chat-toggle { top:.8rem; right:4.5rem; } }

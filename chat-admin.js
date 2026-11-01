@@ -1,0 +1,27 @@
+(() => {
+  const config = window.supabaseConfig;
+  if (!config || !window.supabase) return;
+  const client = window.supabase.createClient(config.url, config.publishableKey);
+  const panel = document.getElementById('chat-admin-panel');
+  if (!panel) return;
+  const list = document.getElementById('chat-conversation-list');
+  const selected = document.getElementById('chat-admin-selected');
+  const empty = document.getElementById('chat-admin-empty');
+  const selectedId = document.getElementById('chat-admin-selected-id');
+  const messages = document.getElementById('chat-admin-messages');
+  const form = document.getElementById('chat-admin-form');
+  const input = document.getElementById('chat-admin-input');
+  const unread = document.getElementById('chat-unread-count');
+  let conversations = [];
+  let current = null;
+  const formatTime = (value) => new Intl.DateTimeFormat('uz-UZ', { dateStyle:'short', timeStyle:'short' }).format(new Date(value));
+  const renderMessages = (items) => { messages.replaceChildren(); items.forEach((item) => { const bubble=document.createElement('article'); bubble.className=`chat-bubble ${item.sender_type}`; bubble.textContent=item.body; const time=document.createElement('small'); time.textContent=`${item.sender_type==='admin'?'siz':'visitor'} · ${formatTime(item.created_at)}`; bubble.append(time); messages.append(bubble); }); messages.scrollTop=messages.scrollHeight; };
+  const loadSelected = async () => { if (!current) return; const { data } = await client.from('chat_messages').select('id,sender_type,body,created_at').eq('conversation_id',current.id).order('created_at'); renderMessages(data || []); selectedId.textContent = current.id.slice(0, 8); };
+  const renderList = () => { list.replaceChildren(); unread.textContent=`${conversations.filter((item)=>item.status==='active').length} ta faol`; if (!conversations.length) { const p=document.createElement('p'); p.className='admin-note'; p.textContent='Hozircha chat xabarlari yo‘q.'; list.append(p); return; } conversations.forEach((item) => { const button=document.createElement('button'); button.type='button'; button.className=`chat-conversation-item${current?.id===item.id?' is-selected':''}`; button.dataset.chatAdminConversation=item.id; const title=document.createElement('strong'); title.textContent=`Anonim visitor · ${item.status}`; const meta=document.createElement('small'); meta.textContent=`${formatTime(item.updated_at)} · ${item.id.slice(0,8)}`; button.append(title,meta); list.append(button); }); };
+  const load = async () => { const { data } = await client.from('chat_conversations').select('*').order('updated_at',{ascending:false}); conversations=data||[]; renderList(); if(current) { current=conversations.find((item)=>item.id===current.id)||null; if(current) await loadSelected(); } };
+  const open = async (id) => { current=conversations.find((item)=>item.id===id)||null; if(!current) return; empty.hidden=true; selected.hidden=false; renderList(); await loadSelected(); };
+  const init = async () => { const { data:{user} } = await client.auth.getUser(); if (!user) return; const { data:admin }=await client.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle(); if(!admin) return; panel.hidden=false; await load(); client.channel('admin-chat-inbox').on('postgres_changes',{event:'*',schema:'public',table:'chat_conversations'},load).on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages'},load).subscribe(); };
+  document.addEventListener('click',(event)=>{ const item=event.target.closest('[data-chat-admin-conversation]'); if(item) open(item.dataset.chatAdminConversation); if(event.target.id==='chat-admin-close'){ current=null; selected.hidden=true; empty.hidden=false; renderList(); } });
+  form?.addEventListener('submit', async (event) => { event.preventDefault(); if(!current) return; const body=input.value.trim(); if(!body) return; const button=form.querySelector('button'); button.disabled=true; const result=await client.from('chat_messages').insert({conversation_id:current.id,sender_type:'admin',body}); if(!result.error){ input.value=''; await load(); await open(current.id); } button.disabled=false; });
+  init();
+})();

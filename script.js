@@ -1,6 +1,14 @@
 (() => {
   const themeToggle = document.querySelector('.theme-toggle');
   const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeToggle && !document.body.classList.contains('admin-page') && !document.body.classList.contains('chat-page')) {
+    const chatLink = document.createElement('a');
+    chatLink.className = 'chat-toggle';
+    chatLink.href = '/chat';
+    chatLink.setAttribute('aria-label', 'Anonim chatni ochish');
+    chatLink.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 18.5 4 22l3.6-1.9A8.5 8.5 0 1 0 5 18.5Z"></path></svg>';
+    themeToggle.insertAdjacentElement('beforebegin', chatLink);
+  }
   const setTheme = (theme) => {
     const isLight = theme === 'light';
     document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
