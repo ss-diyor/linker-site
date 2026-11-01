@@ -257,3 +257,42 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-page .admin-submit,.admin-page .admin-quiet-button,.admin-page .chat-conversation-item,.admin-page .admin-panel input,.admin-page .admin-panel select,.admin-page .admin-panel textarea { transition:none; }
 }
+
+.admin-page .chat-server-admin { margin:1.4rem 0 1.8rem; padding:1rem; border:1px solid var(--line); border-radius:.8rem; background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 5%,var(--admin-card)),var(--admin-card)); }
+.admin-page .chat-server-admin > .admin-section-heading { align-items:center; }
+.admin-page .chat-server-admin h3 { margin:0; color:var(--text); font-size:.92rem; }
+.admin-page .chat-server-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; margin:.9rem 0 1rem; padding:1rem; border:1px solid var(--line); border-radius:.7rem; background:color-mix(in srgb,var(--bg) 36%,transparent); }
+.admin-page .chat-server-form-row { display:flex; flex-wrap:wrap; align-items:end; gap:.9rem; grid-column:1/-1; }
+.admin-page .chat-server-form-row > label:not(.admin-checkbox) { max-width:7rem; }
+.admin-page .chat-server-form-row input[type=color] { min-height:2.35rem; padding:.25rem; }
+.admin-page .chat-server-form-row .admin-checkbox { min-height:2.35rem; }
+.admin-page .chat-server-form .admin-form-actions { grid-column:1/-1; }
+.admin-page .chat-server-admin-list { margin:.6rem 0 1.2rem; }
+.admin-page .chat-server-admin-item { align-items:center; gap:1rem; }
+.admin-page .chat-server-admin-item .admin-list-actions { flex-wrap:wrap; }
+.admin-page .chat-server-admin-item .admin-list-actions button { white-space:nowrap; }
+.admin-page .chat-community-inbox { margin-top:1.2rem; padding:1rem; border:1px solid var(--line); border-radius:.7rem; background:color-mix(in srgb,var(--bg) 35%,transparent); }
+.admin-page .chat-community-inbox > .admin-section-heading { align-items:center; }
+.admin-page .chat-community-inbox h3 { margin:0; color:var(--text); font-size:.78rem; }
+.admin-page .chat-server-select-label { display:flex; align-items:center; gap:.5rem; color:var(--muted); font-size:.6rem; }
+.admin-page .chat-server-select-label select { min-width:10rem; padding:.5rem .65rem; border:1px solid var(--line-strong); border-radius:.5rem; background:var(--bg); color:var(--text); font:inherit; font-size:.62rem; }
+.admin-page .chat-server-inbox-messages { min-height:14rem; max-height:30rem; margin:.8rem 0; padding:.6rem; border:1px solid var(--line); border-radius:.65rem; background:color-mix(in srgb,var(--bg) 45%,transparent); }
+.admin-page .chat-server-inbox-form { padding-top:.75rem; }
+.admin-page .chat-server-inbox-form textarea { min-height:3rem; border-radius:.6rem; }
+.admin-page .community-inbox-blank { margin:auto; padding:2rem .5rem; color:var(--muted); font-size:.67rem; }
+@media(max-width:899px) {
+  .admin-page .chat-server-admin { grid-column:1/-1; }
+}
+@media(max-width:600px) {
+  .admin-page .chat-server-admin { padding:.7rem; }
+  .admin-page .chat-server-form { grid-template-columns:minmax(0,1fr); padding:.7rem; }
+  .admin-page .chat-server-form > label,.admin-page .chat-server-form .chat-server-form-row,.admin-page .chat-server-form .admin-form-actions { grid-column:1; }
+  .admin-page .chat-server-form-row { align-items:stretch; }
+  .admin-page .chat-server-admin-item { align-items:flex-start; flex-direction:column; }
+  .admin-page .chat-community-inbox { padding:.65rem; }
+  .admin-page .chat-community-inbox > .admin-section-heading { align-items:flex-start; flex-direction:column; }
+  .admin-page .chat-server-select-label { width:100%; align-items:flex-start; flex-direction:column; }
+  .admin-page .chat-server-select-label select { width:100%; }
+  .admin-page .chat-server-inbox-form { align-items:stretch; flex-direction:column; }
+  .admin-page .chat-server-inbox-form .admin-submit { align-self:flex-end; }
+}

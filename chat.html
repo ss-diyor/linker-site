@@ -4,18 +4,25 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Diyorbek Sultanov bilan anonim suhbat."><meta name="theme-color" content="#05061a"><meta name="robots" content="noindex">
 <title>Chat — Diyorbek Sultanov</title>
-<link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/chat.css?v=chat-ui-3">
+<link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/chat.css?v=community-chat-2">
 <script>(()=>{const t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark';})();</script>
 </head>
 <body class="minimal-home chat-page">
 <a class="skip-link" href="#main">Asosiy kontentga o‘tish</a>
 <div class="minimal-page"><button class="theme-toggle" type="button" aria-label="Light themega o'tish" aria-pressed="false"><span class="theme-toggle-label">light</span></button>
-<main id="main" class="chat-main">
-<header class="chat-header"><a class="chat-back" href="/" aria-label="Bosh sahifaga qaytish">‹</a><div class="chat-identity"><span class="chat-avatar" aria-hidden="true">D</span><h1>Diyorbek</h1></div></header>
-<section class="chat-shell" aria-label="Anonim chat">
+<main id="main" class="chat-main chat-workspace">
+<aside class="community-sidebar" aria-label="Chat serverlari"><a class="community-home" href="/" aria-label="Bosh sahifa">D</a><div class="community-sidebar-divider"></div><div id="community-server-rail" class="community-server-rail"></div><a class="community-add-server" href="#community-servers" aria-label="Serverlar ro‘yxatiga o‘tish">+</a></aside>
+<section class="community-main" aria-label="Ommaviy chat serverlari">
+<header class="community-topbar"><div><p class="community-kicker">HAMJAMIYAT CHAT</p><h1 id="community-server-title">Server tanlang</h1><p id="community-server-description" class="community-description">Suhbatlashish uchun serverlardan birini tanlang.</p></div><a class="community-back" href="/">Bosh sahifa</a></header>
+<div class="community-layout">
+<aside class="community-channel-panel" id="community-servers"><div class="community-panel-title"><span>SERVERLAR</span><span id="community-server-count">0</span></div><div id="community-server-list" class="community-server-list"></div><p id="community-server-empty" class="community-empty" hidden>Hozircha ochiq server yo‘q.</p></aside>
+<section class="community-room" aria-label="Server xabarlari"><div id="community-room-empty" class="community-room-empty"><span class="community-empty-icon">#</span><h2>Serverni tanlang</h2><p>Chapdagi ro‘yxatdan suhbatga qo‘shiling.</p></div><div id="community-room-content" class="community-room-content" hidden><div class="community-room-heading"><span class="community-hash">#</span><div><strong id="community-room-name"></strong><small id="community-room-meta">Ommaviy suhbat</small></div><span id="community-lock-state" class="community-lock-state" hidden>Yozish yopiq</span></div><div id="community-messages" class="community-messages" role="log" aria-live="polite" aria-label="Server xabarlari"></div><div id="community-turnstile" class="community-turnstile" hidden></div><form id="community-form" class="community-form"><label class="sr-only" for="community-input">Serverga xabar yozing</label><textarea id="community-input" rows="1" maxlength="2000" required placeholder="Xabar yozing..."></textarea><button id="community-send" type="submit" aria-label="Xabar yuborish">↑</button></form><p class="community-disclaimer">Xabarlar serverga kirgan barcha foydalanuvchilarga ko‘rinadi.</p></div></section>
+</div><p id="community-error" class="chat-error" role="alert" hidden></p>
+<details class="private-chat-disclosure"><summary>Admin bilan shaxsiy chat</summary><section class="chat-shell" aria-label="Admin bilan shaxsiy anonim chat">
 <div id="chat-start" class="chat-start"><div id="chat-start-greeting" class="chat-bubble admin" aria-live="polite">Assalomu alaykum.</div><div id="chat-turnstile" class="chat-turnstile" hidden></div><button id="chat-start-button" class="chat-submit" type="button">Start</button></div>
 <div id="chat-thread" class="chat-thread" hidden><div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Chat xabarlari"></div><form id="chat-form" class="chat-form"><label class="sr-only" for="chat-input">Xabaringiz</label><textarea id="chat-input" rows="1" maxlength="2000" required placeholder="Xabar yozing"></textarea><button class="chat-send" type="submit" aria-label="Xabar yuborish">↑</button></form></div>
-<p id="chat-error" class="chat-error" role="alert" hidden></p></section>
+<p id="chat-error" class="chat-error" role="alert" hidden></p></section></details>
+</section>
 </main></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script><script src="/supabase-config.js"></script><script src="/script.js"></script><script src="/chat.js?v=chat-resume-1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script><script src="/supabase-config.js"></script><script src="/script.js"></script><script src="/chat.js?v=chat-resume-1"></script><script src="/chat-servers.js?v=community-chat-2"></script>
 </body></html>

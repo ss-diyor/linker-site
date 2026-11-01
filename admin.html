@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#05061a"><title>Admin — Diyorbek Sultanov</title>
-<link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/admin.css?v=admin-ui-2"><link rel="stylesheet" href="/chat.css?v=chat-ui-3">
+<link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/admin.css?v=admin-community-chat-1"><link rel="stylesheet" href="/chat.css?v=community-chat-2">
 <script>
     (() => {
       const savedTheme = localStorage.getItem('theme');
@@ -46,6 +46,14 @@
 <section id="chat-admin-panel" class="admin-panel chat-admin-panel" hidden>
 <div class="admin-section-heading"><h2>Anonim chat</h2><span id="chat-unread-count" class="admin-note" aria-live="polite">0 ta o‘qilmagan</span></div>
 <p class="admin-note">Ism va email so‘ralmaydigan visitor suhbatlari. Suhbatni tanlang, javob bering yoki yakunlang. O‘qilgan holati va suhbat statusi Supabase chat migrationlariga bog‘liq.</p>
+<section id="chat-server-admin" class="chat-server-admin" hidden aria-labelledby="chat-server-admin-title">
+<div class="admin-section-heading"><div><p class="chat-eyebrow">JAMOAT CHAT</p><h3 id="chat-server-admin-title">Serverlar va umumiy inbox</h3></div><span id="chat-server-admin-count" class="admin-note">0 ta server</span></div>
+<p class="admin-note">Server oching, saytda ko‘rsatishni boshqaring va kerak bo‘lsa yozishni vaqtincha yoping. Har serverdagi xabarlar barcha qatnashchilarga ko‘rinadi. Ishga tushirishdan oldin Supabase SQL Editor’da <code>supabase/chat-servers.sql</code> migratsiyasini bir marta bajaring.</p>
+<p id="chat-server-admin-error" class="admin-error" role="alert" hidden></p>
+<form id="chat-server-form" class="admin-form chat-server-form"><input type="hidden" id="chat-server-id"><label>Server nomi<input id="chat-server-name" maxlength="60" required placeholder="Masalan: Musiqa"></label><label>Qisqa tavsif<input id="chat-server-description" maxlength="240" placeholder="Server haqida"></label><div class="chat-server-form-row"><label>Rang<input id="chat-server-color" type="color" value="#A8A5FF"></label><label>Tartib<input id="chat-server-position" type="number" min="0" value="0"></label><label class="admin-checkbox"><input id="chat-server-published" type="checkbox" checked> Ochiq ko‘rsatish</label><label class="admin-checkbox"><input id="chat-server-locked" type="checkbox"> Yozishni yopish</label></div><div class="admin-form-actions"><button class="admin-submit" type="submit">Serverni saqlash</button><button id="chat-server-cancel" class="admin-quiet-button" type="button">tozalash</button></div></form>
+<div id="chat-server-admin-list" class="admin-list chat-server-admin-list"></div>
+<div class="chat-community-inbox"><div class="admin-section-heading"><h3>Umumiy server inbox</h3><label class="chat-server-select-label">Server<select id="chat-server-inbox-select"><option value="">Server tanlang</option></select></label></div><div id="chat-server-inbox-empty" class="chat-admin-empty">Server tanlang yoki yangi server yarating.</div><div id="chat-server-inbox-messages" class="community-messages chat-server-inbox-messages" role="log" aria-live="polite" hidden></div><form id="chat-server-inbox-form" class="chat-form chat-server-inbox-form" hidden><label class="sr-only" for="chat-server-inbox-input">Serverga javob yozing</label><textarea id="chat-server-inbox-input" rows="2" maxlength="2000" required placeholder="Server nomidan xabar yuboring"></textarea><button class="admin-submit" type="submit">Xabar yuborish</button></form></div>
+</section>
 <p id="chat-admin-error" class="admin-error chat-admin-error" role="alert" aria-live="polite" hidden></p>
 <div class="chat-admin-layout">
 <div id="chat-conversation-list" class="admin-list chat-conversation-list" aria-label="Chat suhbatlari"></div>
@@ -65,5 +73,5 @@
 </section>
 <p id="admin-status" class="admin-note" role="status"></p>
 </section></main><footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer></div>
-<script src="/script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/admin.js?v=chat-admin-fixes-1"></script><script src="/chat-admin.js?v=admin-ui-2"></script>
+<script src="/script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/admin.js?v=chat-admin-fixes-1"></script><script src="/chat-admin.js?v=admin-ui-2"></script><script src="/chat-servers-admin.js?v=community-chat-1"></script>
 </body></html>
