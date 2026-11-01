@@ -5,8 +5,9 @@
     sun: '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.8"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>',
     moon: '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 15.3A8.5 8.5 0 0 1 8.7 3.8 8.6 8.6 0 1 0 20.2 15.3Z"></path></svg>',
   };
+  let chatLink = null;
   if (themeToggle && !document.body.classList.contains('admin-page') && !document.body.classList.contains('chat-page')) {
-    const chatLink = document.createElement('a');
+    chatLink = document.createElement('a');
     chatLink.className = 'chat-toggle';
     chatLink.href = '/chat';
     chatLink.setAttribute('aria-label', 'Anonim chatni ochish');
@@ -30,7 +31,7 @@
   themeToggle?.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 
   if (!document.body.classList.contains('admin-page') && !document.body.classList.contains('chat-page')) {
-    const inviteKey = 'diyor-chat-invite-seen-v1';
+    const inviteKey = 'diyor-chat-invite-hint-seen-v2';
     let alreadySeen = false;
     let welcomeWasSeen = false;
     try {
@@ -38,45 +39,28 @@
       welcomeWasSeen = localStorage.getItem('diyor-welcome-intro-seen') === 'true';
     } catch {}
 
-    if (!alreadySeen) {
+    if (!alreadySeen && chatLink) {
       const hasWelcomeIntro = Boolean(document.querySelector('[data-welcome-intro]')) && !welcomeWasSeen;
       window.setTimeout(() => {
-        let previousFocus = document.activeElement;
-        const dialog = document.createElement('div');
-        dialog.className = 'chat-invite-overlay';
-        dialog.innerHTML = `
-          <section class="chat-invite-dialog" role="dialog" aria-modal="true" aria-labelledby="chat-invite-title" aria-describedby="chat-invite-description">
-            <button class="chat-invite-close" type="button" data-chat-invite-close aria-label="Oynani yopish">×</button>
-            <span class="chat-invite-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 18.5 4 22l3.6-1.9A8.5 8.5 0 1 0 5 18.5Z"></path><path d="M8 10h8M8 14h5"></path></svg></span>
-            <p class="chat-invite-eyebrow">OCHIQ SUHBAT</p>
-            <h2 id="chat-invite-title">Suhbatga qo‘shiling</h2>
-            <p id="chat-invite-description" class="chat-invite-description">Qiziqarli mavzular bo‘yicha boshqalar bilan fikr almashing. Ism yoki email kiritish shart emas.</p>
-            <ol class="chat-invite-steps"><li><span>01</span> Serverni tanlang</li><li><span>02</span> Xabaringizni yozing</li><li><span>03</span> Suhbatni davom ettiring</li></ol>
-            <a class="chat-invite-join" href="/chat">Chatga kirish <span aria-hidden="true">↗</span></a>
-            <button class="chat-invite-later" type="button" data-chat-invite-close>Hozir emas</button>
-          </section>`;
-        document.body.append(dialog);
-        document.body.classList.add('chat-invite-open');
-        try { localStorage.setItem(inviteKey, 'true'); } catch {}
-
-        const close = () => {
-          dialog.remove();
-          document.body.classList.remove('chat-invite-open');
-          if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+        const popover = document.createElement('aside');
+        popover.className = 'chat-invite-popover';
+        popover.setAttribute('role', 'status');
+        popover.innerHTML = '<a href="/chat"><strong>Suhbatga qo‘shiling</strong><span>Hamjamiyat chatiga kiring</span></a><button type="button" aria-label="Taklifni yopish">×</button>';
+        document.body.append(popover);
+        const positionPopover = () => {
+          const rect = chatLink.getBoundingClientRect();
+          const width = Math.min(232, window.innerWidth - 24);
+          const right = Math.max(12, Math.min(window.innerWidth - rect.right, window.innerWidth - width - 12));
+          popover.style.top = `${rect.bottom + 11}px`;
+          popover.style.right = `${right}px`;
         };
-        dialog.addEventListener('click', (event) => {
-          if (event.target === dialog || event.target.closest('[data-chat-invite-close]')) close();
+        positionPopover();
+        window.addEventListener('resize', positionPopover);
+        try { localStorage.setItem(inviteKey, 'true'); } catch {}
+        popover.querySelector('button').addEventListener('click', () => {
+          window.removeEventListener('resize', positionPopover);
+          popover.remove();
         });
-        dialog.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') { event.preventDefault(); close(); return; }
-          if (event.key !== 'Tab') return;
-          const controls = [...dialog.querySelectorAll('a[href],button:not([disabled])')];
-          const first = controls[0];
-          const last = controls[controls.length - 1];
-          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-        });
-        dialog.querySelector('.chat-invite-close').focus();
       }, hasWelcomeIntro ? 5600 : 1000);
     }
   }
