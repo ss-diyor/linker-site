@@ -377,7 +377,9 @@ button { font: inherit; }
   align-items: center;
   gap: .45rem;
   min-height: 34px;
-  padding: .4rem .6rem;
+  width: 34px;
+  justify-content: center;
+  padding: 0;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface);
@@ -387,8 +389,8 @@ button { font: inherit; }
   transition: border-color .2s ease, color .2s ease, background .2s ease;
 }
 .theme-toggle:hover { border-color: var(--line-hover); color: var(--text); background: var(--accent-soft); }
-.theme-toggle-icon { color: var(--accent); font-size: .9rem; line-height: 1; }
-.theme-toggle-label { text-transform: lowercase; }
+.theme-toggle-icon { display:block; width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; transition:transform .24s ease,color .2s ease; }
+.theme-toggle:hover .theme-toggle-icon { transform:rotate(-12deg); color:var(--accent-strong); }
 @media (max-width: 520px) { .theme-toggle { top: .8rem; right: 1rem; } }
 
 
@@ -806,6 +808,29 @@ body.modal-open { overflow: hidden; }
   .welcome-intro p { animation:none; }
   .welcome-intro { transition-duration:.2s; }
 }
+
+/* One-time invitation to join the public chat */
+body.chat-invite-open { overflow:hidden; }
+.chat-invite-overlay { position:fixed; inset:0; z-index:130; display:grid; place-items:center; overflow:auto; padding:1.25rem; background:color-mix(in srgb,var(--bg) 76%,transparent); backdrop-filter:blur(12px); animation:chat-invite-backdrop-in .24s ease both; }
+.chat-invite-dialog { position:relative; width:min(100%,27rem); padding:2rem; border:1px solid var(--line-strong); border-radius:1.1rem; background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),var(--bg) 62%); box-shadow:0 24px 90px color-mix(in srgb,#000 32%,transparent); animation:chat-invite-card-in .32s cubic-bezier(.2,.8,.2,1) both; }
+.chat-invite-close { position:absolute; top:.8rem; right:.8rem; display:grid; width:2rem; height:2rem; place-items:center; border:1px solid var(--line); border-radius:50%; background:transparent; color:var(--muted); font:inherit; font-size:1.15rem; cursor:pointer; }
+.chat-invite-close:hover { border-color:var(--line-hover); color:var(--text); }
+.chat-invite-icon { display:grid; width:3rem; height:3rem; place-items:center; border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line)); border-radius:.9rem; background:var(--accent-soft); color:var(--accent-strong); }
+.chat-invite-icon svg { width:1.5rem; height:1.5rem; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.chat-invite-eyebrow { margin:1.35rem 0 .4rem; color:var(--faint); font-size:.58rem; font-weight:700; letter-spacing:.16em; }
+.chat-invite-dialog h2 { margin:0; color:var(--text); font-size:clamp(1.45rem,5vw,1.9rem); letter-spacing:-.055em; }
+.chat-invite-description { margin:.7rem 0 1.25rem; color:var(--muted); font-size:.72rem; line-height:1.7; }
+.chat-invite-steps { display:grid; gap:.65rem; margin:0 0 1.4rem; padding:0; list-style:none; }
+.chat-invite-steps li { display:flex; align-items:center; gap:.75rem; color:var(--text-soft); font-size:.68rem; }
+.chat-invite-steps li span { color:var(--accent); font-size:.56rem; font-weight:700; letter-spacing:.08em; }
+.chat-invite-join { display:flex; min-height:2.8rem; align-items:center; justify-content:space-between; padding:.75rem .9rem; border-radius:.65rem; background:var(--accent); color:var(--bg); font-size:.7rem; font-weight:700; transition:transform .18s ease,filter .18s ease; }
+.chat-invite-join:hover { transform:translateY(-1px); filter:brightness(1.07); }
+.chat-invite-later { display:block; margin:.85rem auto 0; padding:.35rem .6rem; border:0; background:transparent; color:var(--muted); font:inherit; font-size:.63rem; cursor:pointer; }
+.chat-invite-later:hover { color:var(--text); }
+@keyframes chat-invite-backdrop-in { from { opacity:0; } to { opacity:1; } }
+@keyframes chat-invite-card-in { from { opacity:0; transform:translateY(12px) scale(.98); } to { opacity:1; transform:none; } }
+@media(max-width:520px) { .chat-invite-dialog { padding:1.6rem 1.25rem 1.25rem; border-radius:.9rem; } }
+@media(prefers-reduced-motion:reduce) { .theme-toggle-icon,.chat-invite-overlay,.chat-invite-dialog,.chat-invite-join { animation:none; transition:none; } }
 
 .chat-toggle { position:fixed; top:1.25rem; right:4.9rem; z-index:8; display:grid; width:2rem; height:2rem; place-items:center; border:1px solid var(--line); border-radius:50%; background:var(--surface); color:var(--muted); transition:border-color .2s ease,color .2s ease,background .2s ease; }
 .chat-toggle:hover { border-color:var(--line-hover); color:var(--text); background:var(--accent-soft); }
