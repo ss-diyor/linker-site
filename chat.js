@@ -28,6 +28,14 @@
   let conversation = null;
   let channel = null;
   let turnstileWidget = null;
+  let hasRenderedMessages = false;
+
+  const resizeInput = () => {
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(input.scrollHeight, 128)}px`;
+  };
+
+  input?.addEventListener('input', resizeInput);
 
   const formatTime = (value) => new Intl.DateTimeFormat('uz-UZ', {
     dateStyle: 'short',
@@ -35,24 +43,33 @@
   }).format(new Date(value));
 
   const renderMessages = (items) => {
+    const existingIds = new Set(
+      [...messages.querySelectorAll('[data-chat-message-id]')].map((bubble) => bubble.dataset.chatMessageId)
+    );
     messages.replaceChildren();
     if (!items.length) {
       const empty = document.createElement('p');
       empty.className = 'chat-empty';
       empty.textContent = 'Birinchi xabarni siz yozing.';
       messages.append(empty);
+      hasRenderedMessages = true;
       return;
     }
 
     items.forEach((item) => {
       const bubble = document.createElement('article');
       bubble.className = `chat-bubble ${item.sender_type}`;
+      bubble.dataset.chatMessageId = item.id;
+      if (hasRenderedMessages && !existingIds.has(String(item.id))) {
+        bubble.classList.add('chat-message-enter');
+      }
       bubble.textContent = item.body;
       const time = document.createElement('small');
       time.textContent = `${item.sender_type === 'admin' ? 'Diyorbek' : 'siz'} · ${formatTime(item.created_at)}`;
       bubble.append(time);
       messages.append(bubble);
     });
+    hasRenderedMessages = true;
     messages.scrollTop = messages.scrollHeight;
   };
 
@@ -79,6 +96,9 @@
     }
     conversation = null;
     if (input) input.value = '';
+    messages.replaceChildren();
+    hasRenderedMessages = false;
+    resizeInput();
     thread.hidden = true;
     start.hidden = false;
     startButton.disabled = false;
@@ -240,6 +260,7 @@
       }
 
       input.value = '';
+      resizeInput();
       await loadMessages();
     } catch {
       setError('Xabar yuborilmadi. Ulanishni tekshirib, qayta urinib ko‘ring.');
