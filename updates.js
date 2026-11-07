@@ -14,7 +14,24 @@
     const list = document.getElementById('updates-list');
     if (!list) return;
     if (error) { list.innerHTML = '<p class="updates-empty">Ma’lumotlarni yuklab bo‘lmadi.</p>'; return; }
-    list.innerHTML = data?.length ? data.map(render).join('') : '<p class="updates-empty">Hozircha bu yerda hech narsa yo‘q.</p>';
+    if (!data?.length) {
+      list.innerHTML = '<p class="updates-empty">Hozircha bu yerda hech narsa yo‘q.</p>';
+      return;
+    }
+    const latest = render(data[0]);
+    const older = data.slice(1);
+    const olderMarkup = older.length ? `<div class="updates-older" id="updates-older" hidden>${older.map(render).join('')}</div><button class="updates-toggle" type="button" aria-expanded="false" aria-controls="updates-older"><span class="updates-toggle-label">Barcha xabarlarni ko‘rsatish</span><span class="updates-toggle-icon" aria-hidden="true">⌄</span></button>` : '';
+    list.innerHTML = `${latest}${olderMarkup}`;
+    const toggle = list.querySelector('.updates-toggle');
+    const olderList = list.querySelector('.updates-older');
+    if (toggle && olderList) {
+      toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        olderList.hidden = expanded;
+        toggle.querySelector('.updates-toggle-label').textContent = expanded ? 'Barcha xabarlarni ko‘rsatish' : 'Xabarlarni yashirish';
+      });
+    }
   };
   load();
 })();
