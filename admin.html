@@ -16,7 +16,7 @@
 <div class="minimal-page">
     <button class="theme-toggle" type="button" aria-label="Light themega o'tish" aria-pressed="false"><span class="theme-toggle-label">light</span></button><main id="main" class="admin-main">
 <header class="minimal-hero admin-header"><a class="minimal-back" href="/">← bosh sahifa</a><span class="admin-eyebrow">SAYT BOSHQARUVI</span><h1>Admin paneli</h1><p>Kontent, playlist va visitor suhbatlarini bir joyda boshqaring.</p></header>
-<section id="login-view" class="admin-panel" aria-labelledby="login-title"><h2 id="login-title">Kirish</h2><p class="admin-note">Admin hisobingiz orqali sayt boshqaruviga kiring.</p><form id="login-form"><label>Email<input type="email" id="login-email" required autocomplete="email"></label><label>Parol<input type="password" id="login-password" required autocomplete="current-password"></label><button class="admin-submit" type="submit">Kirish <span aria-hidden="true">↗</span></button><p id="login-error" class="admin-error" role="alert" hidden></p></form></section>
+<section id="login-view" class="admin-panel" aria-labelledby="login-title"><h2 id="login-title">Kirish</h2><p class="admin-note">Admin hisobingiz orqali sayt boshqaruviga kiring.</p><form id="login-form"><label>Email<input type="email" id="login-email" required autocomplete="email"></label><label>Parol<input type="password" id="login-password" required autocomplete="current-password"></label><div id="admin-turnstile" class="admin-turnstile" aria-label="Xavfsizlik tekshiruvi"></div><button class="admin-submit" type="submit">Kirish <span aria-hidden="true">↗</span></button><p id="login-error" class="admin-error" role="alert" hidden></p></form></section>
 <section id="dashboard-view" hidden>
 <div class="admin-toolbar"><p id="admin-user" class="admin-note"></p><button id="logout-button" class="admin-quiet-button" type="button">chiqish</button></div>
 <section class="admin-panel"><h2>Now sozlamalari</h2><form id="settings-form" class="admin-form"><label>Focus title<input id="focus-title" required></label><label>Focus subtitle<input id="focus-subtitle" required></label><button class="admin-submit" type="submit">saqlash</button></form></section>
@@ -73,5 +73,5 @@
 </section>
 <p id="admin-status" class="admin-note" role="status"></p>
 </section></main><footer class="minimal-footer"><span>© 2026/2027 Diyorbek Sultanov</span></footer></div>
-<script src="/script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="/admin.js?v=chat-admin-fixes-1"></script><script src="/chat-admin.js?v=admin-ui-2"></script><script src="/chat-servers-admin.js?v=community-chat-2"></script>
+<script src="/script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/supabase-config.js"></script><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script><script src="/admin.js?v=chat-admin-fixes-2"></script><script src="/chat-admin.js?v=admin-ui-2"></script><script src="/chat-servers-admin.js?v=community-chat-2"></script>
 </body></html>

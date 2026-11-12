@@ -302,3 +302,5 @@
   .admin-page .chat-server-inbox-form .admin-submit { align-self:flex-end; }
   .admin-page .community-message-delete { width:2rem; height:2rem; flex-basis:2rem; opacity:1; }
 }
+
+.admin-turnstile{min-height:4rem;margin:.25rem 0}.admin-turnstile iframe{max-width:100%}

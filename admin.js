@@ -5,8 +5,11 @@
   const loginView = document.getElementById('login-view');
   const dashboard = document.getElementById('dashboard-view');
   const error = document.getElementById('login-error');
+  const turnstileBox = document.getElementById('admin-turnstile');
   const status = document.getElementById('admin-status');
   let books = [], media = [], updates = [], timeline = [], playlistTracks = [], playlistFolders = [], playlistNotes = [], about = null;
+  let adminTurnstileWidget = null;
+  const turnstileSiteKey = '0x4AAAAAAFuyXzBFPW9rCtNg';
   const $ = (id) => document.getElementById(id);
   const playlistDefaultColors = { spotify:'#1DB954', yandex:'#FFCC00', apple:'#FA243C', youtube:'#FF0000' };
   const validPlaylistHex = (value) => /^#[0-9a-fA-F]{6}$/.test(value || '');
@@ -224,7 +227,12 @@
   const collectInterests = () => Array.from(document.querySelectorAll('.about-interest-row'))
     .filter((row) => row.querySelector('.about-interest-name').value.trim())
     .map((row) => ({ name: row.querySelector('.about-interest-name').value.trim(), color: row.querySelector('.about-interest-color').value.trim(), image_url: normalizeInterestImageUrl(row.querySelector('.about-interest-image-url').value) }));
-  $('login-form').addEventListener('submit', async (e) => { e.preventDefault(); error.hidden=true; const submit = $('login-form').querySelector('[type="submit"]'); submit.disabled = true; submit.setAttribute('aria-busy', 'true'); const originalLabel = submit.innerHTML; submit.textContent = 'tekshirilmoqda…'; try { const { data: { user }, error: authError } = await client.auth.signInWithPassword({ email: $('login-email').value.trim(), password: $('login-password').value }); if(authError){ error.textContent = authError.message || 'Email yoki parol noto‘g‘ri.'; error.hidden=false; return; } await showDashboard(user); } catch { error.textContent = 'Login vaqtida kutilmagan xatolik yuz berdi. Qayta urinib ko‘ring.'; error.hidden=false; } finally { submit.disabled = false; submit.removeAttribute('aria-busy'); submit.innerHTML = originalLabel; } });
+  const getAdminCaptchaToken = () => new Promise((resolve, reject) => {
+    if (!window.turnstile || !turnstileBox) return reject(new Error('Turnstile yuklanmadi. Sahifani qayta oching.'));
+    if (adminTurnstileWidget !== null) { try { window.turnstile.remove(adminTurnstileWidget); } catch {} adminTurnstileWidget = null; turnstileBox.replaceChildren(); }
+    adminTurnstileWidget = window.turnstile.render(turnstileBox, { sitekey: turnstileSiteKey, theme: document.documentElement.dataset.theme === 'light' ? 'light' : 'dark', callback: resolve, 'expired-callback': () => reject(new Error('Captcha muddati tugadi.')), 'error-callback': () => reject(new Error('Captcha tekshiruvi muvaffaqiyatsiz tugadi.')) });
+  });
+  $('login-form').addEventListener('submit', async (e) => { e.preventDefault(); error.hidden=true; const submit = $('login-form').querySelector('[type="submit"]'); submit.disabled = true; submit.setAttribute('aria-busy', 'true'); const originalLabel = submit.innerHTML; submit.textContent = 'tekshirilmoqda…'; try { const captchaToken = await getAdminCaptchaToken(); const { data: { user }, error: authError } = await client.auth.signInWithPassword({ email: $('login-email').value.trim(), password: $('login-password').value, options: { captchaToken } }); if(authError){ error.textContent = authError.message || 'Email yoki parol noto‘g‘ri.'; error.hidden=false; return; } await showDashboard(user); } catch (loginError) { error.textContent = loginError.message?.includes('captcha') || loginError.message?.includes('Captcha') ? 'Captcha tekshiruvidan o‘ting va qayta urinib ko‘ring.' : loginError.message || 'Login vaqtida kutilmagan xatolik yuz berdi. Qayta urinib ko‘ring.'; error.hidden=false; } finally { submit.disabled = false; submit.removeAttribute('aria-busy'); submit.innerHTML = originalLabel; } });
   $('logout-button').addEventListener('click', async () => { await client.auth.signOut(); await showDashboard(null); });
   $('settings-form').addEventListener('submit', async (e) => { e.preventDefault(); const { error: e1 } = await client.from('now_settings').update({ focus_title:$('focus-title').value.trim(), focus_subtitle:$('focus-subtitle').value.trim(), updated_at:new Date().toISOString() }).eq('id','default'); setStatus(e1 ? 'Sozlamani saqlashda xatolik.' : 'Sozlamalar saqlandi.', !!e1); });
   $('book-form').addEventListener('submit', async (e) => { e.preventDefault(); try { await save('books', $('book-id').value, { title:$('book-title').value.trim(), author:$('book-author').value.trim(), year:$('book-year').value ? Number($('book-year').value) : null, status:$('book-status').value, external_url:$('book-url').value.trim()||null, cover_url:(await resolvePosterUrl($('book-cover-url').value.trim()))||null, note:$('book-note').value.trim() }); $('book-form').hidden=true; await loadAll(); } catch { setStatus('Kitobni saqlashda xatolik.', true); } });
